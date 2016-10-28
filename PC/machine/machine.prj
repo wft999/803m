@@ -1,0 +1,413 @@
+[Project Header]
+Version = 900
+Pathname = "/d/wakom/803m/machine/machine.prj"
+CVI Dir = "/c/program files (x86)/national instruments/cvi90"
+CVI Shared Dir = "/C/Program Files (x86)/National Instruments/Shared/CVI"
+CVI Pub Local Dir = "/C/ProgramData/National Instruments/CVI90"
+CVI Pub Global Dir = "/C/ProgramData/National Instruments/CVI"
+IVI Standard Root Dir = "/C/Program Files (x86)/IVI"
+VXIplug&play Framework Dir = "/c/vxipnp/winnt"
+Number of Files = 24
+Target Type = "Executable"
+Flags = 16
+Copied From Locked InstrDrv Directory = False
+Copied from VXIPNP Directory = False
+Locked InstrDrv Name = ""
+Don't Display Deploy InstrDrv Dialog = False
+
+[File 0001]
+File Type = "CSource"
+Res Id = 1
+Path Is Rel = True
+Path Rel To = "Project"
+Path Rel Path = "base64.c"
+Path = "/d/wakom/803m/machine/base64.c"
+Exclude = False
+Compile Into Object File = False
+Project Flags = 0
+Folder = "Source Files"
+
+[File 0002]
+File Type = "Include"
+Res Id = 2
+Path Is Rel = True
+Path Rel To = "Project"
+Path Rel Path = "const.h"
+Path = "/d/wakom/803m/machine/const.h"
+Exclude = False
+Project Flags = 0
+Folder = "Include Files"
+
+[File 0003]
+File Type = "CSource"
+Res Id = 3
+Path Is Rel = True
+Path Rel To = "Project"
+Path Rel Path = "drytank.c"
+Path = "/d/wakom/803m/machine/drytank.c"
+Exclude = True
+Compile Into Object File = False
+Project Flags = 0
+Folder = "Source Files"
+
+[File 0004]
+File Type = "CSource"
+Res Id = 4
+Path Is Rel = True
+Path Rel To = "Project"
+Path Rel Path = "init.c"
+Path = "/d/wakom/803m/machine/init.c"
+Exclude = False
+Compile Into Object File = False
+Project Flags = 0
+Folder = "Source Files"
+
+[File 0005]
+File Type = "CSource"
+Res Id = 5
+Path Is Rel = True
+Path Rel To = "Project"
+Path Rel Path = "log.c"
+Path = "/d/wakom/803m/machine/log.c"
+Exclude = False
+Compile Into Object File = False
+Project Flags = 0
+Folder = "Source Files"
+
+[File 0006]
+File Type = "CSource"
+Res Id = 6
+Path Is Rel = True
+Path Rel To = "Project"
+Path Rel Path = "machine.c"
+Path = "/d/wakom/803m/machine/machine.c"
+Exclude = False
+Compile Into Object File = False
+Project Flags = 0
+Folder = "Source Files"
+
+[File 0007]
+File Type = "User Interface Resource"
+Res Id = 7
+Path Is Rel = True
+Path Rel To = "Project"
+Path Rel Path = "machine.uir"
+Path = "/d/wakom/803m/machine/machine.uir"
+Exclude = False
+Project Flags = 0
+Folder = "User Interface Files"
+
+[File 0008]
+File Type = "Include"
+Res Id = 8
+Path Is Rel = True
+Path Rel To = "Project"
+Path Rel Path = "MiQPLC/MIQPLC.h"
+Path = "/d/wakom/803m/machine/MiQPLC/MIQPLC.h"
+Exclude = False
+Project Flags = 0
+Folder = "Include Files"
+
+[File 0009]
+File Type = "Library"
+Res Id = 9
+Path Is Rel = True
+Path Rel To = "Project"
+Path Rel Path = "MiQPLC/MiQPLC.lib"
+Path = "/d/wakom/803m/machine/MiQPLC/MiQPLC.lib"
+Exclude = False
+Project Flags = 0
+Folder = "Instrument Files"
+
+[File 0010]
+File Type = "CSource"
+Res Id = 10
+Path Is Rel = True
+Path Rel To = "Project"
+Path Rel Path = "msie.c"
+Path = "/d/wakom/803m/machine/msie.c"
+Exclude = False
+Compile Into Object File = False
+Project Flags = 0
+Folder = "Source Files"
+
+[File 0011]
+File Type = "Function Panel"
+Res Id = 11
+Path Is Rel = True
+Path Rel To = "Project"
+Path Rel Path = "msie.fp"
+Path = "/d/wakom/803m/machine/msie.fp"
+Exclude = False
+Project Flags = 0
+Folder = "Instrument Files"
+
+[File 0012]
+File Type = "CSource"
+Res Id = 12
+Path Is Rel = True
+Path Rel To = "Project"
+Path Rel Path = "plc.c"
+Path = "/d/wakom/803m/machine/plc.c"
+Exclude = False
+Compile Into Object File = False
+Project Flags = 0
+Folder = "Source Files"
+
+[File 0013]
+File Type = "CSource"
+Res Id = 13
+Path Is Rel = True
+Path Rel To = "Project"
+Path Rel Path = "plc_panel.c"
+Path = "/d/wakom/803m/machine/plc_panel.c"
+Exclude = True
+Compile Into Object File = False
+Project Flags = 0
+Folder = "Source Files"
+
+[File 0014]
+File Type = "CSource"
+Res Id = 14
+Path Is Rel = True
+Path Rel To = "Project"
+Path Rel Path = "recipe_panel.c"
+Path = "/d/wakom/803m/machine/recipe_panel.c"
+Exclude = False
+Compile Into Object File = False
+Project Flags = 0
+Folder = "Source Files"
+
+[File 0015]
+File Type = "CSource"
+Res Id = 15
+Path Is Rel = True
+Path Rel To = "Project"
+Path Rel Path = "rkc.c"
+Path = "/d/wakom/803m/machine/rkc.c"
+Exclude = False
+Compile Into Object File = False
+Project Flags = 0
+Folder = "Source Files"
+
+[File 0016]
+File Type = "CSource"
+Res Id = 16
+Path Is Rel = True
+Path Rel To = "Project"
+Path Rel Path = "robot.c"
+Path = "/d/wakom/803m/machine/robot.c"
+Exclude = False
+Compile Into Object File = False
+Project Flags = 0
+Folder = "Source Files"
+
+[File 0017]
+File Type = "Include"
+Res Id = 17
+Path Is Rel = True
+Path Rel To = "Project"
+Path Rel Path = "robot.h"
+Path = "/d/wakom/803m/machine/robot.h"
+Exclude = False
+Project Flags = 0
+Folder = "Include Files"
+
+[File 0018]
+File Type = "User Interface Resource"
+Res Id = 18
+Path Is Rel = True
+Path Rel To = "Project"
+Path Rel Path = "robot.uir"
+Path = "/d/wakom/803m/machine/robot.uir"
+Exclude = False
+Project Flags = 0
+Folder = "User Interface Files"
+
+[File 0019]
+File Type = "User Interface Resource"
+Res Id = 19
+Path Is Rel = True
+Path Rel To = "Project"
+Path Rel Path = "robot_panel.uir"
+Path = "/d/wakom/803m/machine/robot_panel.uir"
+Exclude = False
+Project Flags = 0
+Folder = "User Interface Files"
+
+[File 0020]
+File Type = "CSource"
+Res Id = 20
+Path Is Rel = True
+Path Rel To = "Project"
+Path Rel Path = "set_panel.c"
+Path = "/d/wakom/803m/machine/set_panel.c"
+Exclude = False
+Compile Into Object File = False
+Project Flags = 0
+Folder = "Source Files"
+
+[File 0021]
+File Type = "User Interface Resource"
+Res Id = 21
+Path Is Rel = True
+Path Rel To = "Project"
+Path Rel Path = "tank_diw.uir"
+Path = "/d/wakom/803m/machine/tank_diw.uir"
+Exclude = False
+Project Flags = 0
+Folder = "User Interface Files"
+
+[File 0022]
+File Type = "CSource"
+Res Id = 22
+Path Is Rel = True
+Path Rel To = "Project"
+Path Rel Path = "tank_panel.c"
+Path = "/d/wakom/803m/machine/tank_panel.c"
+Exclude = False
+Compile Into Object File = False
+Project Flags = 0
+Folder = "Source Files"
+
+[File 0023]
+File Type = "Include"
+Res Id = 23
+Path Is Rel = True
+Path Rel To = "Project"
+Path Rel Path = "type.h"
+Path = "/d/wakom/803m/machine/type.h"
+Exclude = False
+Project Flags = 0
+Folder = "Include Files"
+
+[File 0024]
+File Type = "CSource"
+Res Id = 24
+Path Is Rel = True
+Path Rel To = "Project"
+Path Rel Path = "user.c"
+Path = "/d/wakom/803m/machine/user.c"
+Exclude = False
+Compile Into Object File = False
+Project Flags = 0
+Folder = "Source Files"
+
+[Folders]
+Folder 0 = "User Interface Files"
+Folder 1 = "Source Files"
+Folder 2 = "Include Files"
+Folder 3 = "Instrument Files"
+
+[Compiler Options]
+Default Calling Convention = "stdcall"
+Require Prototypes = True
+Require Return Values = True
+Enable Pointer Mismatch Warning = False
+Enable Unreachable Code Warning = True
+Enable Unreferenced Identifiers Warning = False
+Enable Assignment In Conditional Warning = True
+O Option Compatible With 5.0 = False
+Enable C99 Extensions = True
+Uninitialized Locals Compile Warning = "Aggressive"
+Precompile Prefix Header = False
+Prefix Header File = ""
+
+[Run Options]
+Stack Size = 40000000
+Image Base Address = 4194304
+
+[Compiler Defines]
+Compiler Defines = "/DWIN32_LEAN_AND_MEAN"
+
+[Include Paths]
+Include Path 1 Is Rel = True
+Include Path 1 Rel To = "Project"
+Include Path 1 Rel Path = "Instruments/MitsubishiQPLC"
+Include Path 1 = "/d/wakom/803m/machine/Instruments/MitsubishiQPLC"
+Include Path 2 Is Rel = True
+Include Path 2 Rel To = "Project"
+Include Path 2 Rel Path = "MiQPLC"
+Include Path 2 = "/d/wakom/803m/machine/MiQPLC"
+Include Path 3 Is Rel = True
+Include Path 3 Rel To = "Project"
+Include Path 3 Rel Path = "mysql/include"
+Include Path 3 = "/d/wakom/803m/machine/mysql/include"
+Include Path 4 Is Rel = True
+Include Path 4 Rel To = "Project"
+Include Path 4 Rel Path = "sqlite"
+Include Path 4 = "/d/wakom/803m/machine/sqlite"
+Include Path 5 Is Rel = False
+Include Path 5 = "/c/Program Files (x86)/MariaDB/MariaDB C Client Library/include"
+
+[Create Executable]
+Executable File_Debug Is Rel = False
+Executable File_Debug = "../mbin/FTB25.exe"
+Executable File_Release Is Rel = False
+Executable File_Release = "../mbin/FTB27M.exe"
+Executable File_Debug64 Is Rel = True
+Executable File_Debug64 Rel To = "Project"
+Executable File_Debug64 Rel Path = "machine.exe"
+Executable File_Debug64 = "/d/wakom/803m/machine/machine.exe"
+Executable File_Release64 Is Rel = True
+Executable File_Release64 Rel To = "Project"
+Executable File_Release64 Rel Path = "machine.exe"
+Executable File_Release64 = "/d/wakom/803m/machine/machine.exe"
+Icon File Is Rel = False
+Icon File = ""
+Application Title = "FTB25M"
+DLL Exports = "Include File Symbols"
+DLL Import Library Choice = "Gen Lib For Current Mode"
+Use IVI Subdirectories for Import Libraries = False
+Use VXIPNP Subdirectories for Import Libraries = False
+Use Dflt Import Lib Base Name = True
+Where to Copy DLL = "Do not copy"
+Custom Directory to Copy DLL Is Rel = False
+Custom Directory to Copy DLL = ""
+Add Type Lib To DLL = False
+Include Type Lib Help Links = False
+Type Lib FP File Is Rel = False
+Type Lib FP File = ""
+Type Lib Guid = ""
+Runtime Support = "Full Runtime Support"
+Instrument Driver Support Only = False
+Embed Project .UIRs = True
+Generate Map File = False
+
+[External Compiler Support]
+UIR Callbacks File Option = 0
+Using LoadExternalModule = False
+Create Project Symbols File = False
+UIR Callbacks Obj File Is Rel = False
+UIR Callbacks Obj File = ""
+Project Symbols H File Is Rel = False
+Project Symbols H File = ""
+Project Symbols Obj File Is Rel = False
+Project Symbols Obj File = ""
+
+[ActiveX Server Options]
+Specification File Is Rel = False
+Specification File = ""
+Source File Is Rel = False
+Source File = ""
+Include File Is Rel = False
+Include File = ""
+IDL File Is Rel = False
+IDL File = ""
+Register ActiveX Server = False
+
+[Signing Info]
+Sign = False
+Sign Debug Build = False
+Store = ""
+Certificate = ""
+Timestamp URL = ""
+URL = ""
+
+[Manifest Info]
+Embed = False
+
+[tpcSection]
+tpcEnabled = 0
+tpcOverrideEnvironment = 0
+

@@ -1,0 +1,330 @@
+[Workspace Header]
+Version = 900
+Pathname = "/d/wakom/803m/machine/machine.cws"
+CVI Dir = "/c/program files (x86)/national instruments/cvi90"
+CVI Shared Dir = "/C/Program Files (x86)/National Instruments/Shared/CVI"
+CVI Pub Local Dir = "/C/ProgramData/National Instruments/CVI90"
+CVI Pub Global Dir = "/C/ProgramData/National Instruments/CVI"
+IVI Standard Root Dir = "/C/Program Files (x86)/IVI"
+VXIplug&play Framework Dir = "/c/vxipnp/winnt"
+Number of Projects = 1
+Active Project = 1
+Project 0001 = "machine.prj"
+Drag Bar Left = 194
+Window Top = 98
+Window Left = 540
+Window Bottom = 600
+Window Right = 1330
+Maximized = False
+Maximized Children = True
+Max Number Of Errors = 20
+Track Include File Dependencies = True
+Prompt For Missing Includes = True
+Stop On First Error File = False
+Bring Up Err Win For Warnings = True
+Show Build Dialog = False
+Save Changes Before Running = "Always"
+Hide Windows = False
+Break At First Statement = False
+Sort Type = "File Name"
+Number of Opened Files = 11
+Window Confinement Region Enabled = True
+MainColumnWidth = 175
+FileDateColumnWidth = 70
+FileSizeColumnWidth = 70
+StatusColumnWidth = 70
+
+[Project Header 0001]
+Version = 900
+Don't Update DistKit = False
+Platform Code = 4
+Build Configuration = "Debug"
+Warn User If Debugging Release = 0
+Batch Build Release = False
+Batch Build Debug = True
+Force Rebuild = False
+
+[File 0001]
+Path = "/d/wakom/803m/machine/msie.fp"
+File Type = "Function Panel"
+Disk Date = 3306448800
+In Projects = "1,"
+
+[File 0002]
+Path = "/d/wakom/803m/machine/robot.c"
+File Type = "CSource"
+Disk Date = 3560462001
+In Projects = "1,"
+Window Top = 209
+Window Left = 102
+Window Z-Order = 2
+Source Window State = "1,1186,1186,1186,83,99,99,0,0,109,6,73,0,84,111,26,876,0,889,108,411,690,1,1849,"
+
+[File 0003]
+Path = "/d/wakom/803m/machine/tank_diw.uir"
+File Type = "User Interface Resource"
+Disk Date = 3559860904
+In Projects = "1,"
+Window Top = 33
+Window Left = 10
+Window Height = 323
+Window Width = 521
+Window Z-Order = 11
+
+[File 0004]
+Path = "/d/wakom/803m/machine/robot.uir"
+File Type = "User Interface Resource"
+Disk Date = 3560462748
+In Projects = "1,"
+Window Top = 33
+Window Left = 10
+Window Height = 323
+Window Width = 521
+Window Z-Order = 1
+
+[File 0005]
+Path = "/d/wakom/803m/machine/log.c"
+File Type = "CSource"
+Disk Date = 3560408774
+In Projects = "1,"
+Window Top = 31
+Window Left = 6
+Window Z-Order = 5
+Source Window State = "1,56,56,56,5,14,14,0,0,109,0,0,0,0,0,25,549,0,561,16,331,690,1,0,"
+
+[File 0006]
+Path = "/d/wakom/803m/machine/plc.c"
+File Type = "CSource"
+Disk Date = 3560408369
+In Projects = "1,"
+Window Top = 250
+Window Left = 122
+Window Z-Order = 3
+Source Window State = "1,55,55,55,35,41,41,0,0,80,0,0,0,0,0,25,46,0,55,152,323,521,1,0,"
+
+[File 0007]
+Path = "/d/wakom/803m/machine/plc_panel.c"
+File Type = "CSource"
+Disk Date = 3490665056
+In Projects = "1,"
+Window Top = 31
+Window Left = 6
+Window Z-Order = 7
+Source Window State = "1,286,375,286,0,10,0,0,3,109,0,4,0,4,0,25,349,0,375,10,331,690,1,0,"
+
+[File 0008]
+Path = "/d/wakom/803m/machine/robot_panel.uir"
+File Type = "User Interface Resource"
+Disk Date = 3559941362
+In Projects = "1,"
+Window Top = 94
+Window Left = 42
+Window Height = 427
+Window Width = 690
+Window Z-Order = 10
+
+[File 0009]
+Path = "/d/wakom/803m/machine/base64.c"
+File Type = "CSource"
+Disk Date = 3506562817
+In Projects = "1,"
+Window Top = 64
+Window Left = 26
+Window Z-Order = 9
+Source Window State = "1,0,0,0,0,0,0,0,0,80,0,0,0,0,0,22,33,0,57,56,287,521,1,0,"
+
+[File 0010]
+Path = "/d/wakom/803m/machine/init.c"
+File Type = "CSource"
+Disk Date = 3559160788
+In Projects = "1,"
+Window Top = 209
+Window Left = 102
+Window Z-Order = 8
+Source Window State = "0,207,207,207,13,19,19,0,0,109,32,109,0,150,75,1,121,0,121,171,427,690,1,9954,"
+
+[File 0011]
+Path = "/d/wakom/803m/machine/machine.c"
+File Type = "CSource"
+Disk Date = 3560412053
+In Projects = "1,"
+Window Top = 48
+Window Left = 18
+Window Z-Order = 6
+Source Window State = "1,27,27,27,10,15,15,0,0,109,0,97,0,3,0,33,199,0,220,52,427,690,1,0,"
+
+[File 0012]
+Path = "/d/wakom/803m/machine/const.h"
+File Type = "Include"
+Disk Date = 3559161216
+In Projects = "1,"
+Window Top = 31
+Window Left = 6
+Source Window State = "1,26,26,26,0,8,8,0,3,0,0,0,0,0,0,0,70,0,26,0,347,690,1,0,"
+
+[File 0013]
+Path = "/d/wakom/803m/machine/drytank.c"
+File Type = "CSource"
+Disk Date = 3511500626
+In Projects = "1,"
+Window Top = 31
+Window Left = 6
+Source Window State = "1,266,266,266,13,31,31,0,0,0,0,0,0,0,0,0,26,0,40,84,363,690,1,0,"
+
+[File 0014]
+Path = "/d/wakom/803m/machine/machine.uir"
+File Type = "User Interface Resource"
+Disk Date = 3558995026
+In Projects = "1,"
+Window Top = 31
+Window Left = 6
+Window Height = 427
+Window Width = 690
+
+[File 0015]
+Path = "/d/wakom/803m/machine/MiQPLC/MIQPLC.h"
+File Type = "Include"
+Disk Date = 3311858204
+In Projects = "1,"
+Window Top = 31
+Window Left = 6
+Source Window State = "1,146,146,146,8,18,18,0,0,0,0,0,0,0,0,0,143,0,102,46,331,690,1,0,"
+
+[File 0016]
+Path = "/d/wakom/803m/machine/MiQPLC/MiQPLC.lib"
+File Type = "Library"
+Disk Date = 3314556974
+In Projects = "1,"
+
+[File 0017]
+Path = "/d/wakom/803m/machine/msie.c"
+File Type = "CSource"
+Disk Date = 3306448800
+In Projects = "1,"
+Window Top = 48
+Window Left = 18
+Source Window State = "1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,251,690,0,0,"
+
+[File 0018]
+Path = "/d/wakom/803m/machine/recipe_panel.c"
+File Type = "CSource"
+Disk Date = 3540174532
+In Projects = "1,"
+Window Top = 123
+Window Left = 66
+Source Window State = "1,32,32,32,9,16,16,0,0,0,0,913,0,918,55,0,1770,0,1800,38,427,690,1,0,"
+
+[File 0019]
+Path = "/d/wakom/803m/machine/rkc.c"
+File Type = "CSource"
+Disk Date = 3511933502
+In Projects = "1,"
+Window Top = 117
+Window Left = 54
+Source Window State = "1,300,300,300,8,60,60,0,0,0,0,227,0,0,0,0,287,0,301,61,315,690,1,42,"
+
+[File 0020]
+Path = "/d/wakom/803m/machine/robot.h"
+File Type = "Include"
+Disk Date = 3560462003
+In Projects = "1,"
+Window Top = 33
+Window Left = 10
+Source Window State = "1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,30,75,275,521,1,0,"
+
+[File 0021]
+Path = "/d/wakom/803m/machine/set_panel.c"
+File Type = "CSource"
+Disk Date = 3503804941
+In Projects = "1,"
+Window Top = 186
+Window Left = 90
+Source Window State = "1,216,216,216,26,32,32,0,0,0,0,3,0,3,0,0,180,0,197,96,315,690,1,0,"
+
+[File 0022]
+Path = "/d/wakom/803m/machine/tank_panel.c"
+File Type = "CSource"
+Disk Date = 3512444202
+In Projects = "1,"
+Window Top = 71
+Window Left = 30
+Source Window State = "1,457,457,457,113,115,115,0,0,0,0,8,0,0,0,0,676,4,687,40,299,690,1,43,"
+
+[File 0023]
+Path = "/d/wakom/803m/machine/type.h"
+File Type = "Include"
+Disk Date = 3559161279
+In Projects = "1,"
+Window Top = 31
+Window Left = 6
+Window Z-Order = 4
+Source Window State = "1,650,650,650,4,11,11,0,3,99,0,39,0,0,0,17,640,0,650,4,235,634,1,0,"
+
+[File 0024]
+Path = "/d/wakom/803m/machine/user.c"
+File Type = "CSource"
+Disk Date = 3559116098
+In Projects = "1,"
+Window Top = 163
+Window Left = 78
+Source Window State = "1,51,51,51,21,31,31,0,0,0,0,2,0,2,0,0,46,0,59,75,347,690,1,0,"
+
+[Build Options 0001]
+Generate Browse Info = True
+Enable Uninitialized Locals Runtime Warning = True
+Execution Trace = "Disabled"
+Debugging Level = "Standard"
+Break On Library Errors = True
+Break On First Chance Exceptions = False
+Execution Target Address = "Local desktop computer"
+Execution Target Port = 0
+Execution Target Type = 0
+
+[SCC Options 0001]
+Use global settings = True
+SCC Provider = ""
+SCC Project = ""
+Local Path = ""
+Auxiliary Path = ""
+Perform Same Action For .h File As For .uir File = "Ask"
+Perform Same Action For .cds File As For .prj File = "Ask"
+Username = ""
+Comment = ""
+Use Default Username = False
+Use Default Comment = False
+Suppress CVI Error Messages = False
+Always show confirmation dialog = True
+
+[DLL Debugging Support 0001]
+External Process Path = ""
+
+[Command Line Args 0001]
+Command Line Args = ""
+Working Directory = ""
+
+[Watch Point 1]
+Watch Expression = "RB"
+Update Display Continuously = True
+Break When Value Changes = False
+Scope = "Global To File"
+File = "robot.c"
+DllName = "d:\\wft\\mbin\\FTB25.exe"
+
+[Watch Point 2]
+Watch Expression = "sys->tk[tid].autoMakeStep"
+Update Display Continuously = True
+Break When Value Changes = False
+Scope = "Local"
+File = "machine.c"
+Function = "AutoMake"
+DllName = "d:\\wft\\mbin\\FTB25.exe"
+
+[Watch Point 3]
+Watch Expression = "sys->tk"
+Update Display Continuously = True
+Break When Value Changes = False
+Scope = "Local"
+File = "plc-bak.c"
+Function = "CheckHandshake"
+DllName = "d:\\wft\\mbin\\FTB25.exe"
+

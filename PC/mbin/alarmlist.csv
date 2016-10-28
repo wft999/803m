@@ -1,0 +1,600 @@
+PC 斷線
+Recovery Started 
+
+
+面板急停動作鈕中
+ULD急停鈕鈕動作中
+
+
+Robot急停中
+系統緊急停止(全停)
+RB1 Chuck lock動作異常
+RB2 Chuck lock動作異常
+RB3 Chuck lock動作異常
+
+RB1 Chuck unlock動作異常
+RB2 Chuck unlock動作異常
+RB3 Chuck unlock動作異常
+
+前段漏液(X2D)
+前段漏液(X2E)
+前段漏液(X2F)
+PLC 電池異常
+RB1 X軸SERVO #1 電池異常
+RB1 Z軸SERVO #2 電池異常
+RB2 X軸SERVO #2 電池異常
+RB2 Z軸SERVO #3 電池異常
+RB3 X軸SERVO #2 電池異常
+RB3 Z軸SERVO #3 電池異常
+
+
+AK伺服驅動器電池異常
+
+前段 Exhaust 1  (X31)異常
+前段 Exhaust 2  (X32) 異常
+前段 Exhaust 3  (X33) 異常
+前段 Exhaust 4 (X34) 異常
+前段 Exhaust 5  (X35) 異常
+後段 Exhaust 6   (X609)異常
+後段 Exhaust 7   (X60A)異常
+後段 Exhaust 8   (X60B)異常
+後段 Exhaust 9   (X60C)異常
+後段 Exhaust 10   (X60D)異常
+後段 Exhaust 11   (X60E)異常
+
+
+"DRY 差壓計異常,停止加熱"
+
+
+Preheat.tank1 漏液
+Preheat.tank2 漏液
+KOH BUFFER TANK漏液
+前段漏液(X2C)
+後段漏液(X600~606)
+VMB箱漏液(X607)
+DIW 廢液排TANK泵浦過載
+TEX 廢液排TANK泵浦過載
+HF 廢液排TANK泵浦過載
+DIW 廢液TANK溢流
+TEX 廢液TANK溢流
+DISION TANK溢流
+DIW 廢液排TANK漏液
+TEX 廢液排TANK泵浦漏液
+HF 廢液排TANK泵浦漏液
+
+GPM RDY OFF
+GPM 傳送逾時
+
+廠務端CDA前段訊號異常
+廠務端CDA中段訊號異常
+廠務端CDA後段訊號異常
+廠務端DIW 流量過低
+
+廠務HF供酸訊號異常
+廠務HCL供酸訊號異常
+廠務KOH供酸訊號異常
+廠務IPA供酸訊號異常
+廠務H2O2供酸訊號異常
+廠務NH4OH供酸訊號異常
+
+
+SC-1 超音波 異常
+配槽進行中 Preheat. 1循環泵未起動
+配槽進行中 Preheat. 2循環泵未起動
+SC1上槽液位不足
+TEX1上槽液位不足
+TEX2上槽液位不足
+TEX3上槽液位不足
+TEX4上槽液位不足
+
+
+
+
+HF TANK 液位不足
+
+
+
+TEXA(內循環)循環泵異常
+TEX1 循環泵異常
+TEX2 循環泵異常
+TEXB(內循環)循環泵異常
+TEX3  循環泵異常
+TEX4  循環泵異常
+HDIW7 循環泵異常
+HDIW8 循環泵異常
+DRY1  鼓風機異常
+
+
+
+Pre Heater 1循環泵異常
+Pre Heater 2 循環泵異常
+KOH BUFFER TANK 馬達異常
+
+Preheat.1 TANK低液位異常
+Preheat.2 TANK低液位異常
+SC1  低液位異常
+TEXA低液位異常
+TEXB低液位異常
+HDIW7 低液位異常
+HDIW8 低液位異常
+inline液位SENSOR異常
+SC1  液位SENSOR異常
+TEXA液位SENSOR異常
+TEXB液位SENSOR異常
+HF TANK液位SENSOR異常
+添加劑TANK低液位
+
+
+
+DRI1加熱器異常
+
+
+
+DRI1超溫
+
+
+
+DRI1溫度過低
+
+
+
+
+"IPA Pump cart 需換桶,請通知設備工程師"
+"H2O2 Pump cart 需換桶,請通知設備工程師"
+"NH4OH Pump cart 需換桶,請通知設備工程師"
+Preheat.1 超溫
+Preheat.2 超溫
+SC1 超溫
+HDIW1超溫
+TEXA超溫
+HDIW2超溫
+TEXB超溫
+HDIW3超溫
+HDIW4超溫
+HDIW5超溫
+HDIW6超溫
+HDIW7超溫
+HDIW8超溫
+AK超溫
+INLINE HEATER超溫
+
+Preheat.1 溫度過低
+Preheat.2 溫度過低
+SC1 溫度過低
+HDIW1溫度過低
+TEXA溫度過低
+HDIW2溫度過低
+TEXB溫度過低
+HDIW3溫度過低
+HDIW4溫度過低
+HDIW5溫度過低
+HDIW6溫度過低
+HDIW7溫度過低
+HDIW8溫度過低
+AK溫度過低
+INLINE HEATER溫度過低
+
+Preheat.1 加熱器異常
+Preheat.2 加熱器異常
+SC1加熱器異常
+HDIW1加熱器異常
+TEXA加熱器異常
+HDIW2加熱器異常
+TEXB加熱器異常
+HDIW3加熱器異常
+HDIW4加熱器異常
+HDIW5加熱器異常
+HDIW6加熱器異常
+HDIW7加熱器異常
+HDIW8加熱器異常
+INLINE加熱器異常
+AK加熱器異常
+
+LD 上蓋開啟逾時
+SC1 上蓋開啟逾時
+TEX1 上蓋開啟逾時
+TEX2上蓋開啟逾時
+TEX3上蓋開啟逾時
+TEX4上蓋開啟逾時
+
+
+HF上蓋開啟逾時
+HDIW7上蓋開啟逾時
+HDIW8上蓋開啟逾時
+DRY上蓋開啟逾時
+
+DRY自動門開啟逾時
+LD 自動門開啟逾時
+
+LD 上蓋關閉逾時
+SC1 上蓋關閉逾時
+TEX1 上蓋關閉逾時
+TEX2上蓋關閉逾時
+TEX3上蓋關閉逾時
+TEX4上蓋關閉逾時
+
+
+DISION上蓋關閉逾時
+HDIW7上蓋關閉逾時
+HDIW8上蓋關閉逾時
+DRY上蓋關閉逾時
+
+DRY自動門關閉逾時
+LD 自動門關閉逾時
+
+帳料異常索引值
+LD 帳料異常
+SW1-1 帳料異常
+SW1-2 帳料異常
+HDIW1-1帳料異常
+HDIW1-2帳料異常
+TEX1-1 帳料異常
+TEX1-2 帳料異常
+TEX2-1 帳料異常
+TEX2-2 帳料異常
+HDIW2 帳料異常
+TEX3-1 帳料異常
+TEX3-2 帳料異常
+TEX4-1 帳料異常
+TEX4-2帳料異常
+HDIW3帳料異常
+HDIW4-1帳料異常
+HDIW4-2帳料異常
+HF 1-1帳料異常
+HF 1-2帳料異常
+HDIW5帳料異常
+HDIW6-1帳料異常
+HDIW6-2帳料異常
+HDIW7帳料異常
+HDIW8帳料異常
+AK帳料異常
+DRY帳料異常
+
+
+
+
+
+LD 有料禁止手動橫移
+入料機安全光閘異常
+入料機晶舟方向異常
+入料機安全光閘異常
+入料機carrier sensor異常
+LD初始化逾時
+LD sensor X59 X5A異常(位置2)
+LD sensor X5B X5C異常(位置3)
+入料機上升氣缸1異常
+入料機上升氣缸2異常
+入料機下降氣缸1異常
+入料機下降氣缸2異常
+入料機橫移氣缸入料方向異常
+入料機橫移氣缸歸位方向異常
+上壓桿SENSOR異常
+
+SAW1-1製程逾時
+SAW1-2製程逾時
+TEX1-1製程逾時
+TEX1-2製程逾時
+TEX2-1製程逾時
+TEX2-2製程逾時
+TEX3-1製程逾時
+TEX3-2製程逾時
+TEX4-1製程逾時
+TEX4-2製程逾時
+HF 1-1製程逾時
+HF 1-2製程逾時
+
+
+
+
+SC1 H2O2 Dosing 逾時
+SC1 NH4OH Dosing 逾時
+TEXA IPA Dosing 逾時
+TEXA KOH Dosing 逾時
+TEXA DIW Dosing 逾時
+TEXB IPA Dosing 逾時
+TEXB KOH Dosing 逾時
+TEXB DIW Dosing 逾時
+ HCL Dosing 逾時
+ HF Dosing 逾時
+
+
+
+
+
+
+SC1:H2O2 Dosing SENSOR異常
+SC1:NH4OH Dosing SENSOR異常
+TEXA IPA Dosing SENSOR異常
+TEXA KOH Dosing SENSOR異常
+TEXA DIW Dosing SENSOR異常
+TEXB IPA Dosing SENSOR異常
+TEXB KOH Dosing SENSOR異常
+TEXB DIW Dosing SENSOR異常
+HCL Dosing SENSOR異常
+HF Dosing SENSOR異常
+
+
+
+
+
+
+RB1 原點復歸逾時
+RB1移載逾時
+RB1取料逾時
+RB1置料逾時
+RB1 夾爪吹乾逾時
+RB2 原點復歸逾時
+RB2移載逾時
+RB2取料逾時
+RB2置料逾時
+RB3 原點復歸逾時
+RB3移載逾時
+RB3取料逾時
+RB3置料逾時
+
+
+
+RB1-正極限(X)
+RB1-負極限(X)
+RB1-正極限(Z)
+RB1-負極限(Z)
+RB2-正極限(X)
+RB2-負極限(X)
+RB2-正極限(Z)
+RB2-負極限(Z)
+RB3-正極限(X)
+RB3-負極限(X)
+RB3-正極限(Z)
+RB3-負極限(Z)
+AKF-正極限(Z)
+AKF-負極限(Z)
+
+
+TEX1循環量異常
+TEX2循環量異常
+TEX3循環量異常
+TEX4循環量異常
+SC1 DIW流量計異常
+SC1 NH4OH/KOH流量計異常
+SC1 H2O2流量計異常
+TEXA DIW流量計異常
+TEXA KOH流量計異常
+TEXA IPA流量計異常
+TEXA PARTAIL DRAIN流量計異常
+TEXB DIW流量計異常
+TEXB KOH流量計異常
+TEXB IPA流量計異常
+TEXB PARTAIL DRAIN流量計異常
+HF DIW流量計異常
+前段正面門檢 (X37)
+前段正面門檢 (X38)
+前段正面門檢(X39)
+前段正面門檢 (X3A)
+前段背面門檢 (X3C)
+前段背面門檢 (X3D)
+前段背面門檢 (X3E)
+前段背面門檢(X3F)
+後段正面門檢(X611)
+後段正面門檢 (X612)
+後段正面門檢 (X613)
+後段正面門檢(X614)
+後段背面門檢(X616)
+後段背面門檢(X617)
+後段背面門檢(X618)
+後段背面門檢(X619)
+後段背面門檢(X61A)
+
+
+LD 上蓋馬達異常
+SC1 上蓋馬達異常
+TEX1 上蓋馬達異常
+TEX2上蓋馬達異常
+TEX3上蓋馬達異常
+TEX4上蓋馬達異常
+DISION上蓋馬達異常
+HDIW7上蓋馬達異常
+HDIW8上蓋馬達異常
+
+
+
+
+"HDIW1液位不足,加熱停止"
+"HDIW2液位不足,加熱停止"
+"HDIW3液位不足,加熱停止"
+"HDIW4液位不足,加熱停止"
+"HDIW5液位不足,加熱停止"
+"HDIW6液位不足,加熱停止"
+HDIW7上槽液位不足
+HDIW8上槽液位不足
+HDIW1 高液位SENSOR異常
+HDIW2 高液位SENSOR異常
+HDIW3 高液位SENSOR異常
+HDIW4 高液位SENSOR異常
+HDIW5 高液位SENSOR異常
+HDIW6 高液位SENSOR異常
+
+
+RB1~2 太近急停
+RB2~3 太近急停
+
+
+"RB1-X ,請做原點復歸"
+"RB1-Z ,請做原點復歸"
+"RB2-X ,請做原點復歸"
+"RB2-Z ,請做原點復歸"
+"RB3-X ,請做原點復歸"
+"RB3-Z ,請做原點復歸"
+"RB1-X ,過載"
+"RB1-Z ,過載"
+"RB2-X ,過載"
+"RB2-Z ,過載"
+"RB3-X ,過載"
+"RB3-Z ,過載"
+RB1-PC位置命令錯誤
+RB1-PC動作命令錯誤
+RB2-PC位置命令錯誤
+RB2-PC動作命令錯誤
+RB3-PC位置命令錯誤
+RB3-PC動作命令錯誤
+"RB1行程干涉,請結束目前動作"
+"RB2行程干涉,請結束目前動作"
+"RB3行程干涉,請結束目前動作"
+"RB1-有Carrier,請手動置料或移除"
+"RB2-有Carrier,請手動置料或移除"
+"RB3-有Carrier,請手動置料或移除"
+Carrier檢查bypass模式
+
+
+ULD傳送逾時
+SC當槽中
+TEXA當槽中
+TEXB當槽中
+HF當槽中
+SC1配槽中
+TEXA配槽中
+TEXB配槽中
+HF配槽中
+"LD手動模式中,RB禁止操作"
+"AK手動模式中,RB禁止操作"
+"CV手動模式中,RB禁止操作"
+
+
+
+
+
+TEXA PARTIAL DRAIN 逾時
+TEXB PARTIAL DRAIN 逾時
+RB取置料AKF上定位點OFF
+AKF- ORG未完成
+AKF- QD75 Axis3 ERR.
+AKF-上定位Sensor OFF
+RB1暫停待起動中
+RB2暫停待起動中
+RB3暫停待起動中
+SC1配槽暫停中
+TEXA配槽暫停中
+TEXB配槽暫停中
+HF配槽暫停中
+ Power Off 請檢查緊急停止鈕
+"TEACH MODE中,RB 禁止操作"
+
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+Watch Dog
+PLC打開失敗
+RKC打開失敗
+Tag1讀取失敗
+Tag2讀取失敗
+SC Run數到達，請重新配槽
+TEXA Run數到達，請重新配槽
+TEXB Run數到達，請重新配槽
+HF Run數到達，請重新配槽
+SC 時間到達，請重新配槽
+TEXA 時間到達，請重新配槽
+TEXB 時間到達，請重新配槽
+HF 時間到達，請重新配槽
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
+spare
