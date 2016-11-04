@@ -20,9 +20,11 @@
 
 #include "cvidef.h"
 
-#define MAX_HANDSHAKE_LEN 100
+
 //==============================================================================
 // Constants
+#define MAX PLC_ERR_COUNT 5 
+		
 //#define SIMULATE
 #define ROBOT_NUM 3
 #define PRO_TANK_NUM 17

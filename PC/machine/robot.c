@@ -67,11 +67,12 @@
 
 //==============================================================================
 // Static global variables
+static int firstTid;
 static int curRobotId;
-static RTANK_ID curRid;
+static RTANK_ID curTid;
 static  int on_bitmap_id;
 static  int off_bitmap_id;
-static int cur_type=-1;
+static int cur_type;
 //==============================================================================
 // Static functions
 
@@ -79,11 +80,19 @@ static int cur_type=-1;
 // Global variables
 extern struct Q02hReg Q2h;
 
+//robot position
+double				xLock;
+double				xUnlock;		
+double				zDown;	
+	
+double				xLock2;
+double				xUnlock2;		
+double				zDown2;	
 //==============================================================================
 // Global functions
 int readTankPos(int tid);
-void writeHandshake(int len);
-int readRobotStatus(int rid,unsigned int* data);
+void writeCommand(int len);
+int readRobotStatus(int rid);
 
 int CVICALLBACK SavePosition (int panel, int control, int event,
 		void *callbackData, int eventData1, int eventData2)
@@ -120,72 +129,53 @@ int CVICALLBACK SavePosition (int panel, int control, int event,
 				{
 					GetCtrlVal(panel, PANEL_RB_X_UNLOCK, &tmpx);
 					cnv._I32 = tmpx;
-					if(curRid <= sys->rb[curRobotId].lastRid)//tank pos
+
+					if(curTid == firstTid && curRobotId > 0 )//overlap tank  pos
 					{
-						if(curRid == sys->rb[curRobotId].firstRid && curRobotId > 0 )//overlap tank  pos
-						{
-							//sys->rtk[curRid].xUnlock2 = tmpx * 10000;
-							Q2h.wB[0]=CMD_SAVE_RB_POS_PC;
-							Q2h.wB[1]=curRobotId;
-							Q2h.wB[2]=curRid;
-							Q2h.wB[3]=key_save_pc_x_unlock2;
-							Q2h.wB[4]=cnv._I16[0];
-							Q2h.wB[5]=cnv._I16[1]; 
+						Q2h.cmdWrite[0]=CMD_SAVE_RB_POS_PC;
+						Q2h.cmdWrite[1]=curRobotId;
+						Q2h.cmdWrite[2]=curTid;
+						Q2h.cmdWrite[3]=key_save_pc_x_unlock2;
+						Q2h.cmdWrite[4]=cnv._I16[0];
+						Q2h.cmdWrite[5]=cnv._I16[1]; 
 				
-							writeHandshake(6);
-						}
-						else //normal tank pos
-						{
-							//sys->rtk[curRid].xUnlock = tmpx * 10000;
-							Q2h.wB[0]=CMD_SAVE_RB_POS_PC;
-							Q2h.wB[1]=curRobotId;
-							Q2h.wB[2]=curRid;
-							Q2h.wB[3]=key_save_pc_x_unlock;
-							Q2h.wB[4]=cnv._I16[0];
-							Q2h.wB[5]=cnv._I16[1]; 
-				
-							writeHandshake(6);
-						}	
+						writeCommand(6);
 					}
-					else //clean pos
+					else //normal tank pos
 					{
-						//sys->rb[curRobotId].cleanPosH = tmpx * 10000;
-						//sys->rb[curRobotId].cleanPosV = tmpy * 10000;
+						Q2h.cmdWrite[0]=CMD_SAVE_RB_POS_PC;
+						Q2h.cmdWrite[1]=curRobotId;
+						Q2h.cmdWrite[2]=curTid;
+						Q2h.cmdWrite[3]=key_save_pc_x_unlock;
+						Q2h.cmdWrite[4]=cnv._I16[0];
+						Q2h.cmdWrite[5]=cnv._I16[1]; 
+				
+						writeCommand(6);
 					}	
 				}
 				else//get plc data
 				{
-					if(curRid <= sys->rb[curRobotId].lastRid)//tank pos
+					if(curTid == firstTid && curRobotId > 0 )//overlap tank  pos
 					{
-						if(curRid == sys->rb[curRobotId].firstRid && curRobotId > 0 )//overlap tank  pos
-						{
-							//sys->rtk[curRid].xUnlock2 = tmpx * 10000; 
-							Q2h.wB[0]=CMD_SAVE_RB_POS;
-							Q2h.wB[1]=curRobotId;
-							Q2h.wB[2]=curRid;
-							Q2h.wB[3]=key_save_x_unlock2;
+						Q2h.cmdWrite[0]=CMD_SAVE_RB_POS;
+						Q2h.cmdWrite[1]=curRobotId;
+						Q2h.cmdWrite[2]=curTid;
+						Q2h.cmdWrite[3]=key_save_x_unlock2;
 				
-							writeHandshake(4);
-						}
-						else //normal tank pos
-						{
-							//sys->rtk[curRid].xUnlock = tmpx * 10000; 
-							Q2h.wB[0]=CMD_SAVE_RB_POS;
-							Q2h.wB[1]=curRobotId;
-							Q2h.wB[2]=curRid;
-							Q2h.wB[3]=key_save_x_unlock;
-				
-							writeHandshake(4);
-						}
+						writeCommand(4);
 					}
-					else//clean pos
+					else //normal tank pos
 					{
-						//sys->rb[curRobotId].cleanPosH = tmpx * 10000; 
-						//sys->rb[curRobotId].cleanPosV = tmpy * 10000;	
+						Q2h.cmdWrite[0]=CMD_SAVE_RB_POS;
+						Q2h.cmdWrite[1]=curRobotId;
+						Q2h.cmdWrite[2]=curTid;
+						Q2h.cmdWrite[3]=key_save_x_unlock;
+				
+						writeCommand(4);
 					}
 				}
 				
-				ActionLog(RB_POS_SAVE_ACT_EVENT,curRobotId,0,curRid,0,0); 
+				ActionLog(RB_POS_SAVE_ACT_EVENT,curRobotId,0,curTid,0,0); 
 			}
 			else if(control == PANEL_RB_SET_X_LOCK)
 			{
@@ -193,79 +183,56 @@ int CVICALLBACK SavePosition (int panel, int control, int event,
 				{
 					GetCtrlVal(panel, PANEL_RB_X_LOCK, &tmpx);
 					cnv._I32 = tmpx;
-					if(curRid <= sys->rb[curRobotId].lastRid)//tank pos
+
+					if(curTid == firstTid && curRobotId > 0 )//overlap tank  pos
 					{
-						if(curRid == sys->rb[curRobotId].firstRid && curRobotId > 0 )//overlap tank  pos
-						{
-							//sys->rtk[curRid].xLock2 = tmpx * 10000;
-							Q2h.wB[0]=CMD_SAVE_RB_POS_PC;
-							Q2h.wB[1]=curRobotId;
-							Q2h.wB[2]=curRid;
-							Q2h.wB[3]=key_save_pc_x_lock;
-							Q2h.wB[4]=cnv._I16[0];
-							Q2h.wB[5]=cnv._I16[1]; 
+						Q2h.cmdWrite[0]=CMD_SAVE_RB_POS_PC;
+						Q2h.cmdWrite[1]=curRobotId;
+						Q2h.cmdWrite[2]=curTid;
+						Q2h.cmdWrite[3]=key_save_pc_x_lock;
+						Q2h.cmdWrite[4]=cnv._I16[0];
+						Q2h.cmdWrite[5]=cnv._I16[1]; 
 				
-							writeHandshake(6);
-
-							
-						}
-						else //normal tank pos
-						{
-							//sys->rtk[curRid].xLock = tmpx * 10000;
-							Q2h.wB[0]=CMD_SAVE_RB_POS_PC;
-							Q2h.wB[1]=curRobotId;
-							Q2h.wB[2]=curRid;
-							Q2h.wB[3]=key_save_x_lock;
-							Q2h.wB[4]=cnv._I16[0];
-							Q2h.wB[5]=cnv._I16[1]; 
-				
-							writeHandshake(6);
-
-						}	
+						writeCommand(6);
 					}
-					else //clean pos
+					else //normal tank pos
 					{
-						//sys->rb[curRobotId].cleanLock = tmpx * 10000;
-						//sys->rb[curRobotId].cleanPosV = tmpy * 10000;
+						Q2h.cmdWrite[0]=CMD_SAVE_RB_POS_PC;
+						Q2h.cmdWrite[1]=curRobotId;
+						Q2h.cmdWrite[2]=curTid;
+						Q2h.cmdWrite[3]=key_save_x_lock;
+						Q2h.cmdWrite[4]=cnv._I16[0];
+						Q2h.cmdWrite[5]=cnv._I16[1]; 
+				
+						writeCommand(6);
 					}	
 				}
 				else//get plc data
 				{
-
-					if(curRid <= sys->rb[curRobotId].lastRid)//tank pos
+					if(curTid == firstTid && curRobotId > 0 )//overlap tank  pos
 					{
-						if(curRid == sys->rb[curRobotId].firstRid && curRobotId > 0 )//overlap tank  pos
-						{
-							//sys->rtk[curRid].xLock2 = tmpx * 10000; 
-							Q2h.wB[0]=CMD_SAVE_RB_POS;
-							Q2h.wB[1]=curRobotId;
-							Q2h.wB[2]=curRid;
-							Q2h.wB[3]=key_save_x_lock2;
+						Q2h.cmdWrite[0]=CMD_SAVE_RB_POS;
+						Q2h.cmdWrite[1]=curRobotId;
+						Q2h.cmdWrite[2]=curTid;
+						Q2h.cmdWrite[3]=key_save_x_lock2;
 				
-							writeHandshake(4);
+						writeCommand(4);
 
-						}
-						else //normal tank pos
-						{
-							//sys->rtk[curRid].xLock = tmpx * 10000;
-							Q2h.wB[0]=CMD_SAVE_RB_POS_PC;
-							Q2h.wB[1]=curRobotId;
-							Q2h.wB[2]=curRid;
-							Q2h.wB[3]=key_save_x_lock;
-				
-							writeHandshake(4);
-
-						}
 					}
-					else//clean pos
+					else //normal tank pos
 					{
-						//sys->rb[curRobotId].cleanLock = tmpx * 10000; 
-						//sys->rb[curRobotId].cleanPosV = tmpy * 10000;
+						Q2h.cmdWrite[0]=CMD_SAVE_RB_POS_PC;
+						Q2h.cmdWrite[1]=curRobotId;
+						Q2h.cmdWrite[2]=curTid;
+						Q2h.cmdWrite[3]=key_save_x_lock;
+				
+						writeCommand(4);
+
 					}
 				}
 				
 				
-				ActionLog(RB_POS_SAVE_ACT_EVENT,curRobotId,1,curRid,0,0); 
+				ActionLog(RB_POS_SAVE_ACT_EVENT,curRobotId,1,curTid,0,0); 
 				
 			}else if(control == PANEL_RB_SET_Z_DOWN)
 			{
@@ -273,75 +240,54 @@ int CVICALLBACK SavePosition (int panel, int control, int event,
 				{
 					GetCtrlVal(panel, PANEL_RB_Z_DOWN, &tmpx);
 					cnv._I32 = tmpx;
-					if(curRid <= sys->rb[curRobotId].lastRid)//tank pos
+
+					if(curTid == firstTid && curRobotId > 0 )//overlap tank  pos
 					{
-						if(curRid == sys->rb[curRobotId].firstRid && curRobotId > 0 )//overlap tank  pos
-						{
-							Q2h.wB[0]=CMD_SAVE_RB_POS_PC;
-							Q2h.wB[1]=curRobotId;
-							Q2h.wB[2]=curRid;
-							Q2h.wB[3]=key_save_pc_z_bottom2;
-							Q2h.wB[4]=cnv._I16[0];
-							Q2h.wB[5]=cnv._I16[1]; 
+						Q2h.cmdWrite[0]=CMD_SAVE_RB_POS_PC;
+						Q2h.cmdWrite[1]=curRobotId;
+						Q2h.cmdWrite[2]=curTid;
+						Q2h.cmdWrite[3]=key_save_pc_z_bottom2;
+						Q2h.cmdWrite[4]=cnv._I16[0];
+						Q2h.cmdWrite[5]=cnv._I16[1]; 
 				
-							writeHandshake(6);
-
-							
-						}
-						else //normal tank pos
-						{
-							Q2h.wB[0]=CMD_SAVE_RB_POS_PC;
-							Q2h.wB[1]=curRobotId;
-							Q2h.wB[2]=curRid;
-							Q2h.wB[3]=key_save_pc_z_bottom;
-							Q2h.wB[4]=cnv._I16[0];
-							Q2h.wB[5]=cnv._I16[1]; 
-				
-							writeHandshake(6);
-
-						}	
+						writeCommand(6);
 					}
-					else //clean pos
+					else //normal tank pos
 					{
-						//sys->rb[curRobotId].cleanLock = tmpx * 10000;
-						//sys->rb[curRobotId].cleanPosV = tmpy * 10000;
+						Q2h.cmdWrite[0]=CMD_SAVE_RB_POS_PC;
+						Q2h.cmdWrite[1]=curRobotId;
+						Q2h.cmdWrite[2]=curTid;
+						Q2h.cmdWrite[3]=key_save_pc_z_bottom;
+						Q2h.cmdWrite[4]=cnv._I16[0];
+						Q2h.cmdWrite[5]=cnv._I16[1]; 
+				
+						writeCommand(6);
 					}	
 				}
 				else//get plc data
 				{
-
-					if(curRid <= sys->rb[curRobotId].lastRid)//tank pos
+					if(curTid == firstTid && curRobotId > 0 )//overlap tank  pos
 					{
-						if(curRid == sys->rb[curRobotId].firstRid && curRobotId > 0 )//overlap tank  pos
-						{
-							Q2h.wB[0]=CMD_SAVE_RB_POS;
-							Q2h.wB[1]=curRobotId;
-							Q2h.wB[2]=curRid;
-							Q2h.wB[3]=key_save_z_bottom2;
+						Q2h.cmdWrite[0]=CMD_SAVE_RB_POS;
+						Q2h.cmdWrite[1]=curRobotId;
+						Q2h.cmdWrite[2]=curTid;
+						Q2h.cmdWrite[3]=key_save_z_bottom2;
 				
-							writeHandshake(4);
-
-						}
-						else //normal tank pos
-						{
-							Q2h.wB[0]=CMD_SAVE_RB_POS;
-							Q2h.wB[1]=curRobotId;
-							Q2h.wB[2]=curRid;
-							Q2h.wB[3]=key_save_z_bottom;
-				
-							writeHandshake(4);
-
-						}
+						writeCommand(4);
 					}
-					else//clean pos
+					else //normal tank pos
 					{
-						//sys->rb[curRobotId].cleanLock = tmpx * 10000; 
-						//sys->rb[curRobotId].cleanPosV = tmpy * 10000;
+						Q2h.cmdWrite[0]=CMD_SAVE_RB_POS;
+						Q2h.cmdWrite[1]=curRobotId;
+						Q2h.cmdWrite[2]=curTid;
+						Q2h.cmdWrite[3]=key_save_z_bottom;
+				
+						writeCommand(4);
 					}
 				}
 				
 				
-				ActionLog(RB_POS_SAVE_ACT_EVENT,curRobotId,1,curRid,0,0); 
+				ActionLog(RB_POS_SAVE_ACT_EVENT,curRobotId,1,curTid,0,0); 
 				
 			}
 
@@ -400,53 +346,53 @@ int CVICALLBACK ManualInput (int panel, int control, int event,
 				GetCtrlVal (panel, control, &state); 	  
 				if(state)
 				{
-					Q2h.wB[0]=CMD_ROBOT;
-					Q2h.wB[1]=curRobotId;
-					Q2h.wB[2]=key_x_jog_high_speed;
-					writeHandshake(3);	
+					Q2h.cmdWrite[0]=CMD_ROBOT;
+					Q2h.cmdWrite[1]=curRobotId;
+					Q2h.cmdWrite[2]=key_x_jog_high_speed;
+					writeCommand(3);	
 				}
 				else
 				{
-				   	Q2h.wB[0]=CMD_ROBOT;
-					Q2h.wB[1]=curRobotId;
-					Q2h.wB[2]=key_x_jog_low_speed;
-					writeHandshake(3);	
+				   	Q2h.cmdWrite[0]=CMD_ROBOT;
+					Q2h.cmdWrite[1]=curRobotId;
+					Q2h.cmdWrite[2]=key_x_jog_low_speed;
+					writeCommand(3);	
 				}
 			}else if(control == PANEL_RB_CHECKBOX_Z_JOG_SPEED ){
 				int state;
 				GetCtrlVal (panel, control, &state); 	  
 				if(state)
 				{
-					Q2h.wB[0]=CMD_ROBOT;
-					Q2h.wB[1]=curRobotId;
-					Q2h.wB[2]=key_z_jog_high_speed;
-					writeHandshake(3);	
+					Q2h.cmdWrite[0]=CMD_ROBOT;
+					Q2h.cmdWrite[1]=curRobotId;
+					Q2h.cmdWrite[2]=key_z_jog_high_speed;
+					writeCommand(3);	
 				}
 				else
 				{
-				   	Q2h.wB[0]=CMD_ROBOT;
-					Q2h.wB[1]=curRobotId;
-					Q2h.wB[2]=key_z_jog_low_speed;
-					writeHandshake(3);	
+				   	Q2h.cmdWrite[0]=CMD_ROBOT;
+					Q2h.cmdWrite[1]=curRobotId;
+					Q2h.cmdWrite[2]=key_z_jog_low_speed;
+					writeCommand(3);	
 				}
 			}else if(control == PANEL_RB_CHECKBOX_TEACH_BOX ){
 				int state;
 				GetCtrlVal (panel, control, &state); 	  
 				if(state)
 				{
-					Q2h.wB[0]=CMD_ROBOT;
-					Q2h.wB[1]=curRobotId;
-					Q2h.wB[2]=key_teach_enable;
-					writeHandshake(3);	
+					Q2h.cmdWrite[0]=CMD_ROBOT;
+					Q2h.cmdWrite[1]=curRobotId;
+					Q2h.cmdWrite[2]=key_teach_enable;
+					writeCommand(3);	
 					
 					ActionLog(RB_TEACH_ACT_EVENT,curRobotId,1,0,0,0);
 				}
 				else
 				{
-				   	Q2h.wB[0]=CMD_ROBOT;
-					Q2h.wB[1]=curRobotId;
-					Q2h.wB[2]=key_teach_disable;
-					writeHandshake(3);
+				   	Q2h.cmdWrite[0]=CMD_ROBOT;
+					Q2h.cmdWrite[1]=curRobotId;
+					Q2h.cmdWrite[2]=key_teach_disable;
+					writeCommand(3);
 					
 					ActionLog(RB_TEACH_ACT_EVENT,curRobotId,0,0,0,0);
 						
@@ -470,53 +416,53 @@ int CVICALLBACK RobotManuAdj (int panel, int control, int event,
 			
 			if(control == PANEL_RB_JOG_UP)
 			{
-				Q2h.wB[0]=CMD_ROBOT;
-				Q2h.wB[1]=curRobotId;
-				Q2h.wB[2]=key_z_jog_reverse;
+				Q2h.cmdWrite[0]=CMD_ROBOT;
+				Q2h.cmdWrite[1]=curRobotId;
+				Q2h.cmdWrite[2]=key_z_jog_reverse;
 				
-				writeHandshake(3);
+				writeCommand(3);
 				
 				ActionLog(RB_UP_ACT_EVENT,curRobotId,0,0,0,0); 
 			}
 			else if(control == PANEL_RB_JOG_DOWN)
 			{
-				Q2h.wB[0]=CMD_ROBOT;
-				Q2h.wB[1]=curRobotId;
-				Q2h.wB[2]=key_z_jog_forward;
+				Q2h.cmdWrite[0]=CMD_ROBOT;
+				Q2h.cmdWrite[1]=curRobotId;
+				Q2h.cmdWrite[2]=key_z_jog_forward;
 				
-				writeHandshake(3);
+				writeCommand(3);
 				
 				ActionLog(RB_DOWN_ACT_EVENT,curRobotId,0,0,0,0);
 			}
 			////////////////////////////////////////////
 			else if(control == PANEL_RB_JOG_LEFT)
 			{
-				Q2h.wB[0]=CMD_ROBOT;
-				Q2h.wB[1]=curRobotId;
-				Q2h.wB[2]=key_x_jog_forward;
+				Q2h.cmdWrite[0]=CMD_ROBOT;
+				Q2h.cmdWrite[1]=curRobotId;
+				Q2h.cmdWrite[2]=key_x_jog_forward;
 				
-				writeHandshake(3);
+				writeCommand(3);
 				
 				ActionLog(RB_LEFT_ACT_EVENT,curRobotId,0,0,0,0);
 			}
 			else if(control == PANEL_RB_JOG_RIGHT)
 			{
-				Q2h.wB[0]=CMD_ROBOT;
-				Q2h.wB[1]=curRobotId;
-				Q2h.wB[2]=key_x_jog_reverse;
+				Q2h.cmdWrite[0]=CMD_ROBOT;
+				Q2h.cmdWrite[1]=curRobotId;
+				Q2h.cmdWrite[2]=key_x_jog_reverse;
 				
-				writeHandshake(3);
+				writeCommand(3);
 				
 				ActionLog(RB_RIGHT_ACT_EVENT,curRobotId,0,0,0,0);
 			}
 			break;
 		case EVENT_LEFT_CLICK_UP: 
 			
-			Q2h.wB[0]=CMD_ROBOT;
-			Q2h.wB[1]=curRobotId;
-			Q2h.wB[2]=key_jog_stop;
+			Q2h.cmdWrite[0]=CMD_ROBOT;
+			Q2h.cmdWrite[1]=curRobotId;
+			Q2h.cmdWrite[2]=key_jog_stop;
 				
-			writeHandshake(3);
+			writeCommand(3);
 
 			break;
 	}
@@ -533,23 +479,46 @@ int CVICALLBACK tankChange (int panel, int control, int event,
 		case EVENT_VAL_CHANGED:
 			int tid;
 			GetCtrlVal(panel, control, &tid);
-			curRid = tid;
-			readTankPos(curRid); 
-			if(tid == sys->rb[curRobotId].firstRid && curRobotId > RB01){
-				SetCtrlVal(panel, PANEL_RB_X_UNLOCK, sys->rtk[tid].xUnlock2 / 10000);
-				SetCtrlVal(panel, PANEL_RB_X_LOCK, sys->rtk[tid].xLock2 / 10000);
-				SetCtrlVal(panel, PANEL_RB_Z_DOWN, sys->rtk[tid].zDown2 / 10000);
-			}
-			else if(tid > sys->rb[curRobotId].lastRid){
-				//SetCtrlVal(panel, PANEL_RB_X_UNLOCK, sys->rb[curRobotId].cleanPosH / 10000);
-				//SetCtrlVal(panel, PANEL_RB_X_LOCK, sys->rb[curRobotId].cleanLock / 10000);
-				//SetCtrlVal(panel, PANEL_RB_LOCKY, sys->rb[curRobotId].cleanPosV / 10000);
-				
+			curTid = tid;
+			
+			readTankPos(curTid);
+	
+			int j = 0;
+			union DatCnv cnv;  
+	
+			cnv._I16[0] = Q2h.tkPos[j++]; 
+			cnv._I16[1] = Q2h.tkPos[j++];
+			xLock = cnv._I32;
+
+			cnv._I16[0] = Q2h.tkPos[j++]; 
+			cnv._I16[1] = Q2h.tkPos[j++];
+			xUnlock = cnv._I32;
+		
+			cnv._I16[0] = Q2h.tkPos[j++]; 
+			cnv._I16[1] = Q2h.tkPos[j++];
+			zDown = cnv._I32;
+	
+			cnv._I16[0] = Q2h.tkPos[j++]; 
+			cnv._I16[1] = Q2h.tkPos[j++];
+			xLock2 = cnv._I32;
+
+			cnv._I16[0] = Q2h.tkPos[j++]; 
+			cnv._I16[1] = Q2h.tkPos[j++];
+			xUnlock2 = cnv._I32;
+		
+			cnv._I16[0] = Q2h.tkPos[j++]; 
+			cnv._I16[1] = Q2h.tkPos[j++];
+			zDown2 = cnv._I32;
+	
+			if(tid == firstTid && curRobotId > RB01){
+				SetCtrlVal(panel, PANEL_RB_X_UNLOCK, xUnlock2 / 10000);
+				SetCtrlVal(panel, PANEL_RB_X_LOCK, xLock2 / 10000);
+				SetCtrlVal(panel, PANEL_RB_Z_DOWN, zDown2 / 10000);
 			}
 			else{
-				SetCtrlVal(panel, PANEL_RB_X_UNLOCK, sys->rtk[tid].xUnlock / 10000);
-				SetCtrlVal(panel, PANEL_RB_X_LOCK, sys->rtk[tid].xLock / 10000);
-				SetCtrlVal(panel, PANEL_RB_Z_DOWN, sys->rtk[tid].zDown / 10000);
+				SetCtrlVal(panel, PANEL_RB_X_UNLOCK, xUnlock / 10000);
+				SetCtrlVal(panel, PANEL_RB_X_LOCK, xLock / 10000);
+				SetCtrlVal(panel, PANEL_RB_Z_DOWN, zDown / 10000);
 			}
 			
 			SetCtrlAttribute(panel,PANEL_RB_CMD_PUT, ATTR_VISIBLE, 1);
@@ -557,16 +526,6 @@ int CVICALLBACK tankChange (int panel, int control, int event,
 			SetCtrlAttribute(panel,PANEL_RB_CMD_MOVE_LOCK, ATTR_VISIBLE, 1);
 			SetCtrlAttribute(panel,PANEL_RB_CMD_MOVE_UNLOCK, ATTR_VISIBLE, 1);
 				
-			if(tid == sys->rb[curRobotId].firstRid)
-				SetCtrlAttribute(panel,PANEL_RB_CMD_PUT, ATTR_VISIBLE, 0);
-			else if(tid == sys->rb[curRobotId].lastRid)
-				SetCtrlAttribute(panel,PANEL_RB_CMD_TAKE, ATTR_VISIBLE, 0);
-			else if(tid > sys->rb[curRobotId].lastRid){
-				SetCtrlAttribute(panel,PANEL_RB_CMD_PUT, ATTR_VISIBLE, 0);
-				SetCtrlAttribute(panel,PANEL_RB_CMD_TAKE, ATTR_VISIBLE, 0);
-				SetCtrlAttribute(panel,PANEL_RB_CMD_MOVE_LOCK, ATTR_VISIBLE, 0);
-				SetCtrlAttribute(panel,PANEL_RB_CMD_MOVE_UNLOCK, ATTR_VISIBLE, 0);
-			}
 			
 			break;
 	}
@@ -588,87 +547,87 @@ int CVICALLBACK RobotCommand (int panel, int control, int event,
 			{
 				int stat; 
 				case PANEL_RB_CMD_PUT:
-					Q2h.wB[0]=CMD_ROBOT;
-					Q2h.wB[1]=curRobotId;
-					Q2h.wB[2]=key_put;
-					Q2h.wB[3]=curRid; 
-					writeHandshake(4);
+					Q2h.cmdWrite[0]=CMD_ROBOT;
+					Q2h.cmdWrite[1]=curRobotId;
+					Q2h.cmdWrite[2]=key_put;
+					Q2h.cmdWrite[3]=curTid; 
+					writeCommand(4);
 					
-					ActionLog(RB_PUT_ACT_EVENT,curRobotId,curRid,0,0,0); 
+					ActionLog(RB_PUT_ACT_EVENT,curRobotId,curTid,0,0,0); 
 					break;
 				case PANEL_RB_CMD_TAKE:
-					Q2h.wB[0]=CMD_ROBOT;
-					Q2h.wB[1]=curRobotId;
-					Q2h.wB[2]=key_take;
-					Q2h.wB[3]=curRid;
-					writeHandshake(4);
+					Q2h.cmdWrite[0]=CMD_ROBOT;
+					Q2h.cmdWrite[1]=curRobotId;
+					Q2h.cmdWrite[2]=key_take;
+					Q2h.cmdWrite[3]=curTid;
+					writeCommand(4);
 
-					ActionLog(RB_GET_ACT_EVENT,curRobotId,curRid,0,0,0);
+					ActionLog(RB_GET_ACT_EVENT,curRobotId,curTid,0,0,0);
 					break;	
 				case PANEL_RB_CMD_HOME:
-					Q2h.wB[0]=CMD_ROBOT;
-					Q2h.wB[1]=curRobotId;
-					Q2h.wB[2]=key_home;
-					writeHandshake(3);
+					Q2h.cmdWrite[0]=CMD_ROBOT;
+					Q2h.cmdWrite[1]=curRobotId;
+					Q2h.cmdWrite[2]=key_home;
+					writeCommand(3);
 					
 					ActionLog(RB_HOME_ACT_EVENT,curRobotId,0,0,0,0);
 					break;
 				case PANEL_RB_CMD_MOVE_LOCK:
-					Q2h.wB[0]=CMD_ROBOT;
-					Q2h.wB[1]=curRobotId;
-					Q2h.wB[2]=key_goto_lock;
-					Q2h.wB[3]=curRid;
-					writeHandshake(4);
+					Q2h.cmdWrite[0]=CMD_ROBOT;
+					Q2h.cmdWrite[1]=curRobotId;
+					Q2h.cmdWrite[2]=key_goto_lock;
+					Q2h.cmdWrite[3]=curTid;
+					writeCommand(4);
 					
-					ActionLog(RB_MOVE_ACT_EVENT,curRobotId,curRid,0,0,0);
+					ActionLog(RB_MOVE_ACT_EVENT,curRobotId,curTid,0,0,0);
 					break;
 				case PANEL_RB_CMD_MOVE_UNLOCK:
-					Q2h.wB[0]=CMD_ROBOT;
-					Q2h.wB[1]=curRobotId;
-					Q2h.wB[2]=key_goto_unlock;
-					Q2h.wB[3]=curRid;
-					writeHandshake(4);
+					Q2h.cmdWrite[0]=CMD_ROBOT;
+					Q2h.cmdWrite[1]=curRobotId;
+					Q2h.cmdWrite[2]=key_goto_unlock;
+					Q2h.cmdWrite[3]=curTid;
+					writeCommand(4);
 
-					ActionLog(RB_MOVE_ACT_EVENT,curRobotId,curRid,0,0,0);
+					ActionLog(RB_MOVE_ACT_EVENT,curRobotId,curTid,0,0,0);
 					break;
 				case PANEL_RB_CMD_CLEAN:
 					
-					Q2h.wB[0]=CMD_ROBOT;
-					Q2h.wB[1]=curRobotId;
-					Q2h.wB[2]=key_clean;
-					writeHandshake(3);
+					Q2h.cmdWrite[0]=CMD_ROBOT;
+					Q2h.cmdWrite[1]=curRobotId;
+					Q2h.cmdWrite[2]=key_clean;
+					writeCommand(3);
 
 					ActionLog(RB_CLEAN_ACT_EVENT,curRobotId,0,0,0,0);
 					break;
 
 
 				case PANEL_RB_CHUCK_OFF:
-					Q2h.wB[0]=CMD_ROBOT;
-					Q2h.wB[1]=curRobotId;
-					Q2h.wB[2]=key_chuck_on;
-					writeHandshake(3);
+					Q2h.cmdWrite[0]=CMD_ROBOT;
+					Q2h.cmdWrite[1]=curRobotId;
+					Q2h.cmdWrite[2]=key_chuck_on;
+					writeCommand(3);
 					
 					ActionLog(RB_CHUCK_ACT_EVENT,curRobotId,1,0,0,0);
 					break;
 				case PANEL_RB_CHUCK_ON:
-					Q2h.wB[0]=CMD_ROBOT;
-					Q2h.wB[1]=curRobotId;
-					Q2h.wB[2]=key_chuck_off;
+					Q2h.cmdWrite[0]=CMD_ROBOT;
+					Q2h.cmdWrite[1]=curRobotId;
+					Q2h.cmdWrite[2]=key_chuck_off;
 					
 					ActionLog(RB_CHUCK_ACT_EVENT,curRobotId,0,0,0,0);
 					break;
 					
 				case PANEL_RB_REMOVE_CAR:
-					Q2h.wB[0]=CMD_ROBOT;
-					Q2h.wB[1]=curRobotId;
-					Q2h.wB[2]=key_add_car;
+					Q2h.cmdWrite[0]=CMD_ROBOT;
+					Q2h.cmdWrite[1]=curRobotId;
+					Q2h.cmdWrite[2]=key_add_car;
 					
 					ActionLog(RB_CAR_ACT_EVENT,curRobotId,1,0,0,0);
 					break;
 				case PANEL_RB_ADD_CAR:
-					Q2h.wB[0]=CMD_ROBOT;
-					Q2h.wB[1]=curRobotId;
-					Q2h.wB[2]=key_remve_car;
+					Q2h.cmdWrite[0]=CMD_ROBOT;
+					Q2h.cmdWrite[1]=curRobotId;
+					Q2h.cmdWrite[2]=key_remve_car;
 					
 					ActionLog(RB_CAR_ACT_EVENT,curRobotId,0,0,0,0);
 					break;
@@ -683,14 +642,14 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
 {
 	int type,id;
 	Point cell;  
-	unsigned int data[64];
+	unsigned short data[64];
 	char str[32];
 	union DatCnv cnv;
 	switch (event)
 	{
 		case EVENT_TIMER_TICK:
-			memset(data,0,sizeof(data));
-			//readRobotStatus(curRobotId,data);
+			if(readRobotStatus(curRobotId) <0 )
+				break;
 			
 			GetTableCellVal (panel, PANEL_RB_TABLE, MakePoint (2, 1), str);
 			GetTableCellRingIndexFromValue (panel, PANEL_RB_TABLE, 0, MakePoint (2, 1), &type, str);
@@ -708,8 +667,8 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
 			
 			if(type == 0 || type == 1){
 				cell.y = 2;
-				cnv._I16[0] = data[id++]; 
-				cnv._I16[1] = data[id++];
+				cnv._I16[0] = Q2h.rbStatus[id++]; 
+				cnv._I16[1] = Q2h.rbStatus[id++];
 				sprintf(str,"%d",cnv._I32);
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
@@ -720,8 +679,8 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
 
 	
 				cell.y = 3;
-				cnv._I16[0] = data[id++]; 
-				cnv._I16[1] = data[id++];
+				cnv._I16[0] = Q2h.rbStatus[id++]; 
+				cnv._I16[1] = Q2h.rbStatus[id++];
 				sprintf(str,"%d",cnv._I32);
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
@@ -731,8 +690,8 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, str);
 				
 				cell.y = 4;
-				cnv._I16[0] = data[id++]; 
-				cnv._I16[1] = data[id++];
+				cnv._I16[0] = Q2h.rbStatus[id++]; 
+				cnv._I16[1] = Q2h.rbStatus[id++];
 				sprintf(str,"%d",cnv._I32);
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
@@ -743,8 +702,8 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
 
 	
 				cell.y = 5;
-				cnv._I16[0] = data[id++]; 
-				cnv._I16[1] = data[id++];
+				cnv._I16[0] = Q2h.rbStatus[id++]; 
+				cnv._I16[1] = Q2h.rbStatus[id++];
 				sprintf(str,"%d",cnv._I32);
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
@@ -754,7 +713,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, str);
 				
 				cell.y = 6;
-				sprintf(str,"%d",data[id++]);
+				sprintf(str,"%d",Q2h.rbStatus[id++]);
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -763,7 +722,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, str);
 				
 				cell.y = 7;
-				sprintf(str,"%d",data[id++]);
+				sprintf(str,"%d",Q2h.rbStatus[id++]);
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -772,7 +731,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, str);
 				
 				cell.y = 8;
-				sprintf(str,"%d",data[id++]);
+				sprintf(str,"%d",Q2h.rbStatus[id++]);
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -781,7 +740,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, str);
 				
 				cell.y = 9;
-				sprintf(str,"%d",data[id++]);
+				sprintf(str,"%d",Q2h.rbStatus[id++]);
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -790,7 +749,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, str);
 				
 				cell.y = 10;
-				sprintf(str,"%d",data[id++]);
+				sprintf(str,"%d",Q2h.rbStatus[id++]);
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -814,7 +773,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				if(data[id]&0x0001)
+				if(Q2h.rbStatus[id]&0x0001)
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,on_bitmap_id);
 				else
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,off_bitmap_id);
@@ -827,7 +786,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				if(data[id]&0x0002)
+				if(Q2h.rbStatus[id]&0x0002)
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,on_bitmap_id);
 				else
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,off_bitmap_id);
@@ -840,7 +799,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				if(data[id]&0x0004)
+				if(Q2h.rbStatus[id]&0x0004)
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,on_bitmap_id);
 				else
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,off_bitmap_id);
@@ -853,7 +812,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				if(data[id]&0x0008)
+				if(Q2h.rbStatus[id]&0x0008)
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,on_bitmap_id);
 				else
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,off_bitmap_id);
@@ -866,7 +825,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				if(data[id]&0x0010)
+				if(Q2h.rbStatus[id]&0x0010)
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,on_bitmap_id);
 				else
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,off_bitmap_id);
@@ -879,7 +838,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				if(data[id]&0x0020)
+				if(Q2h.rbStatus[id]&0x0020)
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,on_bitmap_id);
 				else
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,off_bitmap_id);
@@ -892,7 +851,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				if(data[id]&0x0040)
+				if(Q2h.rbStatus[id]&0x0040)
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,on_bitmap_id);
 				else
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,off_bitmap_id);
@@ -915,7 +874,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				if(data[id]&0x0080)
+				if(Q2h.rbStatus[id]&0x0080)
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,on_bitmap_id);
 				else
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,off_bitmap_id);
@@ -928,7 +887,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				if(data[id]&0x0100)
+				if(Q2h.rbStatus[id]&0x0100)
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,on_bitmap_id);
 				else
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,off_bitmap_id);
@@ -941,7 +900,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				if(data[id]&0x0200)
+				if(Q2h.rbStatus[id]&0x0200)
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,on_bitmap_id);
 				else
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,off_bitmap_id);
@@ -954,7 +913,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				if(data[id]&0x0400)
+				if(Q2h.rbStatus[id]&0x0400)
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,on_bitmap_id);
 				else
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,off_bitmap_id);
@@ -967,7 +926,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				if(data[id]&0x0800)
+				if(Q2h.rbStatus[id]&0x0800)
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,on_bitmap_id);
 				else
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,off_bitmap_id);
@@ -980,7 +939,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				if(data[id]&0x1000)
+				if(Q2h.rbStatus[id]&0x1000)
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,on_bitmap_id);
 				else
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,off_bitmap_id);
@@ -993,7 +952,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				if(data[id]&0x2000)
+				if(Q2h.rbStatus[id]&0x2000)
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,on_bitmap_id);
 				else
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,off_bitmap_id);
@@ -1003,7 +962,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
 				
 			}else{
 				cell.y = 2;
-				sprintf(str,"%d",data[id++]);
+				sprintf(str,"%d",Q2h.rbStatus[id++]);
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -1012,7 +971,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, str);
 				
 				cell.y = 3;
-				sprintf(str,"%d",data[id++]);
+				sprintf(str,"%d",Q2h.rbStatus[id++]);
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -1021,7 +980,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, str);
 				
 				cell.y = 4;
-				sprintf(str,"%d",data[id++]);
+				sprintf(str,"%d",Q2h.rbStatus[id++]);
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -1030,7 +989,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, str);
 				
 				cell.y = 5;
-				sprintf(str,"%d",data[id++]);
+				sprintf(str,"%d",Q2h.rbStatus[id++]);
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -1039,7 +998,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, str);
 				
 				cell.y = 6;
-				sprintf(str,"%d",data[id++]);
+				sprintf(str,"%d",Q2h.rbStatus[id++]);
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -1048,7 +1007,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, str);
 				
 				cell.y = 7;
-				sprintf(str,"%d",data[id++]);
+				sprintf(str,"%d",Q2h.rbStatus[id++]);
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -1057,7 +1016,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, str);
 				
 				cell.y = 8;
-				sprintf(str,"%d",data[id++]);
+				sprintf(str,"%d",Q2h.rbStatus[id++]);
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -1073,7 +1032,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				if(data[id]&0x0001)
+				if(Q2h.rbStatus[id]&0x0001)
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,on_bitmap_id);
 				else
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,off_bitmap_id);
@@ -1086,7 +1045,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				if(data[id]&0x0002)
+				if(Q2h.rbStatus[id]&0x0002)
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,on_bitmap_id);
 				else
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,off_bitmap_id);
@@ -1099,7 +1058,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				if(data[id]&0x0004)
+				if(Q2h.rbStatus[id]&0x0004)
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,on_bitmap_id);
 				else
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,off_bitmap_id);
@@ -1112,7 +1071,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				if(data[id]&0x0008)
+				if(Q2h.rbStatus[id]&0x0008)
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,on_bitmap_id);
 				else
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,off_bitmap_id);
@@ -1125,7 +1084,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				if(data[id]&0x0010)
+				if(Q2h.rbStatus[id]&0x0010)
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,on_bitmap_id);
 				else
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,off_bitmap_id);
@@ -1138,7 +1097,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				if(data[id]&0x0020)
+				if(Q2h.rbStatus[id]&0x0020)
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,on_bitmap_id);
 				else
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,off_bitmap_id);
@@ -1151,7 +1110,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				if(data[id]&0x0040)
+				if(Q2h.rbStatus[id]&0x0040)
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,on_bitmap_id);
 				else
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,off_bitmap_id);
@@ -1164,7 +1123,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				if(data[id]&0x0080)
+				if(Q2h.rbStatus[id]&0x0080)
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,on_bitmap_id);
 				else
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,off_bitmap_id);
@@ -1177,7 +1136,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				if(data[id]&0x0100)
+				if(Q2h.rbStatus[id]&0x0100)
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,on_bitmap_id);
 				else
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,off_bitmap_id);
@@ -1190,7 +1149,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				if(data[id]&0x0200)
+				if(Q2h.rbStatus[id]&0x0200)
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,on_bitmap_id);
 				else
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,off_bitmap_id);
@@ -1203,61 +1162,79 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
 	return 0;
 }
 
-void initRobotPanel(int panel, int rid)
+void initRobotPanel(int panel, int rid, int tid)
 {
-	ROBOT* rb = &sys->rb[rid];
+	cur_type = -1;
 	
 	curRobotId = rid;
-	curRid = rb->firstRid;
+	curTid = tid;
+	firstTid =  tid;
 	
-	char* title[] = {"手臂1制程槽","手臂2制程槽","手臂3制程槽"};
-	SetCtrlAttribute(panel,PANEL_RB_TEXTMSG_22, ATTR_CTRL_VAL, title[rid]);
+//	char* title[] = {"手臂1制程槽","手臂2制程槽","手臂3制程槽"};
+//	SetCtrlAttribute(panel,PANEL_RB_TEXTMSG_22, ATTR_CTRL_VAL, title[rid]);
 	
-	for(int i = rb->firstRid; i <= rb->lastRid; i++)
+	char* tankName[]={"Loader","DIW1","ACID","DIW2","KOH","DIW3","Unloader"};
+	
+	int len = sizeof(tankName)/sizeof(char*);
+	for(int i = 0; i < len; i++)
 	{
-		char tmp[32];
-		if(i <= rb->lastRid-1 && sys->rtk[i].tid == sys->rtk[i+1].tid)
-		{
-			sprintf(tmp,"%s-1", sys->tk[sys->rtk[i].tid].name);
-			InsertListItem(panel, PANEL_RB_RING, i - rb->firstRid, tmp, i); 
-			i++;
-			sprintf(tmp,"%s-2", sys->tk[sys->rtk[i].tid].name);
-			InsertListItem(panel, PANEL_RB_RING, i - rb->firstRid, tmp, i);
-		}
-		else
-			InsertListItem(panel, PANEL_RB_RING, i - rb->firstRid, sys->tk[sys->rtk[i].tid].name, i);
+		InsertListItem(panel, PANEL_RB_RING, i, tankName[i], i+firstTid);
 	}
 	
-//	readTankPos(curRid);
+
+	readTankPos(curTid);
+	
+	int j = 0;
+	union DatCnv cnv;  
+	
+	cnv._I16[0] = Q2h.tkPos[j++]; 
+	cnv._I16[1] = Q2h.tkPos[j++];
+	xLock = cnv._I32;
+
+	cnv._I16[0] = Q2h.tkPos[j++]; 
+	cnv._I16[1] = Q2h.tkPos[j++];
+	xUnlock = cnv._I32;
+		
+	cnv._I16[0] = Q2h.tkPos[j++]; 
+	cnv._I16[1] = Q2h.tkPos[j++];
+	zDown = cnv._I32;
+	
+	cnv._I16[0] = Q2h.tkPos[j++]; 
+	cnv._I16[1] = Q2h.tkPos[j++];
+	xLock2 = cnv._I32;
+
+	cnv._I16[0] = Q2h.tkPos[j++]; 
+	cnv._I16[1] = Q2h.tkPos[j++];
+	xUnlock2 = cnv._I32;
+		
+	cnv._I16[0] = Q2h.tkPos[j++]; 
+	cnv._I16[1] = Q2h.tkPos[j++];
+	zDown2 = cnv._I32;
 	if(curRobotId == RB01)
 	{
-		SetCtrlAttribute(panel,PANEL_RB_CMD_CLEAN, ATTR_VISIBLE, 1);
-		InsertListItem(panel, PANEL_RB_RING, rb->lastRid - rb->firstRid + 1, "Clean", rb->lastRid + 1); 
 		
-		SetCtrlVal(panel, PANEL_RB_X_UNLOCK, sys->rtk[rb->firstRid].xUnlock / 10000);
-		SetCtrlVal(panel, PANEL_RB_X_LOCK, sys->rtk[rb->firstRid].xLock / 10000);
-		SetCtrlVal(panel, PANEL_RB_Z_DOWN, sys->rtk[rb->firstRid].zDown / 10000);
+		SetCtrlVal(panel, PANEL_RB_X_UNLOCK, xUnlock / 10000);
+		SetCtrlVal(panel, PANEL_RB_X_LOCK, xLock / 10000);
+		SetCtrlVal(panel, PANEL_RB_Z_DOWN, zDown / 10000);
 	}
 	else
 	{
-		SetCtrlVal(panel, PANEL_RB_X_UNLOCK, sys->rtk[rb->firstRid].xUnlock2 / 10000);
-		SetCtrlVal(panel, PANEL_RB_X_LOCK, sys->rtk[rb->firstRid].xLock2 / 10000);
-		SetCtrlVal(panel, PANEL_RB_Z_DOWN, sys->rtk[rb->firstRid].zDown2 / 10000);
-
+		SetCtrlVal(panel, PANEL_RB_X_UNLOCK, xUnlock2 / 10000);
+		SetCtrlVal(panel, PANEL_RB_X_LOCK, xLock2 / 10000);
+		SetCtrlVal(panel, PANEL_RB_Z_DOWN, zDown2 / 10000);
 	}
 	
-	//SetCtrlAttribute(panel,PANEL_RB_CMD_PUT, ATTR_VISIBLE, 0);
 	
 	//jog low speed
-	Q2h.wB[0]=CMD_ROBOT;
-	Q2h.wB[1]=curRobotId;
-	Q2h.wB[2]=key_z_jog_low_speed; 
-//	writeHandshake(3);
+	Q2h.cmdWrite[0]=CMD_ROBOT;
+	Q2h.cmdWrite[1]=curRobotId;
+	Q2h.cmdWrite[2]=key_z_jog_low_speed; 
+	writeCommand(3);
 	
-	Q2h.wB[0]=CMD_ROBOT;
-	Q2h.wB[1]=curRobotId;
-	Q2h.wB[2]=key_x_jog_low_speed; 
-//	writeHandshake(3);
+	Q2h.cmdWrite[0]=CMD_ROBOT;
+	Q2h.cmdWrite[1]=curRobotId;
+	Q2h.cmdWrite[2]=key_x_jog_low_speed; 
+	writeCommand(3);
 	SetCtrlVal (panel, PANEL_RB_CHECKBOX_X_JOG_SPEED, 0); 
 	SetCtrlVal (panel, PANEL_RB_CHECKBOX_Z_JOG_SPEED, 0);
 	

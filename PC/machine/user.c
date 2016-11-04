@@ -39,15 +39,15 @@
 
 int CheckAuth(OPERATION op)
 {
-	/*OPERATION  auth[5][6] = {
+	OPERATION  auth[5][6] = {
 		{0},
 		{0},
 		{OP_RCP,OP_TANK,OP_ROBOT,OP_SET,OP_EXIT,OP_UNKONW},
 		{OP_RCP,OP_TANK,OP_ROBOT,OP_SET,OP_EXIT,OP_UNKONW},
 		{OP_RCP,OP_TANK,OP_ROBOT,OP_SET,OP_EXIT,OP_USER}
 	};
-	  */
-	if(testBit(sys->hsAuto,RB)>0 )
+	  
+	if(0)//(testBit(sys->hsAuto,RB)>0 )
 	{
 		MessagePopup("Message","自动状态，不容许手动操作！");
 		return 0;

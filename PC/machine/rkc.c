@@ -65,7 +65,7 @@ static RKCcomm rkc;
 // Global variables
 int g_writeTemp2Plc = 0;
 int g_setupTemp = 0; 
-extern int g_exitThread;
+
 
 //==============================================================================
 // Global functions
@@ -261,7 +261,7 @@ int CVICALLBACK rkcThread (void *Data)
 		&sys->tk[TANK_17]};
 	
 	int cnt = 0;
-	while (g_exitThread == 0){
+	while (0){
 		Delay(30);
 		
 		if (g_setupTemp == 1)
@@ -295,8 +295,8 @@ int CVICALLBACK rkcThread (void *Data)
 			RKC_CommData ( getTP, i+1, &tk[i]->curTemp);
 			if(cnt == 0 && tk[i]->curTemp != 0)
 				tk[i]->tempData[sys->curTempTrendPos] = tk[i]->curTemp;
-			if(g_exitThread)
-				return 0;
+		//	if(g_exitThread)
+		//		return 0;
 		}
 		sys->tk[TANK_05].curTemp = sys->tk[TANK_04].curTemp;
 		sys->tk[TANK_08].curTemp = sys->tk[TANK_07].curTemp;
@@ -304,7 +304,7 @@ int CVICALLBACK rkcThread (void *Data)
 		if(g_writeTemp2Plc == 0)
 			g_writeTemp2Plc = 1;
 		
-		if(sys->tk[TANK_AUX_PH1].curTemp >= sys->tk[TANK_AUX_PH1].rcp.StartTemp)
+/*		if(sys->tk[TANK_AUX_PH1].curTemp >= sys->tk[TANK_AUX_PH1].rcp.StartTemp)
 			setBit(sys->tk[TANK_AUX_PH1].hsPHStart);
 		else if(sys->tk[TANK_AUX_PH1].curTemp < sys->tk[TANK_AUX_PH1].rcp.StopTemp)
 			resetBit(sys->tk[TANK_AUX_PH1].hsPHStart);
@@ -312,7 +312,7 @@ int CVICALLBACK rkcThread (void *Data)
 		if(sys->tk[TANK_AUX_PH2].curTemp >= sys->tk[TANK_AUX_PH2].rcp.StartTemp)
 			setBit(sys->tk[TANK_AUX_PH2].hsPHStart);
 		else if(sys->tk[TANK_AUX_PH2].curTemp < sys->tk[TANK_AUX_PH2].rcp.StopTemp)
-			resetBit(sys->tk[TANK_AUX_PH2].hsPHStart);
+			resetBit(sys->tk[TANK_AUX_PH2].hsPHStart);		*/
 
 	}
 	

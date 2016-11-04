@@ -1,3 +1,4 @@
+#include "main.h"
 #include "msie.h"
 #include "pwctrl.h"
 #include <formatio.h>
@@ -215,40 +216,15 @@ int CVICALLBACK ShowManuDialog (int panel, int control, int event,
 				InstallPopup(dialogHandle);
 				initRobotPanel(dialogHandle,0);
 			}
-			else if(control == PANEL_PLC_PIC){
-				//dialogHandle = LoadPanel (0, "robot_panel.uir", PANEL_PLC);
-				//InstallPopup(dialogHandle);
-				//initPlcPanel(dialogHandle);
-			}
-			else if(control == PANEL_TNK_INLINE){
+			else if(control == PANEL_TNK_ILD){
 				dialogHandle = LoadPanel (0, "robot_panel.uir", PANEL_TANK);
 				InstallPopup(dialogHandle);
-				initTankPanel(dialogHandle,TANK_AUX_IN,RTK_UNKNOW,RTK_UNKNOW);
+				initTankPanel(dialogHandle,TANK_02,RTK_02_01,RTK_02_02);
 			}
-			else if(control == PANEL_TNK_PH1){
+			else if(control == PANEL_TNK_01){
 				dialogHandle = LoadPanel (0, "robot_panel.uir", PANEL_TANK);
 				InstallPopup(dialogHandle);
-				initTankPanel(dialogHandle,TANK_AUX_PH1,RTK_UNKNOW,RTK_UNKNOW);
-			}
-			else if(control == PANEL_TNK_PH2){
-				dialogHandle = LoadPanel (0, "robot_panel.uir", PANEL_TANK);
-				InstallPopup(dialogHandle);
-				initTankPanel(dialogHandle,TANK_AUX_PH2,RTK_UNKNOW,RTK_UNKNOW);
-			}
-			else if(control == PANEL_TNK_DIW){
-				dialogHandle = LoadPanel (0, "robot_panel.uir", PANEL_TANK);
-				InstallPopup(dialogHandle);
-				initTankPanel(dialogHandle,TANK_AUX_DIW,RTK_UNKNOW,RTK_UNKNOW);
-			}
-			else if(control == PANEL_TNK_TEX){
-				dialogHandle = LoadPanel (0, "robot_panel.uir", PANEL_TANK);
-				InstallPopup(dialogHandle);
-				initTankPanel(dialogHandle,TANK_AUX_TEX,RTK_UNKNOW,RTK_UNKNOW);
-			}
-			else if(control == PANEL_TNK_HF){
-				dialogHandle = LoadPanel (0, "robot_panel.uir", PANEL_TANK);
-				InstallPopup(dialogHandle);
-				initTankPanel(dialogHandle,TANK_AUX_HF,RTK_UNKNOW,RTK_UNKNOW);
+				initTankPanel(dialogHandle,TANK_02,RTK_02_01,RTK_02_02);
 			}
 			else if(control == PANEL_TNK_02){
 				dialogHandle = LoadPanel (0, "robot_panel.uir", PANEL_TANK);
@@ -270,65 +246,7 @@ int CVICALLBACK ShowManuDialog (int panel, int control, int event,
 				InstallPopup(dialogHandle);
 				initTankPanel(dialogHandle,TANK_05,RTK_05_01,RTK_05_02);
 			}
-			else if(control == PANEL_TNK_06){
-				dialogHandle = LoadPanel (0, "robot_panel.uir", PANEL_TANK);
-				InstallPopup(dialogHandle);
-				initTankPanel(dialogHandle,TANK_06,RTK_06,RTK_UNKNOW);
-			}
-			else if(control == PANEL_TNK_07){
-				dialogHandle = LoadPanel (0, "robot_panel.uir", PANEL_TANK);
-				InstallPopup(dialogHandle);
-				initTankPanel(dialogHandle,TANK_07,RTK_07_01,RTK_07_02);
-			}
-			else if(control == PANEL_TNK_08){
-				dialogHandle = LoadPanel (0, "robot_panel.uir", PANEL_TANK);
-				InstallPopup(dialogHandle);
-				initTankPanel(dialogHandle,TANK_08,RTK_08_01,RTK_08_02);
-			}
-			else if(control == PANEL_TNK_09){
-				dialogHandle = LoadPanel (0, "robot_panel.uir", PANEL_TANK);
-				InstallPopup(dialogHandle);
-				initTankPanel(dialogHandle,TANK_09,RTK_09,RTK_UNKNOW);
-			}
-			else if(control == PANEL_TNK_10){
-				dialogHandle = LoadPanel (0, "robot_panel.uir", PANEL_TANK);
-				InstallPopup(dialogHandle);
-				initTankPanel(dialogHandle,TANK_10,RTK_10_01,RTK_10_02);
-			}
-			else if(control == PANEL_TNK_11){
-				dialogHandle = LoadPanel (0, "robot_panel.uir", PANEL_TANK);
-				InstallPopup(dialogHandle);
-				initTankPanel(dialogHandle,TANK_11,RTK_11_01,RTK_11_02);
-			}
-			else if(control == PANEL_TNK_12){
-				dialogHandle = LoadPanel (0, "robot_panel.uir", PANEL_TANK);
-				InstallPopup(dialogHandle);
-				initTankPanel(dialogHandle,TANK_12,RTK_12,RTK_UNKNOW);
-			}
-			else if(control == PANEL_TNK_13){
-				dialogHandle = LoadPanel (0, "robot_panel.uir", PANEL_TANK);
-				InstallPopup(dialogHandle);
-				initTankPanel(dialogHandle,TANK_13,RTK_13_01,RTK_13_02);
-			}
-			else if(control == PANEL_TNK_14){
-				dialogHandle = LoadPanel (0, "robot_panel.uir", PANEL_TANK);
-				InstallPopup(dialogHandle);
-				initTankPanel(dialogHandle,TANK_14,RTK_14,RTK_UNKNOW);
-			}
-			else if(control == PANEL_TNK_15){
-				dialogHandle = LoadPanel (0, "robot_panel.uir", PANEL_TANK);
-				InstallPopup(dialogHandle);
-				initTankPanel(dialogHandle,TANK_15,RTK_15,RTK_UNKNOW);
-			}
-			else if(control == PANEL_TNK_16){
-				dialogHandle = LoadPanel (0, "robot_panel.uir", PANEL_AKF);
-				InstallPopup(dialogHandle);
-			}
-			else if(control == PANEL_TNK_17){
-				dialogHandle = LoadPanel (0, "robot_panel.uir", PANEL_DRY);
-				InstallPopup(dialogHandle);
-			}
-			else if(control == PANEL_LOADER){
+			else if(control == PANEL_ULD){
 				dialogHandle = LoadPanel (0, "robot_panel.uir", PANEL_LOAD);
 				InstallPopup(dialogHandle);
 			}

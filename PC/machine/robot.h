@@ -18,7 +18,7 @@
 #define  PANEL_RB_LEDOFF                  2
 #define  PANEL_RB_LEDON                   3
 #define  PANEL_RB_Z_DOWN                  4
-#define  PANEL_RB_TABLE                   5       /* callback function: TableEvent */
+#define  PANEL_RB_TABLE                   5
 #define  PANEL_RB_DECORATION_30           6
 #define  PANEL_RB_JOG_UP                  7       /* callback function: RobotManuAdj */
 #define  PANEL_RB_JOG_DOWN                8       /* callback function: RobotManuAdj */
@@ -68,7 +68,6 @@ int  CVICALLBACK RobotCommand(int panel, int control, int event, void *callbackD
 int  CVICALLBACK RobotManuAdj(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
 int  CVICALLBACK RobotTimer(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
 int  CVICALLBACK SavePosition(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
-int  CVICALLBACK TableEvent(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
 int  CVICALLBACK tankChange(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
 
 

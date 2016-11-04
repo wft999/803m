@@ -34,7 +34,7 @@
 
 //==============================================================================
 // Global variables
-extern int g_setupSetting;
+
 //==============================================================================
 // Global functions
 void CheckValueRange(int *Value,int MaxNum,int MinNum)
@@ -289,9 +289,9 @@ void Load_FunctionSet(int panel)
 
 	fclose (Fp);
 
-	g_setupSetting  = 1;
+
 	
-	if(sys->set.ChuckLock_Check_Enabled)
+/*	if(sys->set.ChuckLock_Check_Enabled)
 		setBit(sys->hsChuckCheck);
 	else
 		resetBit(sys->hsChuckCheck); 
@@ -306,15 +306,15 @@ void Load_FunctionSet(int panel)
 	else
 		resetBit(sys->hsExhaustCheck);
 
-/*	if (sys->set.SaveHeightMode_Enabled)
+	if (sys->set.SaveHeightMode_Enabled)
 		setBit(sys->hsSaveHeightMode);
 	else
-		resetBit(sys->hsSaveHeightMode);   */
+		resetBit(sys->hsSaveHeightMode);   
 	
 	if (sys->set.IPABufferMode_Enabled)
 		setBit(sys->hsIPABufferMode);
 	else
-		resetBit(sys->hsIPABufferMode);
+		resetBit(sys->hsIPABufferMode);   */
  
 }
 

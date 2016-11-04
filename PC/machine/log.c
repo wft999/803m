@@ -19,15 +19,15 @@
 //#include "log.h"
 #include <formatio.h>
 #include "type.h"
-#include "machine.h"
-//#include "include\mysql.h"  
+#include "main.h"
+
 //==============================================================================
 // Constants
 #define MAX_ITEMS_IN_QUEUE 1000
 //#define MAX_ITEMS_IN_QUEUE_READ_BLOCK 50
 //#define MAX_ITEMS_IN_QUEUE_WRITE_BLOCK 500
 #define READ_THREAD_WAIT_TIME 0 
-#define PHPCOMD "d:\\wft\\mbin\\server\\php\\php.exe d:\\wft\\mbin\\web\\wakom\\yii"
+#define PHPCOMD "d:\\server\\php\\php.exe D:\\server\\moodle\\shunfeng\\yii.php"
 extern const unsigned short bitvalue[];
 //==============================================================================
 // Types
@@ -56,7 +56,7 @@ void PutLogToQueue(LOG* log, int numItems)
 
 void ActionLog(ACT_EVENT_TYPE etype,int data1,int data2,int data3,int data4,int data5)
 {
-	char tmp[256];
+/*	char tmp[256];
 	char content[256];
 	switch(etype)
 	{
@@ -365,7 +365,7 @@ void ActionLog(ACT_EVENT_TYPE etype,int data1,int data2,int data3,int data4,int 
 			
 	}
 	
-/*	char str[256];
+	char str[256];
 	char encode[256];
 	char encode1[256]; 
 	unicode_to_utf8(tmp,encode,256);
@@ -379,7 +379,7 @@ void ActionLog(ACT_EVENT_TYPE etype,int data1,int data2,int data3,int data4,int 
 
 void DosingLog(DOSING_TYPE type,TANK_ID tid, unsigned int chem, unsigned int carNumber)
 {
-	int i = 0;
+/*	int i = 0;
 	char tmp[256];
 	char* stype[] = {"ByRunDosing","ByTimeDosing","ManualDosing","PartialDrain","ManualMixAcid","AutoMixAcid"}; 
 	
@@ -449,12 +449,12 @@ void DosingLog(DOSING_TYPE type,TANK_ID tid, unsigned int chem, unsigned int car
 	{
 		sprintf(tmp,"%s dosing/insert %s %s %s %f %d",PHPCOMD,sys->tk[tid].name,schem[i][chem-1],stype[type],vol,carNumber);
 		LaunchExecutableEx(tmp,LE_HIDE,NULL);
-	}
+	}   */
 }
 
 void PDrainLog(PDRAIN_TYPE type,TANK_ID tid,  unsigned int carNumber)  
 {
-	char tmp[256];
+/*	char tmp[256];
 	if(type == PDRAIN_PART)
 	{
 		Fmt(tmp,"%s<啟動PartialDrain(CarNumber:%d)(DrainVol:%f)(IPA:%f)(KOH:%f)(DIW:%f)(ADD:%f)",
@@ -497,10 +497,10 @@ void PDrainLog(PDRAIN_TYPE type,TANK_ID tid,  unsigned int carNumber)
 		{
 			Fmt(tmp,"%s<自動換酸完成");
 			
-			/*DosingLog(AUTO_MIX_ACID,tid,1,carNumber);
+			DosingLog(AUTO_MIX_ACID,tid,1,carNumber);
 			DosingLog(AUTO_MIX_ACID,tid,2,carNumber);
 			DosingLog(AUTO_MIX_ACID,tid,3,carNumber);
-			DosingLog(AUTO_MIX_ACID,tid,4,carNumber); */
+			DosingLog(AUTO_MIX_ACID,tid,4,carNumber); 
 		}
 	}
 	
@@ -510,7 +510,7 @@ void PDrainLog(PDRAIN_TYPE type,TANK_ID tid,  unsigned int carNumber)
 	unicode_to_utf8(tmp,encode,256);
 	Base64Encode(encode,strlen(encode),encode1); 
 	sprintf(str,"%s operation/insert %s %s %s",PHPCOMD,sys->user.name,sys->tk[tid].name,encode1);
-	LaunchExecutableEx(str,LE_HIDE,NULL);
+	LaunchExecutableEx(str,LE_HIDE,NULL);	  */
 }
 
 void HandleAlarmLog(LOG* log)
@@ -536,29 +536,18 @@ void HandleAlarmLog(LOG* log)
 				FormatDateTimeString (log->tm, "%Y/%m/%d %H:%M:%S", tmstr, 30);
 				InsertTreeItem (panelHandle, PANEL_TREE_CURR, VAL_SIBLING, 0, VAL_FIRST, tmstr, "", NULL, AlmID);
 			
-				if(log->alarm.wid == PC_ALARM_WID)
-				{
-					if(testBit(sys->hsAuto,RB)>0)
-						sprintf(tmp,"AutoAlarmSetPC(%d)", AlmID - PC_ALARM_WID * 16 );
-					else
-						sprintf(tmp,"ManualAlarmSetPC(%d)", AlmID - PC_ALARM_WID * 16 );
+				if(sys->isAuto){
+					sprintf(LogString,"%s alarm/insert %d %d %d",PHPCOMD,AlmID,1,1);   
+					sprintf(tmp,"AutoAlarmSet(%d)", AlmID);
 				}
-				else
-				{
-					if(testBit(sys->hsAuto,RB)>0)
-						sprintf(tmp,"AutoAlarmSetPLC(M%d)", 6000 + AlmID);
-					else
-						sprintf(tmp,"ManualAlarmSetPLC(M%d)", 6000 + AlmID);
+				else{
+					sprintf(LogString,"%s alarm/insert %d %d %d",PHPCOMD,AlmID,1,0);
+					sprintf(tmp,"ManualAlarmSet(%d)", AlmID);
 				}
 			
 				SetTreeCellAttribute (panelHandle, PANEL_TREE_CURR, 0, 1, ATTR_LABEL_TEXT, tmp);
 				SetTreeCellAttribute (panelHandle, PANEL_TREE_CURR, 0, 2, ATTR_LABEL_TEXT, sys->alarmDesc[AlmID]);
-			
-				char encode[512];
-				char encode1[512]; 
-				unicode_to_utf8(sys->alarmDesc[AlmID],encode,512);
-				Base64Encode(encode,strlen(encode),encode1); 
-				sprintf(LogString,"%s alarm/insert %s %s",PHPCOMD,tmp,encode1);
+				
 				LaunchExecutableEx(LogString,LE_HIDE,NULL);
 			}
 		}
@@ -576,16 +565,14 @@ void HandleAlarmLog(LOG* log)
 		//	}while(index >= 0);
 			
 			FormatDateTimeString (log->tm, "%Y/%m/%d %H:%M:%S", tmstr, 30);
-			if(log->alarm.wid == PC_ALARM_WID)
-				sprintf(tmp,"AlarmResetPC(%d)", AlmID - PC_ALARM_WID * 16 );
-			else
-				sprintf(tmp,"AlarmResetPLC(M%d)", 6000 + AlmID);
 			
-			char encode[512];
-			char encode1[512]; 
-			unicode_to_utf8(sys->alarmDesc[AlmID],encode,512);
-			Base64Encode(encode,strlen(encode),encode1); 
-			sprintf(LogString,"%s alarm/insert %s %s",PHPCOMD,tmp,encode1);
+			if(sys->isAuto){
+				sprintf(LogString,"%s alarm/insert %d %d %d",PHPCOMD,AlmID,0,1);   
+			}
+			else{
+				sprintf(LogString,"%s alarm/insert %d %d %d",PHPCOMD,AlmID,0,0);
+			}
+			
 			LaunchExecutableEx(LogString,LE_HIDE,NULL);
 		}
 	}	
@@ -593,7 +580,7 @@ void HandleAlarmLog(LOG* log)
 
 void HandleRobotLog(LOG* log)
 {
-	char LogString[512];
+/*	char LogString[512];
 	char* cmdAutotype[] = {"unknow","AutoGet","AutoPut","AutoMove","AutoBlow","AutoWash","AutoHome"}; 
 	char* cmdManualtype[] = {"unknow","ManualGet","ManualPut","ManualMove","ManualBlow","ManualWash","ManualHome"};
 	char* type[] = {"unknow","Start","Finish","Cancel"}; 
@@ -609,7 +596,7 @@ void HandleRobotLog(LOG* log)
 //	LogToFile(log,tmp);
 	
 	if(log->robot.etype == FINISH_ROBOT_EVENT && (log->robot.cmd.type == GET_COMMAND || log->robot.cmd.type == PUT_COMMAND))
-		SaveSystem();
+		SaveSystem();	  */
 }
 
 void HandleCarLog(LOG* log)
@@ -667,19 +654,19 @@ static void CVICALLBACK GetLogFromQueueCallback (int queueHandle, unsigned int e
 		
 		switch(readBuffer.type)
 		{
-			case CAR_LOG:
+			case ALARM_LOG:
+				HandleAlarmLog(&readBuffer);
+				break;
+/*			case CAR_LOG:
 				HandleCarLog(&readBuffer);
 				break;
 			case PLC_LOG:
 				HandlePLCLog(&readBuffer);
 				break;
-			case ALARM_LOG:
-				HandleAlarmLog(&readBuffer);
-				break;
 			case ROBOT_LOG:
 				HandleRobotLog(&readBuffer);
 				break;
-/*			case DOSING_LOG:
+			case DOSING_LOG:
 				HandleDosingLog(&readBuffer);
 				break;
 			case ACTION_LOG:
@@ -716,56 +703,3 @@ void UninitLog(void)
 	
 }
 
-int CVICALLBACK ViewHis (int panel, int control, int event,
-		void *callbackData, int eventData1, int eventData2)
-{
-	double tm;
-	int type,date;
-	char fmtDate[16];                                                                                     
-	char FileName[256];
-	char Path[MAX_PATHNAME_LEN ];
-	switch (event)
-	{
-		case EVENT_COMMIT:
-			
-			GetCtrlVal(panel,PANEL_HIS_RING_TYPE,&type);
-			GetCtrlVal(panel,PANEL_HIS_RING_DATE,&date);
-			GetDir(Path);
-			GetCurrentDateTime(&tm);
-			tm -= 24*60*60 * date;
-			
-			FormatDateTimeString(tm, "%Y%m%d", fmtDate, 10);
-	
-			if(type == 7)
-				Fmt(FileName,"%s<%s\\Log\\PLC_%s.csv",Path,fmtDate); 
-			else if(type == 8)
-				Fmt(FileName,"%s<%s\\Log\\Alarm_%s.csv",Path,fmtDate);
-			else if(type == 2)
-				Fmt(FileName,"%s<%s\\Log\\Car_%s.csv",Path,fmtDate);
-			else if(type == 4)
-				Fmt(FileName,"%s<%s\\Log\\Robot01_%s.csv",Path,fmtDate);
-			else if(type == 5)
-				Fmt(FileName,"%s<%s\\Log\\Robot02_%s.csv",Path,fmtDate);
-			else if(type == 6)
-				Fmt(FileName,"%s<%s\\Log\\Robot03_%s.csv",Path,fmtDate);
-			else if(type == 1)
-				Fmt(FileName,"%s<%s\\Log\\Dosing_%s.csv",Path,fmtDate);
-			else if(type == 3)
-				Fmt(FileName,"%s<%s\\Log\\PDrain_%s.csv",Path,fmtDate); 	
-			else
-				Fmt(FileName,"%s<%s\\Log\\Action_%s.csv",Path,fmtDate);
-			
-			long size = 0;
-			GetFileInfo(FileName, &size);
-			if(size == 0)
-			{
-				MessagePopup("File does not exist","File does not exist!"); 
-				return 0;	
-			}
-
-			Fmt(Path,"%s<notepad.exe %s",FileName);
-			LaunchExecutable(Path);
-			break;
-	}
-	return 0;
-}
