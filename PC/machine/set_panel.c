@@ -2,7 +2,7 @@
 #include <formatio.h>
 #include <ansi_c.h>
 #include <userint.h>
-#include "robot_panel.h"
+#include "set.h"
 
 //==============================================================================
 //
@@ -17,7 +17,7 @@
 //==============================================================================
 // Include files
 
-//#include "set_panel.h"
+
 #include "type.h"
 
 //==============================================================================
@@ -56,147 +56,131 @@ void Save_FunctionSet(int panel)
  	Fmt(FileName,"%s<%s\\%s.PAR",Path,"FuncSet");
  	Fp=fopen (FileName, "w");
 
- 	GetCtrlVal ( panel, PANEL_SET_CHECKBOX_CHUCK,&sys->set.ChuckLock_Check_Enabled);
+ 	GetCtrlVal ( panel, SET_CHECKBOX_CHUCK,&sys->set.ChuckLock_Check_Enabled);
  	CheckValueRange(&sys->set.ChuckLock_Check_Enabled,1,0);  
  
  
- 	GetCtrlVal ( panel, PANEL_SET_CHECKBOX_DOOR,&sys->set.Door_Interlock_Check_Enabled);
+ 	GetCtrlVal ( panel, SET_CHECKBOX_DOOR,&sys->set.Door_Interlock_Check_Enabled);
  	CheckValueRange(&sys->set.Door_Interlock_Check_Enabled,1,0);  
  
- 	GetCtrlVal ( panel, PANEL_SET_CHECKBOX_EXHAUST,&sys->set.Exhaust_Check_Enabled);
+ 	GetCtrlVal ( panel, SET_CHECKBOX_EXHAUST,&sys->set.Exhaust_Check_Enabled);
  	CheckValueRange(&sys->set.Exhaust_Check_Enabled,1,0);  
  
  															   
- 	GetCtrlVal ( panel, PANEL_SET_CHECKBOX_SAFE,&sys->set.SaveHeightMode_Enabled);
+ 	GetCtrlVal ( panel, SET_CHECKBOX_SAFE,&sys->set.SaveHeightMode_Enabled);
  	CheckValueRange(&sys->set.SaveHeightMode_Enabled,1,0);
 	
-	GetCtrlVal ( panel, PANEL_SET_CHECKBOX_IPA,&sys->set.IPABufferMode_Enabled);
- 	CheckValueRange(&sys->set.IPABufferMode_Enabled,1,0);
 	
-	GetCtrlVal ( panel, PANEL_SET_DOWN_DELAY_2,&sys->set.down_delay_02);
-	GetCtrlVal ( panel, PANEL_SET_DOWN_DELAY_3,&sys->set.down_delay_03);
-	GetCtrlVal ( panel, PANEL_SET_DOWN_DELAY_4,&sys->set.down_delay_04);
-	GetCtrlVal ( panel, PANEL_SET_DOWN_DELAY_5,&sys->set.down_delay_05);
-	GetCtrlVal ( panel, PANEL_SET_DOWN_DELAY_6,&sys->set.down_delay_06);
-	GetCtrlVal ( panel, PANEL_SET_DOWN_DELAY_7,&sys->set.down_delay_07);
-	GetCtrlVal ( panel, PANEL_SET_DOWN_DELAY_8,&sys->set.down_delay_08);
-	GetCtrlVal ( panel, PANEL_SET_DOWN_DELAY_9,&sys->set.down_delay_09);
-	GetCtrlVal ( panel, PANEL_SET_DOWN_DELAY_10,&sys->set.down_delay_10);
-	GetCtrlVal ( panel, PANEL_SET_DOWN_DELAY_11,&sys->set.down_delay_11);
-	GetCtrlVal ( panel, PANEL_SET_DOWN_DELAY_12,&sys->set.down_delay_12);
-	GetCtrlVal ( panel, PANEL_SET_DOWN_DELAY_13,&sys->set.down_delay_13);
-	GetCtrlVal ( panel, PANEL_SET_DOWN_DELAY_14,&sys->set.down_delay_14);
-	GetCtrlVal ( panel, PANEL_SET_DOWN_DELAY_15,&sys->set.down_delay_15);
 	
 	////////////////////////////////////////////////////////////
 	int tmp;
-	GetCtrlVal ( panel, PANEL_SET_AUTH_RECIPE1,&tmp);
+	GetCtrlVal ( panel, SET_AUTH_RECIPE1,&tmp);
 	if(tmp)
 		sys->set.auth[1][0] = OP_RCP;
 	else
 		sys->set.auth[1][0] = OP_UNKONW;
 	
-	GetCtrlVal ( panel, PANEL_SET_AUTH_RECIPE2,&tmp);
+	GetCtrlVal ( panel, SET_AUTH_RECIPE2,&tmp);
 	if(tmp)
 		sys->set.auth[2][0] = OP_RCP;
 	else
 		sys->set.auth[2][0] = OP_UNKONW;
 	
-	GetCtrlVal ( panel, PANEL_SET_AUTH_RECIPE3,&tmp);
+	GetCtrlVal ( panel, SET_AUTH_RECIPE3,&tmp);
 	if(tmp)
 		sys->set.auth[3][0] = OP_RCP;
 	else
 		sys->set.auth[3][0] = OP_UNKONW;
 	
 	//////////////////////////////////////////////////////////////////////
-	GetCtrlVal ( panel, PANEL_SET_AUTH_TANK1,&tmp);
+	GetCtrlVal ( panel, SET_AUTH_TANK1,&tmp);
 	if(tmp)
 		sys->set.auth[1][1] = OP_TANK;
 	else
 		sys->set.auth[1][1] = OP_UNKONW;
 	
-	GetCtrlVal ( panel, PANEL_SET_AUTH_TANK2,&tmp);
+	GetCtrlVal ( panel, SET_AUTH_TANK2,&tmp);
 	if(tmp)
 		sys->set.auth[2][1] = OP_TANK;
 	else
 		sys->set.auth[2][1] = OP_UNKONW;
 	
-	GetCtrlVal ( panel, PANEL_SET_AUTH_TANK3,&tmp);
+	GetCtrlVal ( panel, SET_AUTH_TANK3,&tmp);
 	if(tmp)
 		sys->set.auth[3][1] = OP_TANK;
 	else
 		sys->set.auth[3][1] = OP_UNKONW;
 	///////////////////////////////////////////////////////////////////
-	GetCtrlVal ( panel, PANEL_SET_AUTH_ROBOT1,&tmp);
+	GetCtrlVal ( panel, SET_AUTH_ROBOT1,&tmp);
 	if(tmp)
 		sys->set.auth[1][2] = OP_ROBOT;
 	else
 		sys->set.auth[1][2] = OP_UNKONW;
 	
-	GetCtrlVal ( panel, PANEL_SET_AUTH_ROBOT2,&tmp);
+	GetCtrlVal ( panel, SET_AUTH_ROBOT2,&tmp);
 	if(tmp)
 		sys->set.auth[2][2] = OP_ROBOT;
 	else
 		sys->set.auth[2][2] = OP_UNKONW;
 	
-	GetCtrlVal ( panel, PANEL_SET_AUTH_ROBOT3,&tmp);
+	GetCtrlVal ( panel, SET_AUTH_ROBOT3,&tmp);
 	if(tmp)
 		sys->set.auth[3][2] = OP_ROBOT;
 	else
 		sys->set.auth[3][2] = OP_UNKONW;
 	
 	//////////////////////////////////////////////////////////////////////
-	GetCtrlVal ( panel, PANEL_SET_AUTH_SET1,&tmp);
+	GetCtrlVal ( panel, SET_AUTH_SET1,&tmp);
 	if(tmp)
 		sys->set.auth[1][3] = OP_SET;
 	else
 		sys->set.auth[1][3] = OP_UNKONW;
 	
-	GetCtrlVal ( panel, PANEL_SET_AUTH_SET2,&tmp);
+	GetCtrlVal ( panel, SET_AUTH_SET2,&tmp);
 	if(tmp)
 		sys->set.auth[2][3] = OP_SET;
 	else
 		sys->set.auth[2][3] = OP_UNKONW;
 	
-	GetCtrlVal ( panel, PANEL_SET_AUTH_SET3,&tmp);
+	GetCtrlVal ( panel, SET_AUTH_SET3,&tmp);
 	if(tmp)
 		sys->set.auth[3][3] = OP_SET;
 	else
 		sys->set.auth[3][3] = OP_UNKONW;
 	
 	//////////////////////////////////////////////////////////////////////
-	GetCtrlVal ( panel, PANEL_SET_AUTH_EXIT1,&tmp);
+	GetCtrlVal ( panel, SET_AUTH_EXIT1,&tmp);
 	if(tmp)
 		sys->set.auth[1][4] = OP_EXIT;
 	else
 		sys->set.auth[1][4] = OP_UNKONW;
 	
-	GetCtrlVal ( panel, PANEL_SET_AUTH_EXIT2,&tmp);
+	GetCtrlVal ( panel, SET_AUTH_EXIT2,&tmp);
 	if(tmp)
 		sys->set.auth[2][4] = OP_EXIT;
 	else
 		sys->set.auth[2][4] = OP_UNKONW;
 	
-	GetCtrlVal ( panel, PANEL_SET_AUTH_EXIT3,&tmp);
+	GetCtrlVal ( panel, SET_AUTH_EXIT3,&tmp);
 	if(tmp)
 		sys->set.auth[3][4] = OP_EXIT;
 	else
 		sys->set.auth[3][4] = OP_UNKONW;
 	
 	//////////////////////////////////////////////////////////////////////
-	GetCtrlVal ( panel, PANEL_SET_AUTH_USER1,&tmp);
+	GetCtrlVal ( panel, SET_AUTH_USER1,&tmp);
 	if(tmp)
 		sys->set.auth[1][5] = OP_USER;
 	else
 		sys->set.auth[1][5] = OP_UNKONW;
 	
-	GetCtrlVal ( panel, PANEL_SET_AUTH_USER2,&tmp);
+	GetCtrlVal ( panel, SET_AUTH_USER2,&tmp);
 	if(tmp)
 		sys->set.auth[2][5] = OP_USER;
 	else
 		sys->set.auth[2][5] = OP_UNKONW;
 	
-	GetCtrlVal ( panel, PANEL_SET_AUTH_USER3,&tmp);
+	GetCtrlVal ( panel, SET_AUTH_USER3,&tmp);
 	if(tmp)
 		sys->set.auth[3][5] = OP_USER;
 	else
@@ -233,58 +217,41 @@ void Load_FunctionSet(int panel)
 	if(Size >= 1)
 	{
 		CheckValueRange(&sys->set.ChuckLock_Check_Enabled,1,0);
-		SetCtrlVal ( panel, PANEL_SET_CHECKBOX_CHUCK,sys->set.ChuckLock_Check_Enabled);
+		SetCtrlVal ( panel, SET_CHECKBOX_CHUCK,sys->set.ChuckLock_Check_Enabled);
 
  		CheckValueRange(&sys->set.Door_Interlock_Check_Enabled,1,0);
-		SetCtrlVal ( panel, PANEL_SET_CHECKBOX_DOOR,sys->set.Door_Interlock_Check_Enabled);
+		SetCtrlVal ( panel, SET_CHECKBOX_DOOR,sys->set.Door_Interlock_Check_Enabled);
 
 		CheckValueRange(&sys->set.Exhaust_Check_Enabled,1,0);
-		SetCtrlVal ( panel, PANEL_SET_CHECKBOX_EXHAUST,sys->set.Exhaust_Check_Enabled);
-		
-		SetCtrlVal ( panel, PANEL_SET_DOWN_DELAY_2,sys->set.down_delay_02);
-		SetCtrlVal ( panel, PANEL_SET_DOWN_DELAY_3,sys->set.down_delay_03);
-		SetCtrlVal ( panel, PANEL_SET_DOWN_DELAY_4,sys->set.down_delay_04);
-		SetCtrlVal ( panel, PANEL_SET_DOWN_DELAY_5,sys->set.down_delay_05);
-		SetCtrlVal ( panel, PANEL_SET_DOWN_DELAY_6,sys->set.down_delay_06);
-		SetCtrlVal ( panel, PANEL_SET_DOWN_DELAY_7,sys->set.down_delay_07);
-		SetCtrlVal ( panel, PANEL_SET_DOWN_DELAY_8,sys->set.down_delay_08);
-		SetCtrlVal ( panel, PANEL_SET_DOWN_DELAY_9,sys->set.down_delay_09);
-		SetCtrlVal ( panel, PANEL_SET_DOWN_DELAY_10,sys->set.down_delay_10);
-		SetCtrlVal ( panel, PANEL_SET_DOWN_DELAY_11,sys->set.down_delay_11);
-		SetCtrlVal ( panel, PANEL_SET_DOWN_DELAY_12,sys->set.down_delay_12);
-		SetCtrlVal ( panel, PANEL_SET_DOWN_DELAY_13,sys->set.down_delay_13);
-		SetCtrlVal ( panel, PANEL_SET_DOWN_DELAY_14,sys->set.down_delay_14);
-		SetCtrlVal ( panel, PANEL_SET_DOWN_DELAY_15,sys->set.down_delay_15);
+		SetCtrlVal ( panel, SET_CHECKBOX_EXHAUST,sys->set.Exhaust_Check_Enabled);
 
 		CheckValueRange(&sys->set.SaveHeightMode_Enabled,1,0);
-		SetCtrlVal ( panel, PANEL_SET_CHECKBOX_SAFE,sys->set.SaveHeightMode_Enabled);
+		SetCtrlVal ( panel, SET_CHECKBOX_SAFE,sys->set.SaveHeightMode_Enabled);
 		
-		CheckValueRange(&sys->set.IPABufferMode_Enabled,1,0);
-		SetCtrlVal ( panel, PANEL_SET_CHECKBOX_IPA,sys->set.IPABufferMode_Enabled);
 		
-		SetCtrlVal ( panel, PANEL_SET_AUTH_RECIPE1,sys->set.auth[1][0]==OP_RCP?1:0);
-		SetCtrlVal ( panel, PANEL_SET_AUTH_RECIPE2,sys->set.auth[2][0]==OP_RCP?1:0);
-		SetCtrlVal ( panel, PANEL_SET_AUTH_RECIPE3,sys->set.auth[3][0]==OP_RCP?1:0);
+		SetCtrlVal ( panel, SET_AUTH_RECIPE1,sys->set.auth[1][0]==OP_RCP?1:0);
+		SetCtrlVal ( panel, SET_AUTH_RECIPE2,sys->set.auth[2][0]==OP_RCP?1:0);
+		SetCtrlVal ( panel, SET_AUTH_RECIPE3,sys->set.auth[3][0]==OP_RCP?1:0);
 		
-		SetCtrlVal ( panel, PANEL_SET_AUTH_TANK1,sys->set.auth[1][1] == OP_TANK?1:0);
-		SetCtrlVal ( panel, PANEL_SET_AUTH_TANK2,sys->set.auth[2][1] == OP_TANK?1:0);
-		SetCtrlVal ( panel, PANEL_SET_AUTH_TANK3,sys->set.auth[3][1] == OP_TANK?1:0);
+		SetCtrlVal ( panel, SET_AUTH_TANK1,sys->set.auth[1][1] == OP_TANK?1:0);
+		SetCtrlVal ( panel, SET_AUTH_TANK2,sys->set.auth[2][1] == OP_TANK?1:0);
+		SetCtrlVal ( panel, SET_AUTH_TANK3,sys->set.auth[3][1] == OP_TANK?1:0);
 		
-		SetCtrlVal ( panel, PANEL_SET_AUTH_ROBOT1,sys->set.auth[1][2] == OP_ROBOT?1:0);
-		SetCtrlVal ( panel, PANEL_SET_AUTH_ROBOT2,sys->set.auth[2][2] == OP_ROBOT?1:0);
-		SetCtrlVal ( panel, PANEL_SET_AUTH_ROBOT3,sys->set.auth[3][2] == OP_ROBOT?1:0);
+		SetCtrlVal ( panel, SET_AUTH_ROBOT1,sys->set.auth[1][2] == OP_ROBOT?1:0);
+		SetCtrlVal ( panel, SET_AUTH_ROBOT2,sys->set.auth[2][2] == OP_ROBOT?1:0);
+		SetCtrlVal ( panel, SET_AUTH_ROBOT3,sys->set.auth[3][2] == OP_ROBOT?1:0);
 		
-		SetCtrlVal ( panel, PANEL_SET_AUTH_SET1,sys->set.auth[1][3] == OP_SET?1:0);
-		SetCtrlVal ( panel, PANEL_SET_AUTH_SET2,sys->set.auth[2][3] == OP_SET?1:0);
-		SetCtrlVal ( panel, PANEL_SET_AUTH_SET3,sys->set.auth[3][3] == OP_SET?1:0);
+		SetCtrlVal ( panel, SET_AUTH_SET1,sys->set.auth[1][3] == OP_SET?1:0);
+		SetCtrlVal ( panel, SET_AUTH_SET2,sys->set.auth[2][3] == OP_SET?1:0);
+		SetCtrlVal ( panel, SET_AUTH_SET3,sys->set.auth[3][3] == OP_SET?1:0);
 		
-		SetCtrlVal ( panel, PANEL_SET_AUTH_EXIT1,sys->set.auth[1][4] == OP_EXIT?1:0);
-		SetCtrlVal ( panel, PANEL_SET_AUTH_EXIT2,sys->set.auth[2][4] == OP_EXIT?1:0);
-		SetCtrlVal ( panel, PANEL_SET_AUTH_EXIT3,sys->set.auth[3][4] == OP_EXIT?1:0);
+		SetCtrlVal ( panel, SET_AUTH_EXIT1,sys->set.auth[1][4] == OP_EXIT?1:0);
+		SetCtrlVal ( panel, SET_AUTH_EXIT2,sys->set.auth[2][4] == OP_EXIT?1:0);
+		SetCtrlVal ( panel, SET_AUTH_EXIT3,sys->set.auth[3][4] == OP_EXIT?1:0);
 		
-		SetCtrlVal ( panel, PANEL_SET_AUTH_USER1,sys->set.auth[1][5] == OP_USER?1:0);
-		SetCtrlVal ( panel, PANEL_SET_AUTH_USER2,sys->set.auth[2][5] == OP_USER?1:0);
-		SetCtrlVal ( panel, PANEL_SET_AUTH_USER3,sys->set.auth[3][5] == OP_USER?1:0);
+		SetCtrlVal ( panel, SET_AUTH_USER1,sys->set.auth[1][5] == OP_USER?1:0);
+		SetCtrlVal ( panel, SET_AUTH_USER2,sys->set.auth[2][5] == OP_USER?1:0);
+		SetCtrlVal ( panel, SET_AUTH_USER3,sys->set.auth[3][5] == OP_USER?1:0);
 	}
 
 	fclose (Fp);

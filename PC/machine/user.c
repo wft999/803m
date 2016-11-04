@@ -1,7 +1,7 @@
 #include "pwctrl.h"
 #include <formatio.h>
 #include <userint.h>
-#include "robot_panel.h"
+#include "user.h"
 
 //==============================================================================
 //
@@ -47,11 +47,14 @@ int CheckAuth(OPERATION op)
 		{OP_RCP,OP_TANK,OP_ROBOT,OP_SET,OP_EXIT,OP_USER}
 	};
 	  
-	if(0)//(testBit(sys->hsAuto,RB)>0 )
+	if(sys->isAuto )
 	{
 		MessagePopup("Message","自动状态，不容许手动操作！");
 		return 0;
 	}
+	
+	if(sys->user.type == SUP_USER)
+		return 1;
 
 	for(int i = 0 ; i < 6; i++)
 	{
@@ -136,19 +139,19 @@ int CVICALLBACK Change_Account (int panel, int control, int event,
 	switch (event)
 	{
 		case EVENT_COMMIT:
-			if(control == PANELOGIN_CONFIRM)
+			if(control == PANE_LOGIN_CONFIRM)
 			{
 				char name[32];
 				char pass[32];
-				GetCtrlVal ( panel, PANELOGIN_UID, name);
-				GetCtrlVal ( panel, PANELOGIN_PWD, pass);
+				GetCtrlVal ( panel, PANE_LOGIN_UID, name);
+				GetCtrlVal ( panel, PANE_LOGIN_PWD, pass);
 				if(AuthUser(name,pass) > 0 )
 				{
 					RemovePopup(0);
 					DiscardPanel (panel);
 				}
 			}
-			else if(control == PANELOGIN_CANCEL)
+			else if(control == PANE_LOGIN_CANCEL)
 			{
 				RemovePopup(0);
 				DiscardPanel (panel);
@@ -167,10 +170,10 @@ int CVICALLBACK Change_Account (int panel, int control, int event,
             } */
 			break;
 		case EVENT_KEYPRESS:
-			if(control == PANELOGIN_UID && eventData1 == VAL_ENTER_VKEY)    {   
-                SetActiveCtrl (panel, PANELOGIN_PWD);
-            } else if (control == PANELOGIN_PWD && eventData1 == VAL_ENTER_VKEY)   {
-                SetActiveCtrl (panel, PANELOGIN_CONFIRM);
+			if(control == PANE_LOGIN_UID && eventData1 == VAL_ENTER_VKEY)    {   
+                SetActiveCtrl (panel, PANE_LOGIN_PWD);
+            } else if (control == PANE_LOGIN_PWD && eventData1 == VAL_ENTER_VKEY)   {
+                SetActiveCtrl (panel, PANE_LOGIN_CONFIRM);
             }
 			break;
 	}
@@ -208,10 +211,10 @@ void initUserPanel (int Panel_Handle, int Control_ID)
         	SetTableCellAttribute(Panel_Handle, Control_ID, cell, ATTR_CTRL_VAL, u->name);
         	cell.x++;
 			
-			InsertTableCellRingItem (Panel_Handle, Control_ID, cell, -1, "诀籓巨");
-            InsertTableCellRingItem (Panel_Handle, Control_ID, cell, -1, "砞称祘畍");
-            InsertTableCellRingItem (Panel_Handle, Control_ID, cell, -1, "祘祘畍");
-            InsertTableCellRingItem (Panel_Handle, Control_ID, cell, -1, "╰参恨瞶");
+			InsertTableCellRingItem (Panel_Handle, Control_ID, cell, -1, "操作工");
+            InsertTableCellRingItem (Panel_Handle, Control_ID, cell, -1, "设备工程师");
+            InsertTableCellRingItem (Panel_Handle, Control_ID, cell, -1, "制程工程师");
+            InsertTableCellRingItem (Panel_Handle, Control_ID, cell, -1, "管理员");
 			SetTableCellValFromIndex (Panel_Handle, Control_ID, cell, u->type-1);  
         	
 			cell.x++;
@@ -223,6 +226,7 @@ void initUserPanel (int Panel_Handle, int Control_ID)
 		free(buf);
 	}
 }
+
 
 int CVICALLBACK UserCommand (int panel, int control, int event,
 		void *callbackData, int eventData1, int eventData2)
@@ -240,12 +244,12 @@ int CVICALLBACK UserCommand (int panel, int control, int event,
 				GetCtrlVal(panel, PANEL_USER_NEWPWD2,newpwd2);
 				if(strcmp(newpwd,newpwd2) != 0)
 				{
-					MessagePopup("块岿粇","ㄢΩ块穝盞絏ぃ滁璓");
+					MessagePopup("输入错误","两次密码不一致！");
 					break;
 				}
 				else if(strlen(newpwd) > 10)
 				{
-					MessagePopup("块岿粇","盞絏び叫玂10才ず");
+					MessagePopup("输入错误","密码太长，请保持在10个字符以内");
 					break;
 				}
 				
@@ -273,12 +277,12 @@ int CVICALLBACK UserCommand (int panel, int control, int event,
 							fSAVE = OpenFile (FileName, VAL_READ_WRITE, VAL_TRUNCATE, VAL_BINARY);
 							WriteFile(fSAVE,buf,size);
 							CloseFile (	fSAVE );
-							MessagePopup("эΘ","эΘ");
+							MessagePopup("修改成功","修改成功");
 							break;
 						}
 						offset += sizeof(USER);
 						if(offset >= size)
-							MessagePopup("块岿粇","侣盞絏ぃタ絋,ぃэ");
+							MessagePopup("输入错误","旧密码不正确");
 					}
 					
 					free(buf);
@@ -299,10 +303,10 @@ int CVICALLBACK UserCommand (int panel, int control, int event,
         		SetTableCellAttribute(panel, PANEL_USER_TABLE, cell, ATTR_CTRL_VAL, "unname");
         		cell.x++;
 			
-				InsertTableCellRingItem (panel, PANEL_USER_TABLE, cell, -1, "诀籓巨");
-            	InsertTableCellRingItem (panel, PANEL_USER_TABLE, cell, -1, "砞称祘畍");
-            	InsertTableCellRingItem (panel, PANEL_USER_TABLE, cell, -1, "祘祘畍");
-            	InsertTableCellRingItem (panel, PANEL_USER_TABLE, cell, -1, "╰参恨瞶");
+				InsertTableCellRingItem (panel, PANEL_USER_TABLE, cell, -1, "操作工");
+            	InsertTableCellRingItem (panel, PANEL_USER_TABLE, cell, -1, "设备工程师");
+            	InsertTableCellRingItem (panel, PANEL_USER_TABLE, cell, -1, "制程工程师");
+            	InsertTableCellRingItem (panel, PANEL_USER_TABLE, cell, -1, "管理员");
 				SetTableCellValFromIndex (panel, PANEL_USER_TABLE, cell, 0);
 				
 				cell.x++;

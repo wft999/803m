@@ -15,7 +15,6 @@
 //==============================================================================
 // Include files
 
-//#include "robot_panel.h"
 #include "type.h"
 
 //==============================================================================
@@ -309,6 +308,8 @@ int CVICALLBACK ManualInput (int panel, int control, int event,
 	switch (event)
 	{
 		case EVENT_COMMIT:
+			if(CheckAuth(OP_ROBOT) == 0)
+				return 0;
 			if(control == PANEL_RB_CHECKBOX_PERMIT_INPUT ){
 				int state;
 				GetCtrlVal (panel, control, &state); 

@@ -7,7 +7,7 @@ CVI Pub Local Dir = "/C/ProgramData/National Instruments/CVI90"
 CVI Pub Global Dir = "/C/ProgramData/National Instruments/CVI"
 IVI Standard Root Dir = "/C/Program Files (x86)/IVI"
 VXIplug&play Framework Dir = "/c/vxipnp/winnt"
-Number of Files = 24
+Number of Files = 29
 Target Type = "Executable"
 Flags = 16
 Copied From Locked InstrDrv Directory = False
@@ -87,8 +87,19 @@ Project Flags = 0
 Folder = "Source Files"
 
 [File 0007]
-File Type = "User Interface Resource"
+File Type = "Include"
 Res Id = 7
+Path Is Rel = True
+Path Rel To = "Project"
+Path Rel Path = "main.h"
+Path = "/d/wakom/803m/PC/machine/main.h"
+Exclude = False
+Project Flags = 0
+Folder = "Include Files"
+
+[File 0008]
+File Type = "User Interface Resource"
+Res Id = 8
 Path Is Rel = True
 Path Rel To = "Project"
 Path Rel Path = "main.uir"
@@ -97,9 +108,9 @@ Exclude = False
 Project Flags = 0
 Folder = "User Interface Files"
 
-[File 0008]
+[File 0009]
 File Type = "Include"
-Res Id = 8
+Res Id = 9
 Path Is Rel = True
 Path Rel To = "Project"
 Path Rel Path = "MiQPLC/MIQPLC.h"
@@ -108,9 +119,9 @@ Exclude = False
 Project Flags = 0
 Folder = "Include Files"
 
-[File 0009]
+[File 0010]
 File Type = "Library"
-Res Id = 9
+Res Id = 10
 Path Is Rel = True
 Path Rel To = "Project"
 Path Rel Path = "MiQPLC/MiQPLC.lib"
@@ -119,9 +130,9 @@ Exclude = False
 Project Flags = 0
 Folder = "Instrument Files"
 
-[File 0010]
+[File 0011]
 File Type = "CSource"
-Res Id = 10
+Res Id = 11
 Path Is Rel = True
 Path Rel To = "Project"
 Path Rel Path = "msie.c"
@@ -131,9 +142,9 @@ Compile Into Object File = False
 Project Flags = 0
 Folder = "Source Files"
 
-[File 0011]
+[File 0012]
 File Type = "Function Panel"
-Res Id = 11
+Res Id = 12
 Path Is Rel = True
 Path Rel To = "Project"
 Path Rel Path = "msie.fp"
@@ -142,9 +153,9 @@ Exclude = False
 Project Flags = 0
 Folder = "Instrument Files"
 
-[File 0012]
+[File 0013]
 File Type = "CSource"
-Res Id = 12
+Res Id = 13
 Path Is Rel = True
 Path Rel To = "Project"
 Path Rel Path = "plc.c"
@@ -154,9 +165,9 @@ Compile Into Object File = False
 Project Flags = 0
 Folder = "Source Files"
 
-[File 0013]
+[File 0014]
 File Type = "CSource"
-Res Id = 13
+Res Id = 14
 Path Is Rel = True
 Path Rel To = "Project"
 Path Rel Path = "recipe.c"
@@ -166,9 +177,20 @@ Compile Into Object File = False
 Project Flags = 0
 Folder = "Source Files"
 
-[File 0014]
+[File 0015]
+File Type = "Include"
+Res Id = 15
+Path Is Rel = True
+Path Rel To = "Project"
+Path Rel Path = "recipe.h"
+Path = "/d/wakom/803m/PC/machine/recipe.h"
+Exclude = False
+Project Flags = 0
+Folder = "Include Files"
+
+[File 0016]
 File Type = "User Interface Resource"
-Res Id = 14
+Res Id = 16
 Path Is Rel = True
 Path Rel To = "Project"
 Path Rel Path = "recipe.uir"
@@ -177,9 +199,9 @@ Exclude = False
 Project Flags = 0
 Folder = "User Interface Files"
 
-[File 0015]
+[File 0017]
 File Type = "CSource"
-Res Id = 15
+Res Id = 17
 Path Is Rel = True
 Path Rel To = "Project"
 Path Rel Path = "rkc.c"
@@ -189,9 +211,9 @@ Compile Into Object File = False
 Project Flags = 0
 Folder = "Source Files"
 
-[File 0016]
+[File 0018]
 File Type = "CSource"
-Res Id = 16
+Res Id = 18
 Path Is Rel = True
 Path Rel To = "Project"
 Path Rel Path = "robot.c"
@@ -201,9 +223,9 @@ Compile Into Object File = False
 Project Flags = 0
 Folder = "Source Files"
 
-[File 0017]
+[File 0019]
 File Type = "Include"
-Res Id = 17
+Res Id = 19
 Path Is Rel = True
 Path Rel To = "Project"
 Path Rel Path = "robot.h"
@@ -212,9 +234,9 @@ Exclude = False
 Project Flags = 0
 Folder = "Include Files"
 
-[File 0018]
+[File 0020]
 File Type = "User Interface Resource"
-Res Id = 18
+Res Id = 20
 Path Is Rel = True
 Path Rel To = "Project"
 Path Rel Path = "robot.uir"
@@ -223,20 +245,31 @@ Exclude = False
 Project Flags = 0
 Folder = "User Interface Files"
 
-[File 0019]
-File Type = "User Interface Resource"
-Res Id = 19
+[File 0021]
+File Type = "Include"
+Res Id = 21
 Path Is Rel = True
 Path Rel To = "Project"
-Path Rel Path = "robot_panel.uir"
-Path = "/d/wakom/803m/PC/machine/robot_panel.uir"
+Path Rel Path = "set.h"
+Path = "/d/wakom/803m/PC/machine/set.h"
+Exclude = False
+Project Flags = 0
+Folder = "Include Files"
+
+[File 0022]
+File Type = "User Interface Resource"
+Res Id = 22
+Path Is Rel = True
+Path Rel To = "Project"
+Path Rel Path = "set.uir"
+Path = "/d/wakom/803m/PC/machine/set.uir"
 Exclude = False
 Project Flags = 0
 Folder = "User Interface Files"
 
-[File 0020]
+[File 0023]
 File Type = "CSource"
-Res Id = 20
+Res Id = 23
 Path Is Rel = True
 Path Rel To = "Project"
 Path Rel Path = "set_panel.c"
@@ -246,9 +279,9 @@ Compile Into Object File = False
 Project Flags = 0
 Folder = "Source Files"
 
-[File 0021]
+[File 0024]
 File Type = "CSource"
-Res Id = 21
+Res Id = 24
 Path Is Rel = True
 Path Rel To = "Project"
 Path Rel Path = "tank_diw.c"
@@ -258,9 +291,9 @@ Compile Into Object File = False
 Project Flags = 0
 Folder = "Source Files"
 
-[File 0022]
+[File 0025]
 File Type = "User Interface Resource"
-Res Id = 22
+Res Id = 25
 Path Is Rel = True
 Path Rel To = "Project"
 Path Rel Path = "tank_diw.uir"
@@ -269,9 +302,9 @@ Exclude = False
 Project Flags = 0
 Folder = "User Interface Files"
 
-[File 0023]
+[File 0026]
 File Type = "Include"
-Res Id = 23
+Res Id = 26
 Path Is Rel = True
 Path Rel To = "Project"
 Path Rel Path = "type.h"
@@ -280,9 +313,9 @@ Exclude = False
 Project Flags = 0
 Folder = "Include Files"
 
-[File 0024]
+[File 0027]
 File Type = "CSource"
-Res Id = 24
+Res Id = 27
 Path Is Rel = True
 Path Rel To = "Project"
 Path Rel Path = "user.c"
@@ -291,6 +324,28 @@ Exclude = False
 Compile Into Object File = False
 Project Flags = 0
 Folder = "Source Files"
+
+[File 0028]
+File Type = "Include"
+Res Id = 28
+Path Is Rel = True
+Path Rel To = "Project"
+Path Rel Path = "user.h"
+Path = "/d/wakom/803m/PC/machine/user.h"
+Exclude = False
+Project Flags = 0
+Folder = "Include Files"
+
+[File 0029]
+File Type = "User Interface Resource"
+Res Id = 29
+Path Is Rel = True
+Path Rel To = "Project"
+Path Rel Path = "user.uir"
+Path = "/d/wakom/803m/PC/machine/user.uir"
+Exclude = False
+Project Flags = 0
+Folder = "User Interface Files"
 
 [Folders]
 Folder 0 = "User Interface Files"
@@ -338,6 +393,8 @@ Include Path 4 Rel Path = "sqlite"
 Include Path 4 = "/d/wakom/803m/PC/machine/sqlite"
 Include Path 5 Is Rel = False
 Include Path 5 = "/c/Program Files (x86)/MariaDB/MariaDB C Client Library/include"
+Include Path 6 Is Rel = False
+Include Path 6 = "/d/wakom/25m/machine"
 
 [Create Executable]
 Executable File_Debug Is Rel = False

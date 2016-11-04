@@ -1,7 +1,7 @@
 #include <cviauto.h>
 #include "msie.h"
 #include <userint.h>
-#include "robot_panel.h"
+
 #include "base64.h"
 //==============================================================================
 //
@@ -538,11 +538,11 @@ void HandleAlarmLog(LOG* log)
 			
 				if(sys->isAuto){
 					sprintf(LogString,"%s alarm/insert %d %d %d",PHPCOMD,AlmID,1,1);   
-					sprintf(tmp,"AutoAlarmSet(%d)", AlmID);
+					sprintf(tmp,"Auto(%d)", AlmID);
 				}
 				else{
 					sprintf(LogString,"%s alarm/insert %d %d %d",PHPCOMD,AlmID,1,0);
-					sprintf(tmp,"ManualAlarmSet(%d)", AlmID);
+					sprintf(tmp,"Manual(%d)", AlmID);
 				}
 			
 				SetTreeCellAttribute (panelHandle, PANEL_TREE_CURR, 0, 1, ATTR_LABEL_TEXT, tmp);

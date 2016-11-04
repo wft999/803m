@@ -25,6 +25,8 @@
 #include "robot.h"  
 #include "recipe.h" 
 #include "tank_diw.h" 
+#include "set_panel.h" 
+#include "user.h"   
 //==============================================================================
 // Constants
 
@@ -134,17 +136,17 @@ int CVICALLBACK showPanel (int panel, int control, int event,
 				dialogHandle = LoadPanel (0, "recipe.uir", PANEL_RCP);
 				InstallPopup(dialogHandle);
 				initRecipePanel(dialogHandle,0);
-			}  /*
+			}  
 			else if(panel == panelHandle && control == PANEL_SHOW_SET){
-				dialogHandle = LoadPanel (0, "robot_panel.uir", PANEL_SET);
+				dialogHandle = LoadPanel (0, "set.uir", PANEL_SET);
 				InstallPopup(dialogHandle);
 				initSetPanel(dialogHandle); 
-			}
+			} 
 			else if(panel == panelHandle && control == PANEL_SHOW_HIS){
 				LaunchExecutable("C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe");
 			}
 			else if(panel == panelHandle && control == PANEL_SHOW_USER){
-				dialogHandle = LoadPanel (0, "robot_panel.uir", PANEL_USER);
+				dialogHandle = LoadPanel (0, "user.uir", PANEL_USER);
 				PasswordCtrl_ConvertFromString (dialogHandle, PANEL_USER_OLDPWD); 
 				PasswordCtrl_ConvertFromString (dialogHandle, PANEL_USER_NEWPWD);
 				PasswordCtrl_ConvertFromString (dialogHandle, PANEL_USER_NEWPWD2);
@@ -156,10 +158,10 @@ int CVICALLBACK showPanel (int panel, int control, int event,
 				
 			}
 			else if(panel == panelHandle && control == PANEL_LOGIN){
-				dialogHandle = LoadPanel (0, "robot_panel.uir", PANELOGIN);
-				PasswordCtrl_ConvertFromString (dialogHandle, PANELOGIN_PWD);
+				dialogHandle = LoadPanel (0, "user.uir", PANE_LOGIN);
+				PasswordCtrl_ConvertFromString (dialogHandle, PANE_LOGIN_PWD);
 				InstallPopup(dialogHandle);
-			} */
+			} 
 			else if(panel == panelHandle && control == PANEL_LOGOUT){
 				sys->user.type = UNKNOW_USER_TYPE;
 				ActionLog(USER_LOGOUT_EVENT,0,0,0,0,0);
@@ -178,8 +180,6 @@ int CVICALLBACK showPanel (int panel, int control, int event,
 				
 				if (!ButtonConfirm (panel,PANEL_TNK_02))		
 					return 0;
-			
-
 			}
 
 			break;

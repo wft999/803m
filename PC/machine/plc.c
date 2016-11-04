@@ -165,7 +165,7 @@ void writeCommand(int len)
 		Scan ( mPLC.DTRN, "%s[i*w4]>%x[b2]", DatSFT, &Q2h.cmdRead[cLop]);
 		DatSFT += 4;
 	}
-	if(Q2h.cmdRead[0]%10 == 0){
+	if(Q2h.cmdRead[0] != 0 && Q2h.cmdRead[0]%10 == 0){
 		plcErrorCount++;
 		CmtReleaseLock(plcLock);
 		MessagePopup("message","PLCæ");
@@ -173,6 +173,7 @@ void writeCommand(int len)
 	}
 	
 	char SwpSTR[1024];
+	memset(SwpSTR,0,sizeof(SwpSTR));
 	for(int i=0;i<len;i++)
 		Fmt (SwpSTR, "%s[a]<%i[r16w4p0]", Q2h.cmdWrite[i]);
 	StringUpperCase (SwpSTR);
@@ -197,6 +198,7 @@ void writeRecipe(int len)
 	CmtGetLock(plcLock);
 	
 	char SwpSTR[1024];
+	memset(SwpSTR,0,sizeof(SwpSTR));
 	for(int i=0;i<len;i++)
 		Fmt (SwpSTR, "%s[a]<%i[r16w4p0]", Q2h.cmdWrite[i]);
 	StringUpperCase (SwpSTR);
@@ -230,6 +232,7 @@ int readAlarm(void)
 		
 		if(Q2h.alarmBak[cLop] == Q2h.alarm[cLop])
 			continue;
+		
 					
 		LOG log;
 		log.type = ALARM_LOG;
@@ -238,6 +241,8 @@ int readAlarm(void)
 		log.alarm.rM =  Q2h.alarm[cLop];
 		log.alarm.rMBak = Q2h.alarmBak[cLop];
 		PutLogToQueue(&log, 1);
+		
+		Q2h.alarmBak[cLop] = Q2h.alarm[cLop]; 
 	}
 	
 	CmtReleaseLock(plcLock); 

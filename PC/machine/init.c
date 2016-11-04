@@ -11,7 +11,7 @@
 //==============================================================================
 // Include files
 #include <formatio.h>
-#include "machine.h"
+
 #include "type.h"
 
 //==============================================================================
@@ -191,8 +191,8 @@ int initSystem(void)
 	InitAlarm();
 	InitLog();
 	
-	strcpy(sys->user.name,"test");
-	sys->user.type = SUP_USER;//UNKNOW_USER_TYPE;
+//	strcpy(sys->user.name,"test");
+//	sys->user.type = SUP_USER;//UNKNOW_USER_TYPE;
 	
     return 1;
 }
