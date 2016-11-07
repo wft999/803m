@@ -34,7 +34,6 @@
 #define PLC_ALARM_ADD			100
 #define PLC_TK_POS_ADD			1000
 
-#define MAX_SYS_STATUS_LEN 50
 #define MAX_TK_STATUS_LEN 50 
 #define MAX_RB_STATUS_LEN 50 
 #define MAX_CMD_LEN 10 
@@ -57,11 +56,23 @@ union DatCnv
 	short	int		_I16[2];
 };
 
+typedef struct _PLC_SYS_STATUS{
+	unsigned short rcpid;
+	unsigned short tk_recipe_time[TANK_NUM];
+	unsigned short tk_remain_time[TANK_NUM];
+	unsigned short tk_car_count[TANK_NUM];
+	unsigned short tk_temp[TANK_NUM];
+	unsigned short tk_bit[TANK_NUM];
+	unsigned int   rb_h_pos[ROBOT_NUM];
+	unsigned int   rb_v_pos[ROBOT_NUM];
+	unsigned short sys_bit;	
+}PLC_SYS_STATUS;
+
 struct Q02hReg {
 	
 	unsigned short	alarm[MAX_ALARM_LEN];
 	unsigned short	alarmBak[MAX_ALARM_LEN];
-	unsigned short	sysStatus[MAX_SYS_STATUS_LEN];
+	PLC_SYS_STATUS	sysStatus;
 	unsigned short	tkStatus[MAX_TK_STATUS_LEN];
 	unsigned short	rbStatus[MAX_RB_STATUS_LEN];
 	
@@ -105,10 +116,10 @@ typedef struct _CAR{
 	unsigned int		isTexured;
 	unsigned int		sn;
 	TANK_ID				curTank;
-	double				iPrcTM[PRO_TANK_NUM];	
-	double				oPrcTM[PRO_TANK_NUM];
-	double				iPrcTemp[PRO_TANK_NUM];	
-	double				oPrcTemp[PRO_TANK_NUM];
+	double				iPrcTM[TANK_NUM];	
+	double				oPrcTM[TANK_NUM];
+	double				iPrcTemp[TANK_NUM];	
+	double				oPrcTemp[TANK_NUM];
 	
 }CAR;
 
@@ -117,128 +128,20 @@ typedef struct _CAR{
 // TANK Types
 
 
-typedef struct  _ROBOT_TANK{
-	char				name[16];
-	TANK_ID				tid;  //parent tank id
-	
-	CAR					car;
-
-	
-	
-	//robot position
-	double				xLock;
-	double				xUnlock;		
-	double				zDown;	
-	
-	double				xLock2;
-	double				xUnlock2;		
-	double				zDown2;	
-		
-	//ui data
-	int					uiCAR;
-	int					uiTM;
-	
-}RTANK;
-
-
-
-typedef struct  _PROCESS_TANK{
-	TANK_TYPE	type;
-	
-	
-
-	//runtime data
-	//TRECIPE				rcp;
-	double				curTemp;
-	double				tempData[TREND_DATA_LEN+10];
-	unsigned int 		carNumber;
-	int					Cond;
-	int					isWashing;
-	int					isMaking;
-	int					isMMaking;
-	
-	//init data
-	char				name[16];
-	
-
-
-	//UI data
-	int					uiCARNum;
-	int					uiProcTM;
-	
-	int					uiTANK;
-	int					uiShut;
-	int					uiHeat;
-//	int					uiPump;
-	
-	int					uiBubble01;
-	int					uiBubble02;
-	int					uiBubble03;
-	
-}PTANK;
-
 //==============================================================================
 // robot Types		
 
-typedef struct _ROBOT{
-	ROBOT_ID			rid;
 
-
-	int 				exitThread;
-	CAR					car;
-	long				curPosX;
-	long				curPosY;
-	
-	//file data
-	double				cleanPosH;		
-	double				cleanPosV;	
-	double				cleanLock;
-	double 				safeHight;
-	
-	//config data
-	double				UIPosTop;
-	double				UIPosLow;
-	double				UIPosLeft;
-	double				UIPosRight;
-
-	//output
-
-	
-	//tank data
-	char				name[16];
-	unsigned int 		firstRid;
-	unsigned int 		lastRid;
-	unsigned int		standbyRid;
-	
-}ROBOT;		
 
 /////////////////////////////////////////////////////////////////////////////////
 //system type
 
 typedef struct _SETTING{
-//	unsigned int 	akfUpPos;
-//	unsigned int 	akfLowPos;
 	
 	unsigned int	ChuckLock_Check_Enabled;
 	unsigned int 	Door_Interlock_Check_Enabled;
 	unsigned int 	Exhaust_Check_Enabled;
 	unsigned int 	SaveHeightMode_Enabled;
-	unsigned int 	IPABufferMode_Enabled;
-	
-	float			down_delay_02;
-	float			down_delay_03;
-	float			down_delay_04;
-	float			down_delay_05;
-	float			down_delay_06;
-	float			down_delay_07;
-	float			down_delay_08;
-	float			down_delay_09;
-	float			down_delay_10;
-	float			down_delay_11;
-	float			down_delay_12;
-	float			down_delay_13;
-	float			down_delay_14;
-	float			down_delay_15;
 	
 	OPERATION  auth[5][6];
 }SETTING;
@@ -256,10 +159,7 @@ typedef struct _MACHINE{
 	int			isAuto;
 	int			isManual;
 	int			curTempTrendPos;
-	
-	unsigned short rcpId;
-	
-	
+
 	SETTING		set;
 	USER		user;
 
@@ -277,19 +177,6 @@ typedef struct _ALARM
 	
 }ALARM;
 
-typedef struct _ROBOT_EVENT
-{
-	ROBOT_ID			rid;
-	ROBOT_EVENT_TYPE	etype;
-//	ROBOT_COMMAND 		cmd;
-	
-}ROBOT_EVENT;
-
-typedef struct _PLC_EVENT
-{
-	PLC_EVENT_TYPE	etype;
-
-}PLC_EVENT;
 
 typedef struct _ACT_EVENT
 {
@@ -309,12 +196,6 @@ typedef struct _DOSING_EVENT
 	unsigned int		carNumber;
 }DOSING_EVENT;
 
-typedef struct _PDRAIN_EVENT
-{
-	PDRAIN_TYPE			type;
-	TANK_ID				tid;
-	unsigned int		carNumber;
-}PDRAIN_EVENT;
 
 typedef struct _LOG{
 	
@@ -323,13 +204,10 @@ typedef struct _LOG{
 	
 	union 
 	{
-		PLC_EVENT		plc;
 		ALARM 			alarm;
-		ROBOT_EVENT 	robot;
 		CAR				car;
 		ACT_EVENT		act;
 		DOSING_EVENT	dos;
-		PDRAIN_EVENT	pd;
 	};
 }LOG;
 
@@ -342,23 +220,17 @@ extern SYSTEM* sys;
 // Global functions
 int getBit(short data,int id) ;
 void setBit(unsigned short* data,int id) ;
+void writeCommand(int len);
 
-
-int ButtonConfirm (int _pnl, int _ctrl);
-int SavePositionData(ROBOT_ID rbid, RTANK_ID rtid, POS_TYPE type);
-int LoadPositionData(void);
-
-//int isTankReady(TANK_ID tid);
-void PutLogToQueue(LOG* log, int numItems);
 void SendPcAlarm(int id,int onOff);
-void bubble(int panel,unsigned int id,int up,int low,int r); 
+
 
 int CheckAuth(OPERATION op);
+
+void PutLogToQueue(LOG* log, int numItems); 
 void ActionLog(ACT_EVENT_TYPE etype,int data1,int data2,int data3,int data4,int data5);
-void SaveSystem(void);
 void DosingLog(DOSING_TYPE type,TANK_ID tid, unsigned int chem, unsigned int run);
-void PDrainLog(PDRAIN_TYPE type,TANK_ID tid,  unsigned int carNumber);
-int ReadTag(int id,int com);
+
 
 #ifdef __cplusplus
     }

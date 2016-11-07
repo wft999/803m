@@ -30,6 +30,8 @@
 // Global variables
 int InitLog (void);
 void UninitLog(void);
+void closePlc(void);
+int openPlc(void);
 //==============================================================================
 // Global functions
 
@@ -177,11 +179,9 @@ void RestoreSystem(void)
 
 int initSystem(void)
 {
-	 
-	
 	sys = (SYSTEM*)malloc(sizeof(SYSTEM));
 	memset(sys,0,sizeof(SYSTEM));
-	RestoreSystem();
+//	RestoreSystem();
 	
 //	initRTankData();
 	initRobotData();
@@ -191,15 +191,16 @@ int initSystem(void)
 	InitAlarm();
 	InitLog();
 	
-//	strcpy(sys->user.name,"test");
-//	sys->user.type = SUP_USER;//UNKNOW_USER_TYPE;
+	openPlc();
+	ActionLog(SYS_START,0,0,0,0,0);
 	
     return 1;
 }
 
 void unInitSystem(void)
 {
-	SaveSystem();
+	closePlc();
+//	SaveSystem();
 	
 	for(int i = 0; i < MAX_ALARM_NUM; i++)
 	{

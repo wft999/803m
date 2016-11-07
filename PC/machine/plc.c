@@ -76,15 +76,6 @@ void SendPcAlarm(int id,int onOff)
 	PutLogToQueue(&log,1); 	 
 }
 
-void LogPLCEvent(PLC_EVENT_TYPE	etype)
-{
-	LOG log;
-	log.type = PLC_LOG;
-	GetCurrentDateTime(&log.tm);
-	log.plc.etype = etype;	
-	
-	PutLogToQueue(&log,1); 
-}
 
 //==============================================================================
 // Global functions
@@ -97,7 +88,7 @@ void closePlc(void)
 
 int openPlc(void)
 {
-	CmtNewLock(NULL, OPT_TL_PROCESS_EVENTS_WHILE_WAITING, &plcLock); 
+	CmtNewLock(NULL, 0, &plcLock); 
 	
 	mPLC.COM	= 3;
 	mPLC.Bau	= 57600;
@@ -255,7 +246,7 @@ int readAlarm(void)
 int readSysStatus(void)
 {
     CmtGetLock(plcLock);
-	if(Get_Q_1CF4 (_WR_D, 0x00, PLC_SYS_STATUS_ADD, MAX_SYS_STATUS_LEN, &mPLC) < 0)
+	if(Get_Q_1CF4 (_WR_D, 0x00, PLC_SYS_STATUS_ADD, sizeof(PLC_SYS_STATUS), &mPLC) < 0)
 	{
 		plcErrorCount++;
 		CmtReleaseLock(plcLock);
@@ -263,13 +254,16 @@ int readSysStatus(void)
 	}
 		
 	int DatSFT = 0;
-	for (int cLop = 0; cLop < MAX_SYS_STATUS_LEN; cLop++){
-		Scan ( mPLC.DTRN, "%s[i*w4]>%x[b2]", DatSFT, &Q2h.sysStatus[cLop]);
+	for (int cLop = 0; cLop < sizeof(PLC_SYS_STATUS); cLop++){
+		Scan ( mPLC.DTRN, "%s[i*w4]>%x[b2]", DatSFT, &Q2h.sysStatus.rcpid+cLop);
 		DatSFT += 4;
 	}
 	
 	CmtReleaseLock(plcLock); 
 	plcErrorCount=0;
+	
+	 
+	
 	
 	return 0;
 }

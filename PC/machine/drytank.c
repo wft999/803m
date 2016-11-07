@@ -70,7 +70,7 @@ int CVICALLBACK DryCommand (int panel, int control, int event,
 	
 	if(CheckAuth(OP_TANK) == 0)
 		return 0;
-	if (!ButtonConfirm (panel,control))		
+	if (!ConfirmPopup("操作确认","是否确定执行您选择的功能？"))		
 		return 0; 
 	
 	switch (control) {
@@ -199,7 +199,7 @@ int CVICALLBACK AkfCommand (int panel, int control, int event,
 	
 	if(CheckAuth(OP_TANK) == 0)
 		return 0;
-	if (!ButtonConfirm (panel,control))		
+	if (!ConfirmPopup("操作确认","是否确定执行您选择的功能？"))		
 		return 0; 
 	
 	switch (control) {
@@ -260,7 +260,7 @@ int CVICALLBACK LoadCommand (int panel, int control, int event,
 	
 	if(CheckAuth(OP_TANK) == 0)
 		return 0;
-	if (!ButtonConfirm (panel,control))		
+	if (!ConfirmPopup("操作确认","是否确定执行您选择的功能？"))		
 		return 0; 
 	
 	switch (control) {

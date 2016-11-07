@@ -152,7 +152,7 @@ int CVICALLBACK RecipeConfirm (int panel, int control, int event,
 		case EVENT_COMMIT:
 			if(CheckAuth(OP_RCP) == 0)
 				return 0;
-			if (!ButtonConfirm (panel,control))		
+			if (!ConfirmPopup("操作确认","是否确定执行您选择的功能？"))		
 				return 0; 
 
 			
@@ -179,28 +179,30 @@ int CVICALLBACK Call_Recipe (int panel, int control, int event,void *callbackDat
 		case EVENT_COMMIT:
 			switch (control) {
 				case RCP_SYS_COPY:
-					//if(CheckAuth(OP_RCP) == 0)
-					//	break;
-					//if (!ButtonConfirm (panel,control))		
-					//	break;
+					if(CheckAuth(OP_RCP) == 0)
+						break;
+					if (!ConfirmPopup("操作确认","是否确定执行您选择的功能？"))		
+						break;
 					GetCtrlIndex(panelSys, RCP_SYS_RING, &copyRcipID);
 					SetCtrlAttribute (panel, RCP_SYS_PASTE, ATTR_DIMMED, 0);
 					
 					break;
 					
 				case RCP_SYS_PASTE:
-					//if(CheckAuth(OP_RCP) == 0)
-					//	break;
-					//if (!ButtonConfirm (panel,control))		
-					//	break;
+					if(CheckAuth(OP_RCP) == 0)
+						break;
+					if (!ConfirmPopup("操作确认","是否确定执行您选择的功能？"))		
+						break;
 					LoadRecipeData(panel,copyRcipID);
 					
 					break;
 					
 					
 				case RCP_SYS_SAVE:
-				//	if(CheckAuth(OP_RCP) == 0)
-				//		break;
+					if(CheckAuth(OP_RCP) == 0)
+						break;
+					if (!ConfirmPopup("操作确认","是否确定执行您选择的功能？"))		
+						break;
 
 					SetWaitCursor (1);
 					ProcessSystemEvents();

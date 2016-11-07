@@ -452,66 +452,7 @@ void DosingLog(DOSING_TYPE type,TANK_ID tid, unsigned int chem, unsigned int car
 	}   */
 }
 
-void PDrainLog(PDRAIN_TYPE type,TANK_ID tid,  unsigned int carNumber)  
-{
-/*	char tmp[256];
-	if(type == PDRAIN_PART)
-	{
-		Fmt(tmp,"%s<啟動PartialDrain(CarNumber:%d)(DrainVol:%f)(IPA:%f)(KOH:%f)(DIW:%f)(ADD:%f)",
-			carNumber,
-			sys->tk[tid].rcp.PdVol,
-			sys->tk[tid].rcp.PdCH1,
-			sys->tk[tid].rcp.PdCH2,
-			sys->tk[tid].rcp.PdCH3,
-			sys->tk[tid].rcp.PdCH4);
-		
-		DosingLog(PARTIAL_DRAIN,tid,1,carNumber);
-		DosingLog(PARTIAL_DRAIN,tid,2,carNumber);
-		DosingLog(PARTIAL_DRAIN,tid,3,carNumber);
-		DosingLog(PARTIAL_DRAIN,tid,4,carNumber);
-	}
-	else
-	{
-		if(carNumber == 1)
-			Fmt(tmp,"%s<自動換酸準備中");
-		else if(carNumber == 2)
-			Fmt(tmp,"%s<自動換酸當槽中");
-		else if(carNumber == 3)
-		{
-			int i = 0;
-			char* schem[3][4] = {{"H2O2","KOH","DIW",""}, {"IPA","KOH","DIW","ADD"}, {"HF","HCL","DIW",""}};
-			if(tid == TANK_02)
-				i = 0;
-			else if(tid == TANK_04 || tid == TANK_07)
-				i = 1; 
-			else if(tid == TANK_11)
-				i = 2;
 
-			Fmt(tmp,"%s<自動換酸配槽(%s:%f[p1],%s:%f[p1],%s:%f[p1],%s:%f[p1])",
-					schem[i][0],sys->tk[tid].MakeCH1,
-					schem[i][1],sys->tk[tid].MakeCH2,
-					schem[i][2],sys->tk[tid].MakeCH3,
-					schem[i][3],sys->tk[tid].MakeCH4);
-		}
-		else if(carNumber == 0)
-		{
-			Fmt(tmp,"%s<自動換酸完成");
-			
-			DosingLog(AUTO_MIX_ACID,tid,1,carNumber);
-			DosingLog(AUTO_MIX_ACID,tid,2,carNumber);
-			DosingLog(AUTO_MIX_ACID,tid,3,carNumber);
-			DosingLog(AUTO_MIX_ACID,tid,4,carNumber); 
-		}
-	}
-	
-	char str[256];
-	char encode[256];
-	char encode1[256]; 
-	unicode_to_utf8(tmp,encode,256);
-	Base64Encode(encode,strlen(encode),encode1); 
-	sprintf(str,"%s operation/insert %s %s %s",PHPCOMD,sys->user.name,sys->tk[tid].name,encode1);
-	LaunchExecutableEx(str,LE_HIDE,NULL);	  */
-}
 
 void HandleAlarmLog(LOG* log)
 {
@@ -607,7 +548,7 @@ void HandleCarLog(LOG* log)
 	Fmt(tmp,"%s<%s prod/insert %d,%s,%s,",PHPCOMD,log->car.sn,log->car.tag1,log->car.tag2);
 	
 	int i = 0;
-	for(int i = 0;i < PRO_TANK_NUM;i++)
+	for(int i = 0;i < TANK_NUM;i++)
 	{
 		FormatDateTimeString (log->car.iPrcTM[i], "%H:%M:%S", tm, 32);
 		Fmt(tmp,"%s[a]<Enter:%s(%f[p1])-",tm,log->car.iPrcTemp[i]);
@@ -620,21 +561,6 @@ void HandleCarLog(LOG* log)
 //	LogToFile(log,tmp);
 }
 
-void HandlePLCLog(LOG* log)
-{
-	char tmp[256];
-	char* type[] = {"unknow","SetupRecipe","SetupDosing","SetupMake","SetupSystemSetting","SetupRobotPosition"}; 
-
-//	char tmstr[32];
-//	FormatDateTimeString (log->tm, "%H:%M:%S", tmstr, 30); 
-	
-//	Fmt(tmp,"%s<%s,Event:%s",tmstr, type[log->plc.etype]);
-//	LogToFile(log,tmp);
-	char encode1[256]; 
-	Base64Encode(type[log->plc.etype],strlen(type[log->plc.etype]),encode1);
-	sprintf(tmp,"%s operation/insert %s PLC %s",PHPCOMD,sys->user.name,encode1);
-	LaunchExecutableEx(tmp,LE_HIDE,NULL);
-}
 
 static void CVICALLBACK GetLogFromQueueCallback (int queueHandle, unsigned int event,
                            int value, void *callbackData)

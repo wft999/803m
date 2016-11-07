@@ -57,18 +57,16 @@
 #define  key_save_pc_x_unlock2		54
 #define  key_save_pc_z_bottom2		55
 
-#define  CMD_ROBOT					10
-#define  CMD_SAVE_RB_POS			40
-#define  CMD_SAVE_RB_POS_PC			50
+
 
 //==============================================================================
 // Types
 
 //==============================================================================
 // Static global variables
-static int firstTid;
+static TANK_ID firstTid;
 static int curRobotId;
-static RTANK_ID curTid;
+static TANK_ID curTid;
 static  int on_bitmap_id;
 static  int off_bitmap_id;
 static int cur_type;
@@ -90,7 +88,7 @@ double				zDown2;
 //==============================================================================
 // Global functions
 int readTankPos(int tid);
-void writeCommand(int len);
+
 int readRobotStatus(int rid);
 
 int CVICALLBACK SavePosition (int panel, int control, int event,
@@ -113,7 +111,7 @@ int CVICALLBACK SavePosition (int panel, int control, int event,
 				SetCtrlVal (panel, PANEL_RB_CHECKBOX_PERMIT_SAVE, 0); 
 				return 0;
 			}
-			if (!ButtonConfirm (panel,control))	{
+			if (!ConfirmPopup("操作确认","是否确定执行您选择的功能？"))	{
 				SetCtrlAttribute(panel,PANEL_RB_SET_X_UNLOCK, ATTR_DIMMED, 1); 
 				SetCtrlAttribute(panel,PANEL_RB_SET_X_LOCK, ATTR_DIMMED, 1);
 				SetCtrlAttribute(panel,PANEL_RB_SET_Z_DOWN, ATTR_DIMMED, 1); 
@@ -342,7 +340,7 @@ int CVICALLBACK ManualInput (int panel, int control, int event,
 					SetCtrlAttribute(panel,PANEL_RB_SET_X_LOCK, ATTR_DIMMED, 1);
 					SetCtrlAttribute(panel,PANEL_RB_SET_Z_DOWN, ATTR_DIMMED, 1);
 				}
-			}else if(control == PANEL_RB_CHECKBOX_X_JOG_SPEED ){
+			}else if(control == PANEL_RB_X_JOG_SPEED ){
 				int state;
 				GetCtrlVal (panel, control, &state); 	  
 				if(state)
@@ -359,7 +357,7 @@ int CVICALLBACK ManualInput (int panel, int control, int event,
 					Q2h.cmdWrite[2]=key_x_jog_low_speed;
 					writeCommand(3);	
 				}
-			}else if(control == PANEL_RB_CHECKBOX_Z_JOG_SPEED ){
+			}else if(control == PANEL_RB_Z_JOG_SPEED ){
 				int state;
 				GetCtrlVal (panel, control, &state); 	  
 				if(state)
@@ -376,7 +374,7 @@ int CVICALLBACK ManualInput (int panel, int control, int event,
 					Q2h.cmdWrite[2]=key_z_jog_low_speed;
 					writeCommand(3);	
 				}
-			}else if(control == PANEL_RB_CHECKBOX_TEACH_BOX ){
+			}else if(control == PANEL_RB_TEACH_BOX ){
 				int state;
 				GetCtrlVal (panel, control, &state); 	  
 				if(state)
@@ -542,7 +540,7 @@ int CVICALLBACK RobotCommand (int panel, int control, int event,
 		case EVENT_LEFT_CLICK:
 			if(CheckAuth(OP_ROBOT) == 0)
 				return 0;
-			if (!ButtonConfirm (panel,control))		
+			if (!ConfirmPopup("操作确认","是否确定执行您选择的功能？"))		
 				return 0;
 			switch(control)
 			{
@@ -651,6 +649,12 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
 		case EVENT_TIMER_TICK:
 			if(readRobotStatus(curRobotId) <0 )
 				break;
+			
+			////////////////////////////////////////////////////////////////////
+			SetCtrlVal (panel, PANEL_RB_TEACH_BOX, getBit(Q2h.rbStatus[37],9));
+			SetCtrlVal (panel, PANEL_RB_X_JOG_SPEED, getBit(Q2h.rbStatus[14],2)); 
+			SetCtrlVal (panel, PANEL_RB_Z_JOG_SPEED, getBit(Q2h.rbStatus[29],2));
+			/////////////////////////////////////////////////////////////////////
 			
 			GetTableCellVal (panel, PANEL_RB_TABLE, MakePoint (2, 1), str);
 			GetTableCellRingIndexFromValue (panel, PANEL_RB_TABLE, 0, MakePoint (2, 1), &type, str);
@@ -766,6 +770,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, "------------------------------");
 				
+				
 				cell.y = 12;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
@@ -857,7 +862,6 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
 				else
 					SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL,off_bitmap_id);
 				
-				id++;
 				
 				cell.y = 19;
 				if(cur_type != type) 
@@ -1227,7 +1231,7 @@ void initRobotPanel(int panel, int rid, int tid)
 	
 	
 	//jog low speed
-	Q2h.cmdWrite[0]=CMD_ROBOT;
+/*	Q2h.cmdWrite[0]=CMD_ROBOT;
 	Q2h.cmdWrite[1]=curRobotId;
 	Q2h.cmdWrite[2]=key_z_jog_low_speed; 
 	writeCommand(3);
@@ -1235,9 +1239,8 @@ void initRobotPanel(int panel, int rid, int tid)
 	Q2h.cmdWrite[0]=CMD_ROBOT;
 	Q2h.cmdWrite[1]=curRobotId;
 	Q2h.cmdWrite[2]=key_x_jog_low_speed; 
-	writeCommand(3);
-	SetCtrlVal (panel, PANEL_RB_CHECKBOX_X_JOG_SPEED, 0); 
-	SetCtrlVal (panel, PANEL_RB_CHECKBOX_Z_JOG_SPEED, 0);
+	writeCommand(3); */
+	
 	
 	//////////////////////////////////////////////////////////////////////////
     GetCtrlDisplayBitmap (panel, PANEL_RB_LEDOFF, 0, &off_bitmap_id);

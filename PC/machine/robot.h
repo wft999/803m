@@ -31,28 +31,28 @@
 #define  PANEL_RB_X_UNLOCK                15
 #define  PANEL_RB_X_LOCK                  16
 #define  PANEL_RB_CHECKBOX_PERMIT_SAVE    17      /* callback function: ManualInput */
-#define  PANEL_RB_CHECKBOX_TEACH_BOX      18      /* callback function: ManualInput */
-#define  PANEL_RB_CHECKBOX_Z_JOG_SPEED    19      /* callback function: ManualInput */
-#define  PANEL_RB_CHECKBOX_X_JOG_SPEED    20      /* callback function: ManualInput */
-#define  PANEL_RB_CHECKBOX_PERMIT_INPUT   21      /* callback function: ManualInput */
-#define  PANEL_RB_CMD_TAKE                22      /* callback function: RobotCommand */
-#define  PANEL_RB_CMD_PUT                 23      /* callback function: RobotCommand */
-#define  PANEL_RB_CHUCK_OFF               24      /* callback function: RobotCommand */
-#define  PANEL_RB_CHUCK_ON                25      /* callback function: RobotCommand */
-#define  PANEL_RB_CMD_HOME                26      /* callback function: RobotCommand */
-#define  PANEL_RB_CMD_CLEAN               27      /* callback function: RobotCommand */
-#define  PANEL_RB_CMD_MOVE_UNLOCK         28      /* callback function: RobotCommand */
-#define  PANEL_RB_REMOVE_CAR              29      /* callback function: RobotCommand */
-#define  PANEL_RB_ADD_CAR                 30      /* callback function: RobotCommand */
-#define  PANEL_RB_CMD_MOVE_LOCK           31      /* callback function: RobotCommand */
-#define  PANEL_RB_RING                    32      /* callback function: tankChange */
-#define  PANEL_RB_TEXTMSG_22              33
-#define  PANEL_RB_DECORATION_28           34
-#define  PANEL_RB_DECORATION_29           35
-#define  PANEL_RB_SET_X_UNLOCK            36      /* callback function: SavePosition */
-#define  PANEL_RB_SET_Z_DOWN              37      /* callback function: SavePosition */
-#define  PANEL_RB_SET_X_LOCK              38      /* callback function: SavePosition */
-#define  PANEL_RB_TIMER                   39      /* callback function: RobotTimer */
+#define  PANEL_RB_CHECKBOX_PERMIT_INPUT   18      /* callback function: ManualInput */
+#define  PANEL_RB_CMD_TAKE                19      /* callback function: RobotCommand */
+#define  PANEL_RB_CMD_PUT                 20      /* callback function: RobotCommand */
+#define  PANEL_RB_CHUCK_OFF               21      /* callback function: RobotCommand */
+#define  PANEL_RB_CHUCK_ON                22      /* callback function: RobotCommand */
+#define  PANEL_RB_CMD_HOME                23      /* callback function: RobotCommand */
+#define  PANEL_RB_CMD_CLEAN               24      /* callback function: RobotCommand */
+#define  PANEL_RB_CMD_MOVE_UNLOCK         25      /* callback function: RobotCommand */
+#define  PANEL_RB_REMOVE_CAR              26      /* callback function: RobotCommand */
+#define  PANEL_RB_ADD_CAR                 27      /* callback function: RobotCommand */
+#define  PANEL_RB_CMD_MOVE_LOCK           28      /* callback function: RobotCommand */
+#define  PANEL_RB_RING                    29      /* callback function: tankChange */
+#define  PANEL_RB_TEXTMSG_22              30
+#define  PANEL_RB_DECORATION_28           31
+#define  PANEL_RB_DECORATION_29           32
+#define  PANEL_RB_SET_X_UNLOCK            33      /* callback function: SavePosition */
+#define  PANEL_RB_SET_Z_DOWN              34      /* callback function: SavePosition */
+#define  PANEL_RB_SET_X_LOCK              35      /* callback function: SavePosition */
+#define  PANEL_RB_TIMER                   36      /* callback function: RobotTimer */
+#define  PANEL_RB_TEACH_BOX               37      /* callback function: ManualInput */
+#define  PANEL_RB_Z_JOG_SPEED             38      /* callback function: ManualInput */
+#define  PANEL_RB_X_JOG_SPEED             39      /* callback function: ManualInput */
 
 
      /* Menu Bars, Menus, and Menu Items: */
