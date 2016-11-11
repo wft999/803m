@@ -35,31 +35,22 @@ int openPlc(void);
 //==============================================================================
 // Global functions
 
-void initRobotData(void)
+int initTankData(void)
 {
-/*	sys->rb[0].rid = RB01;
-	sys->rb[1].rid = RB02;
-	sys->rb[2].rid = RB03;
-	strncpy(sys->rb[0].name,"robot1",11);
-	strncpy(sys->rb[1].name,"robot2",11);
-	strncpy(sys->rb[2].name,"robot3",11);
-
-	////////////////////////////////////////////////////////////////////
-	sys->rb[0].UIPosTop = 310.0;
-	sys->rb[0].UIPosLow = 350.0;
-	sys->rb[0].UIPosLeft = 165.0;
-	sys->rb[0].UIPosRight = 5*50.0 + 165.0;
+	char FileName[256];
+	char Path[MAX_PATHNAME_LEN ];
 	
-	sys->rb[1].UIPosTop = 310.0;
-	sys->rb[1].UIPosLow = 350.0;
-	sys->rb[1].UIPosLeft = 415.0;
-	sys->rb[1].UIPosRight = 6*50.0 + 415.0;
+	GetDir(Path);
+	Fmt(FileName,"%s<%s\\pos.dat",Path);
+	int fSAVE = OpenFile (FileName, VAL_READ_ONLY, VAL_TRUNCATE, VAL_BINARY);
+	if(fSAVE > 0)
+	{
+		ReadFile(fSAVE,(char*)sys->tkPos,sizeof(sys->tkPos));
+		CloseFile (	fSAVE );
+		return 1;
+	}
 	
-	sys->rb[2].UIPosTop = 310.0;
-	sys->rb[2].UIPosLow = 350.0;
-	sys->rb[2].UIPosLeft = 715.0;
-	sys->rb[2].UIPosRight = 5*50.0 + 715.0;   */
-	
+	return 0;
 }
 
 
@@ -73,7 +64,7 @@ void InitAlarm(void)
     if (GetProjectDir (projectDir) < 0)
         return;
     else
-        MakePathname (projectDir, "alarmlist.csv", fullPath);// where fullPath has the following format: c:\myproject\myfile.dat
+        MakePathname (projectDir, "alarmlist.csv", fullPath);
 
     int hfile;
     char lineBuffer[512];
@@ -181,11 +172,11 @@ int initSystem(void)
 {
 	sys = (SYSTEM*)malloc(sizeof(SYSTEM));
 	memset(sys,0,sizeof(SYSTEM));
-//	RestoreSystem();
 	
-//	initRTankData();
-	initRobotData();
-//	initTankData();
+	
+//	RestoreSystem();
+	initTankData();
+//	initRobotData();
 	
 
 	InitAlarm();
@@ -193,6 +184,9 @@ int initSystem(void)
 	
 	openPlc();
 	ActionLog(SYS_START,0,0,0,0,0);
+	
+	strcpy(sys->user.name,"test");
+	sys->user.type = SUP_USER;
 	
     return 1;
 }

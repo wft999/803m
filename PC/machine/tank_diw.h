@@ -15,10 +15,10 @@
      /* Panels and Controls: */
 
 #define  PANEL_DIW                        1       /* callback function: ExitDialog */
-#define  PANEL_DIW_VALVE_MAKE_AC1_IN      2
-#define  PANEL_DIW_VALVE_DOWN_2           3
-#define  PANEL_DIW_VALVE_DOWN             4
-#define  PANEL_DIW_VALVE_MAKE_AC4_IN      5
+#define  PANEL_DIW_VALVE_UP               2
+#define  PANEL_DIW_VALVE_BOBBLE           3
+#define  PANEL_DIW_VALVE_DRAIN            4
+#define  PANEL_DIW_VALVE_DOWN             5
 #define  PANEL_DIW_SPLITTER_11            6
 #define  PANEL_DIW_SPLITTER_10            7
 #define  PANEL_DIW_SPLITTER_14            8
@@ -56,15 +56,15 @@
 #define  PANEL_DIW_CAR                    40
 #define  PANEL_DIW_BUBBLE7                41
 #define  PANEL_DIW_PROCESS_LAB            42
-#define  PANEL_DIW_PROCESS_OFF            43      /* callback function: Command */
+#define  PANEL_DIW_PROCESS_OFF            43
 #define  PANEL_DIW_TEXTMSG_12             44
-#define  PANEL_DIW_PROCESS_ON             45      /* callback function: Command */
+#define  PANEL_DIW_PROCESS_ON             45
 #define  PANEL_DIW_TEXTMSG_11             46
 #define  PANEL_DIW_FILL1_LAB              47
 #define  PANEL_DIW_TEXTMSG_10             48
-#define  PANEL_DIW_FILL_OFF               49      /* callback function: Command */
+#define  PANEL_DIW_FILL_OFF               49
 #define  PANEL_DIW_TEXTMSG_9              50
-#define  PANEL_DIW_FILL_ON                51      /* callback function: Command */
+#define  PANEL_DIW_FILL_ON                51
 #define  PANEL_DIW_TEXTMSG_13             52
 #define  PANEL_DIW_TEXTMSG_14             53
 #define  PANEL_DIW_TEXTMSG_8              54
@@ -106,7 +106,6 @@
 
      /* Callback Prototypes: */
 
-int  CVICALLBACK Command(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
 int  CVICALLBACK ExitDialog(int panel, int event, void *callbackData, int eventData1, int eventData2);
 int  CVICALLBACK TankTimer(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
 

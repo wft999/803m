@@ -10,8 +10,7 @@ VXIplug&play Framework Dir = "/c/vxipnp/winnt"
 Number of Projects = 1
 Active Project = 1
 Project 0001 = "machine.prj"
-Project 0001 Folder Instrument Files Collapsed = True
-Drag Bar Left = 250
+Drag Bar Left = 251
 Window Top = 98
 Window Left = 540
 Window Bottom = 600
@@ -28,9 +27,9 @@ Save Changes Before Running = "Always"
 Hide Windows = False
 Break At First Statement = False
 Sort Type = "File Name"
-Number of Opened Files = 12
+Number of Opened Files = 8
 Window Confinement Region Enabled = True
-MainColumnWidth = 231
+MainColumnWidth = 232
 FileDateColumnWidth = 70
 FileSizeColumnWidth = 70
 StatusColumnWidth = 70
@@ -52,119 +51,70 @@ Disk Date = 3306448800
 In Projects = "1,"
 
 [File 0002]
-Path = "/d/wakom/803m/PC/machine/init.c"
-File Type = "CSource"
-Disk Date = 3561320606
-In Projects = "1,"
-Window Top = 209
-Window Left = 102
-Window Z-Order = 8
-Source Window State = "0,193,194,194,0,51,51,0,0,109,32,170,0,192,32,1,37,0,37,171,427,690,1,9954,"
-
-[File 0003]
-Path = "/d/wakom/803m/PC/machine/main.c"
-File Type = "CSource"
-Disk Date = 3561321299
-In Projects = "1,"
-Window Top = 95
-Window Left = 42
-Window Z-Order = 3
-Source Window State = "1,287,287,287,15,28,28,0,0,80,6,47,0,71,0,9,273,0,283,106,203,521,1,3421,"
-
-[File 0004]
-Path = "/d/wakom/803m/PC/machine/main.uir"
-File Type = "User Interface Resource"
-Disk Date = 3561278676
-In Projects = "1,"
-Window Top = 33
-Window Left = 10
-Window Height = 323
-Window Width = 521
-Window Z-Order = 6
-
-[File 0005]
 Path = "/d/wakom/803m/PC/machine/plc.c"
 File Type = "CSource"
-Disk Date = 3561321676
+Disk Date = 3561609753
 In Projects = "1,"
 Window Top = 250
 Window Left = 122
-Window Z-Order = 4
-Source Window State = "1,90,90,90,21,56,56,0,0,80,0,0,0,0,0,25,76,0,89,46,323,521,1,0,"
+Window Z-Order = 5
+Source Window State = "1,275,275,275,21,35,35,0,0,80,0,0,0,0,0,25,268,0,280,8,323,521,1,0,"
+Breakpoint 0001 = "151,0,enabled,"
+Breakpoint 0002 = "173,0,enabled,"
+Breakpoint 0003 = "333,0,enabled,"
 
-[File 0006]
+[File 0003]
 Path = "/d/wakom/803m/PC/machine/recipe.c"
 File Type = "CSource"
-Disk Date = 3561156195
+Disk Date = 3561670176
 In Projects = "1,"
 Window Top = 33
 Window Left = 10
-Window Z-Order = 2
-Source Window State = "1,241,241,241,5,20,20,0,0,80,0,3,0,3,0,23,141,0,175,72,299,521,1,0,"
+Window Z-Order = 3
+Source Window State = "1,41,41,41,5,19,19,0,0,80,0,3,0,3,0,23,39,0,78,76,299,521,1,0,"
 
-[File 0007]
-Path = "/d/wakom/803m/PC/machine/type.h"
-File Type = "Include"
-Disk Date = 3561275557
-In Projects = "1,"
-Window Top = 31
-Window Left = 6
-Window Z-Order = 9
-Source Window State = "1,67,67,67,19,26,26,0,3,99,0,39,0,0,0,17,54,0,67,19,235,634,1,0,"
-
-[File 0008]
-Path = "/d/wakom/803m/PC/machine/user.c"
-File Type = "CSource"
-Disk Date = 3561104926
-In Projects = "1,"
-Window Top = 163
-Window Left = 78
-Window Z-Order = 11
-Source Window State = "1,96,96,96,13,22,22,0,0,109,0,2,0,2,0,27,42,0,96,13,347,690,1,0,"
-
-[File 0009]
-Path = "/d/wakom/803m/PC/machine/user.uir"
-File Type = "User Interface Resource"
-Disk Date = 3561103752
-In Projects = "1,"
-Window Top = 126
-Window Left = 58
-Window Height = 323
-Window Width = 521
-Window Z-Order = 12
-
-[File 0010]
-Path = "/d/wakom/803m/PC/machine/const.h"
-File Type = "Include"
-Disk Date = 3561275518
-In Projects = "1,"
-Window Top = 31
-Window Left = 6
-Window Z-Order = 10
-Source Window State = "1,29,29,29,9,21,21,0,3,109,0,0,0,0,0,27,0,0,29,9,347,690,1,0,"
-
-[File 0011]
+[File 0004]
 Path = "/d/wakom/803m/PC/machine/robot.c"
 File Type = "CSource"
-Disk Date = 3561321299
+Disk Date = 3561603053
 In Projects = "1,"
 Window Top = 209
 Window Left = 102
-Window Z-Order = 1
-Source Window State = "0,638,638,638,16,26,26,0,0,180,36,593,0,596,99,5,298,0,302,16,411,690,1,8994,"
+Window Z-Order = 2
+Source Window State Line0001 = "0,775,775,775,83,113,113,0,0,109,27,1258,0,1278,78,5,1244,0,1255,75,411,690,1,84"
+Source Window State Line0002 = "54,"
 
-[File 0012]
-Path = "/d/wakom/803m/PC/machine/robot.uir"
-File Type = "User Interface Resource"
-Disk Date = 3561321237
+[File 0005]
+Path = "/d/wakom/803m/PC/machine/type.h"
+File Type = "Include"
+Disk Date = 3561692338
 In Projects = "1,"
+Window Top = 31
+Window Left = 6
+Window Z-Order = 4
+Source Window State = "1,118,119,119,4,29,29,0,3,99,0,39,0,0,0,17,112,0,118,4,235,634,1,0,"
+
+[File 0006]
+Path = "/d/wakom/803m/PC/machine/main.c"
+File Type = "CSource"
+Disk Date = 3561585381
+In Projects = "1,"
+Window Top = 95
+Window Left = 42
+Window Z-Order = 8
+Source Window State = "1,312,312,312,62,71,71,0,0,80,7,253,0,260,12,8,306,0,320,12,203,521,1,4294,"
+
+[File 0007]
+Path = "/d/wakom/803m/PC/machine/MiQPLC/MIQPLC.h"
+File Type = "Include"
+Disk Date = 3311858204
+In Projects = ""
 Window Top = 33
 Window Left = 10
-Window Height = 323
-Window Width = 521
-Window Z-Order = 5
+Window Z-Order = 7
+Source Window State = "1,101,101,101,0,54,54,0,0,80,0,0,0,0,0,25,85,0,120,83,323,521,1,0,"
 
-[File 0013]
+[File 0008]
 Path = "/d/wakom/803m/PC/machine/base64.c"
 File Type = "CSource"
 Disk Date = 3506562817
@@ -173,7 +123,16 @@ Window Top = 64
 Window Left = 26
 Source Window State = "1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,33,0,57,56,287,521,1,0,"
 
-[File 0014]
+[File 0009]
+Path = "/d/wakom/803m/PC/machine/const.h"
+File Type = "Include"
+Disk Date = 3561583026
+In Projects = "1,"
+Window Top = 31
+Window Left = 6
+Source Window State = "1,25,25,25,9,18,18,0,0,0,0,0,0,0,0,0,13,0,44,49,347,690,1,0,"
+
+[File 0010]
 Path = "/d/wakom/803m/PC/machine/drytank.c"
 File Type = "CSource"
 Disk Date = 3561156175
@@ -182,23 +141,41 @@ Window Top = 31
 Window Left = 6
 Source Window State = "1,262,262,262,9,38,38,0,0,0,0,0,0,0,0,0,249,0,262,62,363,690,1,0,"
 
-[File 0015]
+[File 0011]
+Path = "/d/wakom/803m/PC/machine/init.c"
+File Type = "CSource"
+Disk Date = 3561586152
+In Projects = "1,"
+Window Top = 209
+Window Left = 102
+Source Window State = "0,47,47,47,23,60,23,0,0,0,0,72,0,54,68,0,37,0,37,171,427,690,1,9954,"
+
+[File 0012]
 Path = "/d/wakom/803m/PC/machine/log.c"
 File Type = "CSource"
 Disk Date = 3561320976
 In Projects = "1,"
 Window Top = 31
 Window Left = 6
-Window Z-Order = 7
-Source Window State = "1,51,51,51,15,28,28,0,0,109,0,0,0,0,0,25,35,0,55,86,331,690,1,0,"
+Source Window State = "1,51,51,51,15,28,28,0,0,0,0,0,0,0,0,0,35,0,55,86,331,690,1,0,"
 
-[File 0016]
+[File 0013]
+Path = "/d/wakom/803m/PC/machine/main.uir"
+File Type = "User Interface Resource"
+Disk Date = 3561584116
+In Projects = "1,"
+Window Top = 33
+Window Left = 10
+Window Height = 323
+Window Width = 521
+
+[File 0014]
 Path = "/d/wakom/803m/PC/machine/MiQPLC/MiQPLC.lib"
 File Type = "Library"
 Disk Date = 3314556974
 In Projects = "1,"
 
-[File 0017]
+[File 0015]
 Path = "/d/wakom/803m/PC/machine/msie.c"
 File Type = "CSource"
 Disk Date = 3306448800
@@ -207,17 +184,18 @@ Window Top = 48
 Window Left = 18
 Source Window State = "1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,251,690,0,0,"
 
-[File 0018]
+[File 0016]
 Path = "/d/wakom/803m/PC/machine/recipe.uir"
 File Type = "User Interface Resource"
-Disk Date = 3560891550
+Disk Date = 3561694169
 In Projects = "1,"
 Window Top = 33
 Window Left = 10
 Window Height = 299
 Window Width = 521
+Window Z-Order = 1
 
-[File 0019]
+[File 0017]
 Path = "/d/wakom/803m/PC/machine/rkc.c"
 File Type = "CSource"
 Disk Date = 3560901444
@@ -226,7 +204,17 @@ Window Top = 117
 Window Left = 54
 Source Window State = "1,263,263,263,11,27,27,0,0,0,0,227,0,0,0,0,232,0,244,4,315,690,1,42,"
 
-[File 0020]
+[File 0018]
+Path = "/d/wakom/803m/PC/machine/robot.uir"
+File Type = "User Interface Resource"
+Disk Date = 3561591926
+In Projects = "1,"
+Window Top = 33
+Window Left = 10
+Window Height = 323
+Window Width = 521
+
+[File 0019]
 Path = "/d/wakom/803m/PC/machine/set.c"
 File Type = "CSource"
 Disk Date = 3561148448
@@ -235,28 +223,48 @@ Window Top = 186
 Window Left = 90
 Source Window State = "1,58,58,58,24,33,33,0,0,0,0,3,0,3,0,0,46,0,65,47,315,690,1,0,"
 
-[File 0021]
+[File 0020]
 Path = "/d/wakom/803m/PC/machine/set.uir"
 File Type = "User Interface Resource"
 Disk Date = 3561103589
 In Projects = "1,"
 
-[File 0022]
+[File 0021]
 Path = "/d/wakom/803m/PC/machine/tank_diw.c"
 File Type = "CSource"
-Disk Date = 3560670713
+Disk Date = 3561496750
 In Projects = "1,"
 Window Top = 157
 Window Left = 74
-Source Window State = "1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,16,58,299,521,1,0,"
+Window Z-Order = 6
+Source Window State = "1,38,38,38,15,24,24,0,0,80,0,0,0,0,0,23,25,0,38,56,299,521,1,0,"
 
-[File 0023]
+[File 0022]
 Path = "/d/wakom/803m/PC/machine/tank_diw.uir"
 File Type = "User Interface Resource"
-Disk Date = 3560670766
+Disk Date = 3561497877
 In Projects = "1,"
 Window Top = 33
 Window Left = 10
+Window Height = 323
+Window Width = 521
+
+[File 0023]
+Path = "/d/wakom/803m/PC/machine/user.c"
+File Type = "CSource"
+Disk Date = 3561104926
+In Projects = "1,"
+Window Top = 163
+Window Left = 78
+Source Window State = "1,95,96,96,8,35,35,0,3,0,0,2,0,2,0,0,78,0,95,8,347,690,1,0,"
+
+[File 0024]
+Path = "/d/wakom/803m/PC/machine/user.uir"
+File Type = "User Interface Resource"
+Disk Date = 3561497950
+In Projects = "1,"
+Window Top = 126
+Window Left = 58
 Window Height = 323
 Window Width = 521
 
@@ -292,30 +300,4 @@ External Process Path = ""
 [Command Line Args 0001]
 Command Line Args = ""
 Working Directory = ""
-
-[Watch Point 1]
-Watch Expression = "RB"
-Update Display Continuously = True
-Break When Value Changes = False
-Scope = "Global To File"
-File = "robot.c"
-DllName = "d:\\wft\\mbin\\FTB25.exe"
-
-[Watch Point 2]
-Watch Expression = "sys->tk[tid].autoMakeStep"
-Update Display Continuously = True
-Break When Value Changes = False
-Scope = "Local"
-File = "machine.c"
-Function = "AutoMake"
-DllName = "d:\\wft\\mbin\\FTB25.exe"
-
-[Watch Point 3]
-Watch Expression = "sys->tk"
-Update Display Continuously = True
-Break When Value Changes = False
-Scope = "Local"
-File = "plc-bak.c"
-Function = "CheckHandshake"
-DllName = "d:\\wft\\mbin\\FTB25.exe"
 

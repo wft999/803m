@@ -91,7 +91,7 @@ int openPlc(void)
 	CmtNewLock(NULL, 0, &plcLock); 
 	
 	mPLC.COM	= 3;
-	mPLC.Bau	= 57600;
+	mPLC.Bau	= 115200;//57600;
 	mPLC.Par	= 1;		// 0:None	1:??OOD	2:??EVEN
 	mPLC.Dbit	= 8;		// 5 - 8 bit
 	mPLC.Sbit	= 1;		// 1 - 2 bit
@@ -113,8 +113,10 @@ int openPlc(void)
 
 int readCommand(void)
 {
+	int ret;
 	CmtGetLock(plcLock);
-	if(Get_Q_1CF4 (_WR_D, 0x00, PLC_CMD_ADD, 10, &mPLC) < 0)
+	ret = Get_Q_1CF4 (_WR_D, 0x00, PLC_CMD_ADD, 10, &mPLC); 
+	if(ret < 0)
 	{
 		CmtReleaseLock(plcLock);
 		return -1;
@@ -133,82 +135,108 @@ int readCommand(void)
 	return 0;
 }
 
-void writeCommand(int len)
+int writeCommand(int len)
 {
+	int ret;
 	if(len > MAX_CMD_LEN){
 		MessagePopup("message","写入数据太长");
-		return;
+		return 0;
 	}
 	
 	CmtGetLock(plcLock);
 	
-	if(Get_Q_1CF4 (_WR_D, 0x00, PLC_CMD_ADD, 1, &mPLC) < 0)
+	ret = Get_Q_1CF4 (_WR_D, 0x00, PLC_CMD_ADD, 1, &mPLC);
+	if(ret < 0)
 	{
 		plcErrorCount++;
 		CmtReleaseLock(plcLock);
 		MessagePopup("message","读取PLC出错");
-		return;
+		return 0;
 	}
 	
 	
-	int DatSFT = 0;
-	for (int cLop = 0; cLop < 1; cLop++){
-		Scan ( mPLC.DTRN, "%s[i*w4]>%x[b2]", DatSFT, &Q2h.cmdRead[cLop]);
-		DatSFT += 4;
-	}
+	Scan ( mPLC.DTRN, "%s[i*w4]>%x[b2]", 0, &Q2h.cmdRead[0]);
 	if(Q2h.cmdRead[0] != 0 && Q2h.cmdRead[0]%10 == 0){
 		plcErrorCount++;
 		CmtReleaseLock(plcLock);
 		MessagePopup("message","PLC忙");
-		return;
-	}
+		return 0;
+	} 
 	
 	char SwpSTR[1024];
 	memset(SwpSTR,0,sizeof(SwpSTR));
 	for(int i=0;i<len;i++)
 		Fmt (SwpSTR, "%s[a]<%i[r16w4p0]", Q2h.cmdWrite[i]);
 	StringUpperCase (SwpSTR);
-	if(Set_Q_1CF4 (_WW_D, 0x00, PLC_CMD_ADD, len, SwpSTR, &mPLC) < 0){
+	ret = Set_Q_1CF4 (_WW_D, 0x00, PLC_CMD_ADD, len, SwpSTR, &mPLC);
+	if(ret < 0){
 		plcErrorCount++;
 		CmtReleaseLock(plcLock);
 		MessagePopup("message","写入PLC出错");
-		return;
+		return 0;
 	}
 	
 	CmtReleaseLock(plcLock); 
 	plcErrorCount=0;
+	
+	return 1;
 }
 
-void writeRecipe(int len)
+void writeRecipe(void)
 {
-	if(len > MAX_RCP_LEN){
-		MessagePopup("message","写入数据太长");
-		return;
-	}
+	int len;
+	Q2h.cmdWrite[0] =   CMD_SAVE_TK_RCP;
 	
-	CmtGetLock(plcLock);
+	/////////////////////////////////////////////////////
+	//DIW1 recipe
+	len = sizeof(sys->rcp.rcpDIW1);
+	Q2h.cmdWrite[1] =   TANK_DIW1;
+	memcpy((char*)(&Q2h.cmdWrite[2]),(char*)&sys->rcp.rcpDIW1,len);
+	writeCommand(len/2+2);
 	
-	char SwpSTR[1024];
-	memset(SwpSTR,0,sizeof(SwpSTR));
-	for(int i=0;i<len;i++)
-		Fmt (SwpSTR, "%s[a]<%i[r16w4p0]", Q2h.cmdWrite[i]);
-	StringUpperCase (SwpSTR);
+	/////////////////////////////////////////////////////
+	//ACID recipe
+	len = sizeof(sys->rcp.rcpACID);
+	Q2h.cmdWrite[1] =   TANK_ACID;
+	memcpy((char*)(&Q2h.cmdWrite[2]),(char*)&sys->rcp.rcpACID,len);
+	writeCommand(len/2+2);
 	
-	if(Set_Q_1CF4 (_WW_D, 0x00, PLC_RCP_ADD, len, SwpSTR, &mPLC) < 0){
-		plcErrorCount++;
-		CmtReleaseLock(plcLock);
-		MessagePopup("message","写入PLC出错");
-		return;
-	}
+/////////////////////////////////////////////////////
+	//DIW2 recipe
+	len = sizeof(sys->rcp.rcpDIW2);
+	Q2h.cmdWrite[1] =   TANK_DIW2;
+	memcpy((char*)(&Q2h.cmdWrite[2]),(char*)&sys->rcp.rcpDIW2,len);
+	writeCommand(len/2+2);
 	
-	CmtReleaseLock(plcLock); 
-	plcErrorCount=0;
+/////////////////////////////////////////////////////
+	//KOH recipe
+	len = sizeof(sys->rcp.rcpKOH);
+	Q2h.cmdWrite[1] =   TANK_KOH;
+	memcpy((char*)(&Q2h.cmdWrite[2]),(char*)&sys->rcp.rcpKOH,len);
+	writeCommand(len/2+2);
+	
+/////////////////////////////////////////////////////
+	//DIW3 recipe
+	len = sizeof(sys->rcp.rcpDIW3);
+	Q2h.cmdWrite[1] =   TANK_DIW3;
+	memcpy((char*)(&Q2h.cmdWrite[2]),(char*)&sys->rcp.rcpDIW3,len);
+	writeCommand(len/2+2);	
+	
+	
+	/////////////////////////////////////////////////////
+	//sys recipe
+	len = sizeof(sys->rcp.rcpSYS);
+	Q2h.cmdWrite[1] =   0;
+	memcpy((char*)(&Q2h.cmdWrite[2]),(char*)&sys->rcp.rcpSYS,len);
+	writeCommand(len/2+2);
 }
 
 int readAlarm(void)
 {
+	int ret;
     CmtGetLock(plcLock);
-	if(Get_Q_1CF4 (_WR_D, 0x00, PLC_ALARM_ADD, MAX_ALARM_LEN, &mPLC) < 0)
+	ret = Get_Q_1CF4 (_WR_D, 0x00, PLC_ALARM_ADD, MAX_ALARM_LEN, &mPLC);
+	if(ret < 0)
 	{
 		plcErrorCount++;
 		CmtReleaseLock(plcLock);
@@ -245,8 +273,10 @@ int readAlarm(void)
 
 int readSysStatus(void)
 {
+	int ret = sizeof(PLC_SYS_STATUS)/2;
     CmtGetLock(plcLock);
-	if(Get_Q_1CF4 (_WR_D, 0x00, PLC_SYS_STATUS_ADD, sizeof(PLC_SYS_STATUS), &mPLC) < 0)
+	ret = Get_Q_1CF4 (_WR_D, 0x00, PLC_SYS_STATUS_ADD, sizeof(PLC_SYS_STATUS)/2, &mPLC);
+	if(ret < 0)
 	{
 		plcErrorCount++;
 		CmtReleaseLock(plcLock);
@@ -254,8 +284,8 @@ int readSysStatus(void)
 	}
 		
 	int DatSFT = 0;
-	for (int cLop = 0; cLop < sizeof(PLC_SYS_STATUS); cLop++){
-		Scan ( mPLC.DTRN, "%s[i*w4]>%x[b2]", DatSFT, &Q2h.sysStatus.rcpid+cLop);
+	for (int cLop = 0; cLop < sizeof(PLC_SYS_STATUS)/2; cLop++){
+		Scan ( mPLC.DTRN, "%s[i*w4]>%x[b2]", DatSFT, ((short*)&Q2h.sysStatus)+cLop);
 		DatSFT += 4;
 	}
 	
@@ -270,8 +300,10 @@ int readSysStatus(void)
 
 int readTankStatus(int tid)
 {
+	int ret;
     CmtGetLock(plcLock);
-	if(Get_Q_1CF4 (_WR_D, 0x00, PLC_TK_STATUS_ADD + tid * MAX_TK_STATUS_LEN, MAX_TK_STATUS_LEN, &mPLC) < 0)
+	ret = Get_Q_1CF4 (_WR_D, 0x00, PLC_TK_STATUS_ADD + tid * MAX_TK_STATUS_LEN, MAX_TK_STATUS_LEN, &mPLC);
+	if(ret < 0)
 	{
 		plcErrorCount++;
 		CmtReleaseLock(plcLock);
@@ -292,8 +324,11 @@ int readTankStatus(int tid)
 
 int readRobotStatus(int rid)
 {
+	int ret;
+	int len = sizeof(PLC_RB_STATUS)/2;
     CmtGetLock(plcLock);
-	if(Get_Q_1CF4 (_WR_D, 0x00, PLC_RB_STATUS_ADD + rid * MAX_RB_STATUS_LEN, MAX_RB_STATUS_LEN, &mPLC) < 0)
+	ret = Get_Q_1CF4 (_WR_D, 0x00, PLC_RB_STATUS_ADD + rid * len, len, &mPLC);
+	if(ret < 0)
 	{
 		plcErrorCount++;
 		CmtReleaseLock(plcLock);
@@ -301,8 +336,8 @@ int readRobotStatus(int rid)
 	}
 		
 	int DatSFT = 0;
-	for (int cLop = 0; cLop < MAX_RB_STATUS_LEN; cLop++){
-		Scan ( mPLC.DTRN, "%s[i*w4]>%x[b2]", DatSFT, &Q2h.rbStatus[cLop]);
+	for (int cLop = 0; cLop < len; cLop++){
+		Scan ( mPLC.DTRN, "%s[i*w4]>%x[b2]", DatSFT, ((short*)&Q2h.rbStatus)+cLop);
 		DatSFT += 4;
 	}
 	
@@ -313,26 +348,4 @@ int readRobotStatus(int rid)
 }
 
 
-int readTankPos(int tid)
-{
-    CmtGetLock(plcLock);
-	if(Get_Q_1CF4 (_WR_D, 0x00, PLC_TK_POS_ADD + tid * MAX_TK_POS_LEN, MAX_TK_POS_LEN, &mPLC) < 0)
-	{
-		plcErrorCount++;
-		CmtReleaseLock(plcLock);
-		MessagePopup("message","读取PLC出错"); 
-		return -1;
-	}
-	
-		
-	int DatSFT = 0;
-	for (int cLop = 0; cLop < MAX_TK_POS_LEN; cLop++){
-		Scan ( mPLC.DTRN, "%s[i*w4]>%x[b2]", DatSFT, &Q2h.tkPos[cLop]);
-		DatSFT += 4;
-	}
-	
-	CmtReleaseLock(plcLock);
-	plcErrorCount=0;
-	
-	return 0;
-}
+

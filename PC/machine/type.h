@@ -26,22 +26,23 @@
 		
 //==============================================================================
 // Constants
-#define PLC_SYS_STATUS_ADD		1000
-#define PLC_TK_STATUS_ADD		1000
-#define PLC_RB_STATUS_ADD		1000
+#define PLC_ALARM_ADD			100		
+#define PLC_SYS_STATUS_ADD		200
+#define PLC_TK_STATUS_ADD		300
+#define PLC_RB_STATUS_ADD		500
 #define PLC_CMD_ADD				900
 #define PLC_RCP_ADD				1000
-#define PLC_ALARM_ADD			100
-#define PLC_TK_POS_ADD			1000
-
-#define MAX_TK_STATUS_LEN 50 
-#define MAX_RB_STATUS_LEN 50 
-#define MAX_CMD_LEN 10 
-#define MAX_RCP_LEN 100
-#define MAX_ALARM_LEN 20
-#define	MAX_TK_POS_LEN 12
+#define PLC_TK_POS_ADD			2000
 		
 
+#define MAX_TK_STATUS_LEN 	50 
+#define MAX_RB_STATUS_LEN 	50 
+#define MAX_CMD_LEN 		100 
+
+#define MAX_ALARM_LEN 		20
+#define	MAX_TK_POS_LEN 		12
+		
+#pragma pack(2)
 //==============================================================================
 // Types
 
@@ -68,18 +69,45 @@ typedef struct _PLC_SYS_STATUS{
 	unsigned short sys_bit;	
 }PLC_SYS_STATUS;
 
+typedef struct _PLC_AXIS_STATUS{
+	int cur_pos;
+	int cur_speed;
+	int address;
+ 	int speed;
+	short error_code;
+	short alarm_code;
+	short serve_alarm_code;
+	short action_status;
+	short status;
+	short xy;
+	short bit;
+	
+}PLC_AXIS_STATUS;
+
+typedef struct _PLC_RB_STATUS{
+	PLC_AXIS_STATUS axis[2];
+	
+	short rb_state;
+	short target_tid;
+	short cur_tid;
+	short from_tid;
+	short to_tid;
+	short pc_key;
+	short pc_tid;
+	short rb_bit;
+	
+}PLC_RB_STATUS;
+
 struct Q02hReg {
 	
 	unsigned short	alarm[MAX_ALARM_LEN];
 	unsigned short	alarmBak[MAX_ALARM_LEN];
 	PLC_SYS_STATUS	sysStatus;
 	unsigned short	tkStatus[MAX_TK_STATUS_LEN];
-	unsigned short	rbStatus[MAX_RB_STATUS_LEN];
+	PLC_RB_STATUS	rbStatus;
 	
 	unsigned short	cmdWrite[MAX_CMD_LEN];
 	unsigned short	cmdRead[MAX_CMD_LEN];
-	
-	unsigned short	rcp[MAX_RCP_LEN];
 	unsigned short	tkPos[MAX_TK_POS_LEN];
 };
 
@@ -87,21 +115,55 @@ struct Q02hReg {
 //==============================================================================
 // RECIPE Types
 typedef struct _DIW_RCP{
+	unsigned short proc_time;
+	unsigned short take_weight;		
+	unsigned short next_tank;		
+	
 	unsigned short LoopCount;
 	unsigned short uiRemain[6];
 	unsigned short uiCmd[6];
-	unsigned short spare[37];
+	
+	unsigned short spare[34]; 
 	
 }DIW_RCP;
+
+typedef struct _ACID_RCP{
+	unsigned short proc_time;
+	unsigned short take_weight;		
+	unsigned short next_tank;	
+	
+	unsigned short spare[47]; 
+	
+}ACID_RCP;
+
+typedef struct _KOH_RCP{
+	unsigned short proc_time;
+	unsigned short take_weight;		
+	unsigned short next_tank;
+	
+	unsigned short spare[47]; 
+	
+}KOH_RCP;
+
+typedef struct _SYS_RCP{
+	unsigned short proc_time;
+	unsigned short take_weight;		
+	unsigned short next_tank;
+	
+	unsigned short id;
+	unsigned short spare[46]; 
+	
+}SYS_RCP;
 
 typedef struct _RECIPE{
 	unsigned char	comment[64];		// Recipe Name
 	double	date;		// Recipe Name
 
+	SYS_RCP rcpSYS;
 	DIW_RCP rcpDIW1;
-	DIW_RCP rcpACID;
+	ACID_RCP rcpACID;
 	DIW_RCP rcpDIW2;
-	DIW_RCP rcpKOH;
+	KOH_RCP rcpKOH;
 	DIW_RCP rcpDIW3;
 	
 }RECIPE;
@@ -126,7 +188,15 @@ typedef struct _CAR{
 
 //==============================================================================
 // TANK Types
-
+typedef struct _TANK_POS{
+	int		xLock;
+	int		xUnlock;		
+	int		zDown;	
+	
+	int		xLock2;
+	int		xUnlock2;		
+	int		zDown2;	
+}TANK_POS;
 
 //==============================================================================
 // robot Types		
@@ -159,10 +229,12 @@ typedef struct _MACHINE{
 	int			isAuto;
 	int			isManual;
 	int			curTempTrendPos;
+	
+	TANK_POS	tkPos[TANK_NUM];
 
 	SETTING		set;
 	USER		user;
-
+	RECIPE 		rcp;
 	
 	char*		alarmDesc[MAX_ALARM_NUM];
 	
@@ -216,11 +288,12 @@ typedef struct _LOG{
 //==============================================================================
 // External variables
 extern SYSTEM* sys; 
+extern struct Q02hReg Q2h;
 //==============================================================================
 // Global functions
 int getBit(short data,int id) ;
 void setBit(unsigned short* data,int id) ;
-void writeCommand(int len);
+int writeCommand(int len);
 
 void SendPcAlarm(int id,int onOff);
 

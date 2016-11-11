@@ -24,12 +24,15 @@
 //==============================================================================
 // Constants
 #define  CMD_ROBOT					10
-#define  CMD_SAVE_RB_POS			40
-#define  CMD_SAVE_RB_POS_PC			50
+#define  CMD_SAVE_TK_POS			40
+#define  CMD_SAVE_TK_POS_PC			50
+#define  CMD_SAVE_TK_RCP			60
+		
+		
 #define  CMD_SYS_LIGHT				1000
 #define  CMD_SYS_BUZZ				1010
 #define  CMD_SYS_RESET_COUNT		1020 
-		
+#define  CMD_SYS_RUN				1030		
 		
 #define MAX PLC_ERR_COUNT 5 
 		
@@ -68,11 +71,11 @@ typedef enum _ROBOT_ID{
 
 typedef enum _TANK_ID{
 	TANK_ILD = 0,
-	TANK_01,
-	TANK_02,
-	TANK_03,
-	TANK_04,
-	TANK_05,
+	TANK_DIW1,
+	TANK_ACID,
+	TANK_DIW2,
+	TANK_KOH,
+	TANK_DIW3,
 	TANK_ULD
 }TANK_ID;
 

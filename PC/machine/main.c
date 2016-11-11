@@ -62,7 +62,7 @@ SYSTEM* 	sys;
 
 //void initPlcPanel(int panel);
 void initRobotPanel(int panel, int rid, int tid);
-//void initTankPanel(int panel,TANK_ID tid,RTANK_ID rid1,RTANK_ID rid2);
+void initDiwTankPanel(int panel,TANK_ID tid);
 void initSetPanel(int panel);
 void initRecipePanel(int panel,int rcpId) ;
 void initUserPanel (int Panel_Handle, int Control_ID);
@@ -197,7 +197,7 @@ int CVICALLBACK ShowManuDialog (int panel, int control, int event,
 			else if(control == PANEL_TNK_01){
 				dialogHandle = LoadPanel (0, "tank_diw.uir", PANEL_DIW);
 				InstallPopup(dialogHandle);
-			//	initTankPanel(dialogHandle,TANK_02,RTK_02_01,RTK_02_02);
+				initDiwTankPanel(dialogHandle,TANK_DIW1);
 			}/*
 			else if(control == PANEL_TNK_02){
 				dialogHandle = LoadPanel (0, "robot_panel.uir", PANEL_TANK);
@@ -314,6 +314,7 @@ int CVICALLBACK PriTimer (int panel, int control, int event,
 			SetCtrlIndex(panel, PANEL_ROBOT1, getBit(Q2h.sysStatus.sys_bit,2));
 			SetCtrlVal (panel, PANEL_TOGGLEBUTTON_LIGHT, getBit(Q2h.sysStatus.sys_bit,3)); 
 			SetCtrlVal (panel, PANEL_TOGGLEBUTTON_BUZZ, getBit(Q2h.sysStatus.sys_bit,4));
+
 			
 			/////////////////////////////////////////////////////////////////////////////////////////////////////
 			//Loader bit8(xDoorOpen) bit9(xDoorClose) 
@@ -527,6 +528,7 @@ int CVICALLBACK sysCommand (int panel, int control, int event,
 
 				writeCommand(2);
 			}
+			
 			break;
 	}
 	return 0;

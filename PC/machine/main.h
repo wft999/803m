@@ -117,6 +117,7 @@
 #define  PANEL_UP_LEV_04                  101
 #define  PANEL_TOGGLEBUTTON_BUZZ          102     /* callback function: sysCommand */
 #define  PANEL_TOGGLEBUTTON_LIGHT         103     /* callback function: sysCommand */
+#define  PANEL_DECORATION                 104
 
 
      /* Menu Bars, Menus, and Menu Items: */
