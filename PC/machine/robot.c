@@ -20,6 +20,9 @@
 //==============================================================================
 // Constants
 
+#define  key_dialog_open			1
+#define  key_dialog_close			2
+
 #define  key_x_jog_forward 			10
 #define  key_x_jog_reverse			11
 #define  key_x_jog_high_speed		12
@@ -152,8 +155,8 @@ int CVICALLBACK SavePosition (int panel, int control, int event,
 					{
 						Q2h.cmdWrite[0]=CMD_SAVE_TK_POS_PC;
 						Q2h.cmdWrite[1]=curRobotId;
-						Q2h.cmdWrite[2]=curTid;
-						Q2h.cmdWrite[3]=key_save_pc_x_unlock2;
+						Q2h.cmdWrite[3]=curTid;
+						Q2h.cmdWrite[2]=key_save_pc_x_unlock2;
 						Q2h.cmdWrite[4]=cnv._I16[0];
 						Q2h.cmdWrite[5]=cnv._I16[1]; 
 				
@@ -166,8 +169,8 @@ int CVICALLBACK SavePosition (int panel, int control, int event,
 					{
 						Q2h.cmdWrite[0]=CMD_SAVE_TK_POS_PC;
 						Q2h.cmdWrite[1]=curRobotId;
-						Q2h.cmdWrite[2]=curTid;
-						Q2h.cmdWrite[3]=key_save_pc_x_unlock;
+						Q2h.cmdWrite[3]=curTid;
+						Q2h.cmdWrite[2]=key_save_pc_x_unlock;
 						Q2h.cmdWrite[4]=cnv._I16[0];
 						Q2h.cmdWrite[5]=cnv._I16[1]; 
 				
@@ -183,8 +186,8 @@ int CVICALLBACK SavePosition (int panel, int control, int event,
 					{
 						Q2h.cmdWrite[0]=CMD_SAVE_TK_POS;
 						Q2h.cmdWrite[1]=curRobotId;
-						Q2h.cmdWrite[2]=curTid;
-						Q2h.cmdWrite[3]=key_save_x_unlock2;
+						Q2h.cmdWrite[3]=curTid;
+						Q2h.cmdWrite[2]=key_save_x_unlock2;
 				
 						if(writeCommand(4)){
 							sys->tkPos[curTid].xUnlock2 = Q2h.rbStatus.axis[0].cur_pos;
@@ -195,8 +198,8 @@ int CVICALLBACK SavePosition (int panel, int control, int event,
 					{
 						Q2h.cmdWrite[0]=CMD_SAVE_TK_POS;
 						Q2h.cmdWrite[1]=curRobotId;
-						Q2h.cmdWrite[2]=curTid;
-						Q2h.cmdWrite[3]=key_save_x_unlock;
+						Q2h.cmdWrite[3]=curTid;
+						Q2h.cmdWrite[2]=key_save_x_unlock;
 				
 						if(writeCommand(4)){
 							sys->tkPos[curTid].xUnlock = Q2h.rbStatus.axis[0].cur_pos;
@@ -218,8 +221,8 @@ int CVICALLBACK SavePosition (int panel, int control, int event,
 					{
 						Q2h.cmdWrite[0]=CMD_SAVE_TK_POS_PC;
 						Q2h.cmdWrite[1]=curRobotId;
-						Q2h.cmdWrite[2]=curTid;
-						Q2h.cmdWrite[3]=key_save_pc_x_lock2;
+						Q2h.cmdWrite[3]=curTid;
+						Q2h.cmdWrite[2]=key_save_pc_x_lock2;
 						Q2h.cmdWrite[4]=cnv._I16[0];
 						Q2h.cmdWrite[5]=cnv._I16[1]; 
 				
@@ -232,8 +235,8 @@ int CVICALLBACK SavePosition (int panel, int control, int event,
 					{
 						Q2h.cmdWrite[0]=CMD_SAVE_TK_POS_PC;
 						Q2h.cmdWrite[1]=curRobotId;
-						Q2h.cmdWrite[2]=curTid;
-						Q2h.cmdWrite[3]=key_save_pc_x_lock;
+						Q2h.cmdWrite[3]=curTid;
+						Q2h.cmdWrite[2]=key_save_pc_x_lock;
 						Q2h.cmdWrite[4]=cnv._I16[0];
 						Q2h.cmdWrite[5]=cnv._I16[1]; 
 				
@@ -249,8 +252,8 @@ int CVICALLBACK SavePosition (int panel, int control, int event,
 					{
 						Q2h.cmdWrite[0]=CMD_SAVE_TK_POS;
 						Q2h.cmdWrite[1]=curRobotId;
-						Q2h.cmdWrite[2]=curTid;
-						Q2h.cmdWrite[3]=key_save_x_lock2;
+						Q2h.cmdWrite[3]=curTid;
+						Q2h.cmdWrite[2]=key_save_x_lock2;
 				
 						if(writeCommand(6)){
 							sys->tkPos[curTid].xLock2 = Q2h.rbStatus.axis[0].cur_pos;
@@ -262,8 +265,8 @@ int CVICALLBACK SavePosition (int panel, int control, int event,
 					{
 						Q2h.cmdWrite[0]=CMD_SAVE_TK_POS;
 						Q2h.cmdWrite[1]=curRobotId;
-						Q2h.cmdWrite[2]=curTid;
-						Q2h.cmdWrite[3]=key_save_x_lock;
+						Q2h.cmdWrite[3]=curTid;
+						Q2h.cmdWrite[2]=key_save_x_lock;
 				
 						if(writeCommand(4)){
 							sys->tkPos[curTid].xLock = Q2h.rbStatus.axis[0].cur_pos;
@@ -287,8 +290,8 @@ int CVICALLBACK SavePosition (int panel, int control, int event,
 					{
 						Q2h.cmdWrite[0]=CMD_SAVE_TK_POS_PC;
 						Q2h.cmdWrite[1]=curRobotId;
-						Q2h.cmdWrite[2]=curTid;
-						Q2h.cmdWrite[3]=key_save_pc_z_bottom2;
+						Q2h.cmdWrite[3]=curTid;
+						Q2h.cmdWrite[2]=key_save_pc_z_bottom2;
 						Q2h.cmdWrite[4]=cnv._I16[0];
 						Q2h.cmdWrite[5]=cnv._I16[1]; 
 				
@@ -301,8 +304,8 @@ int CVICALLBACK SavePosition (int panel, int control, int event,
 					{
 						Q2h.cmdWrite[0]=CMD_SAVE_TK_POS_PC;
 						Q2h.cmdWrite[1]=curRobotId;
-						Q2h.cmdWrite[2]=curTid;
-						Q2h.cmdWrite[3]=key_save_pc_z_bottom;
+						Q2h.cmdWrite[3]=curTid;
+						Q2h.cmdWrite[2]=key_save_pc_z_bottom;
 						Q2h.cmdWrite[4]=cnv._I16[0];
 						Q2h.cmdWrite[5]=cnv._I16[1]; 
 				
@@ -318,8 +321,8 @@ int CVICALLBACK SavePosition (int panel, int control, int event,
 					{
 						Q2h.cmdWrite[0]=CMD_SAVE_TK_POS;
 						Q2h.cmdWrite[1]=curRobotId;
-						Q2h.cmdWrite[2]=curTid;
-						Q2h.cmdWrite[3]=key_save_z_bottom2;
+						Q2h.cmdWrite[3]=curTid;
+						Q2h.cmdWrite[2]=key_save_z_bottom2;
 				
 						if(writeCommand(4)){
 							sys->tkPos[curTid].zDown2 = Q2h.rbStatus.axis[1].cur_pos;
@@ -330,8 +333,8 @@ int CVICALLBACK SavePosition (int panel, int control, int event,
 					{
 						Q2h.cmdWrite[0]=CMD_SAVE_TK_POS;
 						Q2h.cmdWrite[1]=curRobotId;
-						Q2h.cmdWrite[2]=curTid;
-						Q2h.cmdWrite[3]=key_save_z_bottom;
+						Q2h.cmdWrite[3]=curTid;
+						Q2h.cmdWrite[2]=key_save_z_bottom;
 				
 						if(writeCommand(4)){
 							sys->tkPos[curTid].zDown = Q2h.rbStatus.axis[1].cur_pos;
@@ -1283,7 +1286,26 @@ void initRobotPanel(int panel, int rid, int tid)
     GetCtrlDisplayBitmap (panel, PANEL_RB_LEDOFF, 0, &off_bitmap_id);
     GetCtrlDisplayBitmap (panel, PANEL_RB_LEDON, 0, &on_bitmap_id);
 	
+	Q2h.cmdWrite[0]=CMD_ROBOT;
+	Q2h.cmdWrite[1]=curRobotId;
+	Q2h.cmdWrite[2]=key_dialog_open;
+	writeCommand(3);
+	
 	updateTankPos(panel);	
-    
+
 }
 
+int CVICALLBACK ExitRbDialog (int panel, int event, void *callbackData, int eventData1, int eventData2)
+{
+    if (event == EVENT_CLOSE)
+	{
+		Q2h.cmdWrite[0]=CMD_ROBOT;
+		Q2h.cmdWrite[1]=curRobotId;
+		Q2h.cmdWrite[2]=key_dialog_close;
+		writeCommand(3);
+		
+        RemovePopup(0);
+		DiscardPanel (panel);
+	}
+    return 0;
+}

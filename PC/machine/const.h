@@ -27,12 +27,9 @@
 #define  CMD_SAVE_TK_POS			40
 #define  CMD_SAVE_TK_POS_PC			50
 #define  CMD_SAVE_TK_RCP			60
+#define  CMD_TANK					200 		
+#define  CMD_SYS					1000
 		
-		
-#define  CMD_SYS_LIGHT				1000
-#define  CMD_SYS_BUZZ				1010
-#define  CMD_SYS_RESET_COUNT		1020 
-#define  CMD_SYS_RUN				1030		
 		
 #define MAX PLC_ERR_COUNT 5 
 		

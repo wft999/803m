@@ -27,10 +27,12 @@
 //==============================================================================
 // Constants
 #define PLC_ALARM_ADD			100		
-#define PLC_SYS_STATUS_ADD		200
+
 #define PLC_TK_STATUS_ADD		300
 #define PLC_RB_STATUS_ADD		500
 #define PLC_CMD_ADD				900
+#define PLC_SYS_STATUS_ADD		1000 		
+		
 #define PLC_RCP_ADD				1000
 #define PLC_TK_POS_ADD			2000
 		
@@ -59,7 +61,6 @@ union DatCnv
 
 typedef struct _PLC_SYS_STATUS{
 	unsigned short rcpid;
-	unsigned short tk_recipe_time[TANK_NUM];
 	unsigned short tk_remain_time[TANK_NUM];
 	unsigned short tk_car_count[TANK_NUM];
 	unsigned short tk_temp[TANK_NUM];
@@ -154,6 +155,7 @@ typedef struct _SYS_RCP{
 	unsigned short spare[46]; 
 	
 }SYS_RCP;
+
 
 typedef struct _RECIPE{
 	unsigned char	comment[64];		// Recipe Name

@@ -29,6 +29,16 @@
 #include "user.h"   
 //==============================================================================
 // Constants
+#define  key_sys_light_on		10
+#define  key_sys_light_off		20
+#define  key_sys_buzz_on		30
+#define  key_sys_buzz_off		40
+#define  key_sys_reset_count	50
+#define  key_sys_run			60
+#define  key_sys_stop			70
+
+
+
 int uiCAR[TANK_NUM] = {PANEL_INPROC_ILD,PANEL_INPROC_01,PANEL_INPROC_02,PANEL_INPROC_03,PANEL_INPROC_04,PANEL_INPROC_05,PANEL_INPROC_ULD};
 int uiTM[TANK_NUM] = {PANEL_TM_ILD,PANEL_TM_01,PANEL_TM_02,PANEL_TM_03,PANEL_TM_04,PANEL_TM_05,PANEL_TM_ULD};
 int uiPRCTM[TANK_NUM] = {PANEL_PRCTM_ILD,PANEL_PRCTM_01,PANEL_PRCTM_02,PANEL_PRCTM_03,PANEL_PRCTM_04,PANEL_PRCTM_05,PANEL_PRCTM_ULD}; 
@@ -39,6 +49,8 @@ int uiUpLev[TANK_NUM] = {0,0,PANEL_UP_LEV_02,0,PANEL_UP_LEV_04,0,0};
 int uiPump[TANK_NUM] = {0,0,0,0,0,0,0};
 int uiTANK[TANK_NUM] = {0,PANEL_TNK_01,PANEL_TNK_02,PANEL_TNK_03,PANEL_TNK_04,PANEL_TNK_05,0};
 int uiCARNum[TANK_NUM] = {PANEL_COUNT_ILD,PANEL_COUNT_01,PANEL_COUNT_02,PANEL_COUNT_03,PANEL_COUNT_04,PANEL_COUNT_05,PANEL_COUNT_ULD}; 
+
+
 //==============================================================================
 // Types
 
@@ -203,22 +215,22 @@ int CVICALLBACK ShowManuDialog (int panel, int control, int event,
 				dialogHandle = LoadPanel (0, "robot_panel.uir", PANEL_TANK);
 				InstallPopup(dialogHandle);
 				initTankPanel(dialogHandle,TANK_02,RTK_02_01,RTK_02_02);
-			}
+			}*/
 			else if(control == PANEL_TNK_03){
-				dialogHandle = LoadPanel (0, "robot_panel.uir", PANEL_TANK);
+				dialogHandle = LoadPanel (0, "tank_diw.uir", PANEL_DIW);
 				InstallPopup(dialogHandle);
-				initTankPanel(dialogHandle,TANK_03,RTK_03_01,RTK_03_02);
-			}
+				initDiwTankPanel(dialogHandle,TANK_DIW2);
+			}/*
 			else if(control == PANEL_TNK_04){
 				dialogHandle = LoadPanel (0, "robot_panel.uir", PANEL_TANK);
 				InstallPopup(dialogHandle);
 				initTankPanel(dialogHandle,TANK_04,RTK_04_01,RTK_04_02);
-			}
+			} */
 			else if(control == PANEL_TNK_05){
-				dialogHandle = LoadPanel (0, "robot_panel.uir", PANEL_TANK);
+				dialogHandle = LoadPanel (0, "tank_diw.uir", PANEL_DIW);
 				InstallPopup(dialogHandle);
-				initTankPanel(dialogHandle,TANK_05,RTK_05_01,RTK_05_02);
-			}
+				initDiwTankPanel(dialogHandle,TANK_DIW3);
+			}/*
 			else if(control == PANEL_TNK_ILD){
 				dialogHandle = LoadPanel (0, "robot_panel.uir", PANEL_TANK);
 				InstallPopup(dialogHandle);
@@ -330,7 +342,7 @@ int CVICALLBACK PriTimer (int panel, int control, int event,
 			SetCtrlAttribute(panel, PANEL_INPROC_ILDB, ATTR_VISIBLE,(getBit(Q2h.sysStatus.tk_bit[TANK_ILD],12)>0&&getBit(Q2h.sysStatus.tk_bit[TANK_ILD],13)>0) ? 1:0); 
 			
 			
-			
+			short tk_recipe_time[] = {0,sys->rcp.rcpDIW1.proc_time,sys->rcp.rcpACID.proc_time,sys->rcp.rcpDIW2.proc_time,sys->rcp.rcpKOH.proc_time,sys->rcp.rcpDIW3.proc_time,0};
 			
 			for(int i = 0; i < TANK_NUM; i++)
 			{
@@ -350,7 +362,7 @@ int CVICALLBACK PriTimer (int panel, int control, int event,
 					SetCtrlAttribute(panel,uiCAR[i], ATTR_VISIBLE, 0);
 					SetCtrlVal(panel, uiTM[i], 0);
 				}
-				SetCtrlVal(panel, uiPRCTM[i], Q2h.sysStatus.tk_recipe_time[i]);
+				SetCtrlVal(panel, uiPRCTM[i], tk_recipe_time[i]);
 				
 				
 				//////////////////////////////////////////////////////////////
@@ -406,7 +418,7 @@ int CVICALLBACK PriTimer (int panel, int control, int event,
 				//tank ready bit10
 				if(uiTANK[i] > 0) 
 				{
-					if(Q2h.sysStatus.tk_recipe_time[i] == 0){
+					if(tk_recipe_time[i] == 0){
 						SetCtrlAttribute(panel, uiTANK[i], ATTR_LABEL_COLOR , VAL_WHITE);
 						SetCtrlAttribute(panel, uiTANK[i], ATTR_LABEL_BGCOLOR ,VAL_GRAY);
 					}else{
@@ -500,18 +512,19 @@ int CVICALLBACK sysCommand (int panel, int control, int event,
 				if (!ConfirmPopup("操作确认","是否确定执行您选择的功能？"))		
 					return 0;
 				
-				Q2h.cmdWrite[0]=CMD_SYS_RESET_COUNT;
-				writeCommand(1);
+				Q2h.cmdWrite[0]=CMD_SYS;
+				Q2h.cmdWrite[1]=key_sys_reset_count; 
+				writeCommand(2);
 			}
 			else if(panel == panelHandle && control == PANEL_TOGGLEBUTTON_LIGHT)
 			{
 				int tmp;
-				Q2h.cmdWrite[0]=CMD_SYS_LIGHT;
+				Q2h.cmdWrite[0]=CMD_SYS;
 				GetCtrlVal(panel,control, &tmp);
 				if(tmp)
-					Q2h.cmdWrite[1] = 1;
+					Q2h.cmdWrite[1] = key_sys_light_on;
 				else
-					Q2h.cmdWrite[1] = 0;
+					Q2h.cmdWrite[1] = key_sys_light_off;
 				
 				writeCommand(2);
 				
@@ -519,12 +532,12 @@ int CVICALLBACK sysCommand (int panel, int control, int event,
 			else if(panel == panelHandle && control == PANEL_TOGGLEBUTTON_BUZZ)
 			{
 				int tmp;
-				Q2h.cmdWrite[0]=CMD_SYS_BUZZ;
+				Q2h.cmdWrite[0]=CMD_SYS;
 				GetCtrlVal(panel,control, &tmp);
 				if(tmp)
-					Q2h.cmdWrite[1] = 1;
+					Q2h.cmdWrite[1] = key_sys_buzz_on;
 				else
-					Q2h.cmdWrite[1] = 0;
+					Q2h.cmdWrite[1] = key_sys_buzz_off;
 
 				writeCommand(2);
 			}

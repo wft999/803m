@@ -145,7 +145,7 @@ int writeCommand(int len)
 	
 	CmtGetLock(plcLock);
 	
-	ret = Get_Q_1CF4 (_WR_D, 0x00, PLC_CMD_ADD, 1, &mPLC);
+/*	ret = Get_Q_1CF4 (_WR_D, 0x00, PLC_CMD_ADD, 1, &mPLC);
 	if(ret < 0)
 	{
 		plcErrorCount++;
@@ -161,7 +161,7 @@ int writeCommand(int len)
 		CmtReleaseLock(plcLock);
 		MessagePopup("message","PLCæ");
 		return 0;
-	} 
+	} */
 	
 	char SwpSTR[1024];
 	memset(SwpSTR,0,sizeof(SwpSTR));

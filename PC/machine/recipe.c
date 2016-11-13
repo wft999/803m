@@ -55,22 +55,9 @@ void LoadRecipeData(int panel, int rcpId)
 		ReadFile(fSAVE,(char*)&sys->rcp,sizeof(RECIPE));
 		CloseFile (	fSAVE );
 	}else{
+		memset(&sys->rcp,0,sizeof(sys->rcp));
 		sys->rcp.date=0;
 		strcpy(sys->rcp.comment,"配方没有设定");
-		sys->rcp.rcpDIW1.proc_time=0;
-		sys->rcp.rcpDIW1.LoopCount=0;
-		sys->rcp.rcpDIW1.uiRemain[0]=0;
-		sys->rcp.rcpDIW1.uiRemain[1]=0; 
-		sys->rcp.rcpDIW1.uiRemain[2]=0; 
-		sys->rcp.rcpDIW1.uiRemain[3]=0; 
-		sys->rcp.rcpDIW1.uiRemain[4]=0; 
-		sys->rcp.rcpDIW1.uiRemain[5]=0; 
-		sys->rcp.rcpDIW1.uiCmd[0]=0;
-		sys->rcp.rcpDIW1.uiCmd[1]=0; 
-		sys->rcp.rcpDIW1.uiCmd[2]=0; 
-		sys->rcp.rcpDIW1.uiCmd[3]=0; 
-		sys->rcp.rcpDIW1.uiCmd[4]=0; 
-		sys->rcp.rcpDIW1.uiCmd[5]=0; 
 	}
 	
 	
@@ -81,9 +68,19 @@ void LoadRecipeData(int panel, int rcpId)
 	
 	ResetTextBox(panelSys, RCP_SYS_COMMENT, sys->rcp.comment);  
 	
+	int id0Sys[6]={RCP_SYS_NEXT1,RCP_SYS_NEXT2,RCP_SYS_NEXT3,RCP_SYS_NEXT4,RCP_SYS_NEXT5,RCP_SYS_NEXT6};
+	for(int i=0;i<6;i++)
+		SetCtrlVal(panelSys, id0Sys[i],getBit(sys->rcp.rcpSYS.next_tank,i));
+	
 	
 	
 	/////////////////////////////////////////////////////////////////////////////
+	SetCtrlVal(panelDiw1, RCP_DIW1_TAKE_WEIGHT, sys->rcp.rcpDIW1.take_weight);
+	int id0Diw1[6]={RCP_DIW1_NEXT1,RCP_DIW1_NEXT2,RCP_DIW1_NEXT3,RCP_DIW1_NEXT4,RCP_DIW1_NEXT5};
+	for(int i=0;i<5;i++)
+		SetCtrlVal(panelDiw1, id0Diw1[i],  getBit(sys->rcp.rcpDIW1.next_tank,i));
+
+		
 	SetCtrlVal(panelDiw1, RCP_DIW1_TIMES, sys->rcp.rcpDIW1.LoopCount);
 	
 	int id1Diw1[6]={RCP_DIW1_TIME_1,RCP_DIW1_TIME_2,RCP_DIW1_TIME_3,RCP_DIW1_TIME_4,RCP_DIW1_TIME_5,RCP_DIW1_TIME_6};
@@ -102,9 +99,19 @@ void LoadRecipeData(int panel, int rcpId)
 	
 	///////////////////////////////////////////////////////////////////////////////
 	SetCtrlVal(panelAcid, RCP_ACID_TIME, sys->rcp.rcpACID.proc_time);
+	SetCtrlVal(panelAcid, RCP_ACID_TAKE_WEIGHT, sys->rcp.rcpACID.take_weight);
+	int id0Acid[6]={RCP_ACID_NEXT1,RCP_ACID_NEXT2,RCP_ACID_NEXT3,RCP_ACID_NEXT4};
+	for(int i=0;i<4;i++)
+		SetCtrlVal(panelAcid, id0Acid[i],getBit(sys->rcp.rcpACID.next_tank,i));
 	
 	
 	/////////////////////////////////////////////////////////////////////////////
+	SetCtrlVal(panelDiw2, RCP_DIW2_TAKE_WEIGHT, sys->rcp.rcpDIW2.take_weight);
+	int id0Diw2[6]={RCP_DIW2_NEXT1,RCP_DIW2_NEXT2,RCP_DIW2_NEXT3};
+	for(int i=0;i<3;i++)
+		SetCtrlVal(panelDiw2, id0Diw2[i], getBit(sys->rcp.rcpDIW2.next_tank,i));
+
+		
 	SetCtrlVal(panelDiw2, RCP_DIW2_TIMES, sys->rcp.rcpDIW2.LoopCount);
 	
 	int id1Diw2[6]={RCP_DIW2_TIME_1,RCP_DIW2_TIME_2,RCP_DIW2_TIME_3,RCP_DIW2_TIME_4,RCP_DIW2_TIME_5,RCP_DIW2_TIME_6};
@@ -123,11 +130,16 @@ void LoadRecipeData(int panel, int rcpId)
 	
 	
 	///////////////////////////////////////////////////////////////////////////////
+	SetCtrlVal(panelKoh, RCP_KOH_TAKE_WEIGHT, sys->rcp.rcpKOH.take_weight);
 	SetCtrlVal(panelKoh, RCP_KOH_TIME, sys->rcp.rcpKOH.proc_time);
+	int id0Koh[6]={RCP_KOH_NEXT1,RCP_KOH_NEXT2};
+	for(int i=0;i<2;i++)
+		SetCtrlVal(panelKoh, id0Koh[i],getBit(sys->rcp.rcpKOH.next_tank,i));
 	
 	
 	
 	/////////////////////////////////////////////////////////////////////////////
+	SetCtrlVal(panelDiw3, RCP_DIW3_TAKE_WEIGHT, sys->rcp.rcpDIW3.take_weight);
 	SetCtrlVal(panelDiw3, RCP_DIW3_TIMES, sys->rcp.rcpDIW3.LoopCount);
 	
 	int id1Diw3[6]={RCP_DIW3_TIME_1,RCP_DIW3_TIME_2,RCP_DIW3_TIME_3,RCP_DIW3_TIME_4,RCP_DIW3_TIME_5,RCP_DIW3_TIME_6};
@@ -162,8 +174,27 @@ void saveRecipeData(int panel, int rcpId)
 		GetCurrentDateTime (&sys->rcp.date);
 		GetCtrlVal(panelSys,RCP_SYS_COMMENT,sys->rcp.comment);
 		
+		//////////////////////////////////////////////////////////////////
+		sys->rcp.rcpSYS.id = rcpId;
+		
+		int id0Sys[6]={RCP_SYS_NEXT1,RCP_SYS_NEXT2,RCP_SYS_NEXT3,RCP_SYS_NEXT4,RCP_SYS_NEXT5,RCP_SYS_NEXT6};
+		sys->rcp.rcpSYS.next_tank=0; 
+		for(int i=0;i<6;i++)
+		{
+			GetCtrlVal(panelSys, id0Sys[i], &tmp);if(tmp) setBit(&sys->rcp.rcpSYS.next_tank,i);
+		}
+		
 		
 		/////////////////////////////////////////////////////////////////////
+		GetCtrlVal(panelDiw1, RCP_DIW1_TAKE_WEIGHT, &sys->rcp.rcpDIW1.take_weight);
+		int id0Diw1[6]={RCP_DIW1_NEXT1,RCP_DIW1_NEXT2,RCP_DIW1_NEXT3,RCP_DIW1_NEXT4,RCP_DIW1_NEXT5};
+		sys->rcp.rcpDIW1.next_tank=0; 
+		for(int i=0;i<5;i++)
+		{
+			GetCtrlVal(panelDiw1, id0Diw1[i], &tmp);if(tmp) setBit(&sys->rcp.rcpDIW1.next_tank,i);
+		}
+		
+		
 		GetCtrlVal(panelDiw1, RCP_DIW1_TIMES, &sys->rcp.rcpDIW1.LoopCount);
 		
 		
@@ -188,10 +219,26 @@ void saveRecipeData(int panel, int rcpId)
 		
 		///////////////////////////////////////////////////////////////////////////////
 		GetCtrlVal(panelAcid, RCP_ACID_TIME, &sys->rcp.rcpACID.proc_time);
+		GetCtrlVal(panelAcid, RCP_ACID_TAKE_WEIGHT, &sys->rcp.rcpACID.take_weight);
+		
+		int id0Acid[6]={RCP_ACID_NEXT1,RCP_ACID_NEXT2,RCP_ACID_NEXT3,RCP_ACID_NEXT4};
+		sys->rcp.rcpACID.next_tank=0; 
+		for(int i=0;i<4;i++)
+		{
+			GetCtrlVal(panelAcid, id0Acid[i], &tmp);if(tmp) setBit(&sys->rcp.rcpACID.next_tank,i);
+		}
 		
 		
 		
 		/////////////////////////////////////////////////////////////////////
+		GetCtrlVal(panelDiw2, RCP_DIW2_TAKE_WEIGHT, &sys->rcp.rcpDIW2.take_weight);
+		int id0Diw2[6]={RCP_DIW2_NEXT1,RCP_DIW2_NEXT2,RCP_DIW2_NEXT3};
+		sys->rcp.rcpDIW2.next_tank=0; 
+		for(int i=0;i<3;i++)
+		{
+			GetCtrlVal(panelDiw2, id0Diw2[i], &tmp);if(tmp) setBit(&sys->rcp.rcpDIW2.next_tank,i);
+		}
+		
 		GetCtrlVal(panelDiw2, RCP_DIW2_TIMES, &sys->rcp.rcpDIW2.LoopCount);
 		
 		
@@ -216,12 +263,21 @@ void saveRecipeData(int panel, int rcpId)
 		
 		///////////////////////////////////////////////////////////////////////////////
 		GetCtrlVal(panelKoh, RCP_KOH_TIME, &sys->rcp.rcpKOH.proc_time);
+		GetCtrlVal(panelKoh, RCP_KOH_TAKE_WEIGHT, &sys->rcp.rcpKOH.take_weight);
+		int id0Koh[6]={RCP_KOH_NEXT1,RCP_KOH_NEXT2};
+		sys->rcp.rcpKOH.next_tank=0; 
+		for(int i=0;i<2;i++)
+		{
+			GetCtrlVal(panelKoh, id0Koh[i], &tmp);if(tmp) setBit(&sys->rcp.rcpKOH.next_tank,i);
+		}
 		
 		
 		
 		
 		/////////////////////////////////////////////////////////////////////
+		GetCtrlVal(panelDiw3, RCP_DIW3_TAKE_WEIGHT, &sys->rcp.rcpDIW3.take_weight);
 		GetCtrlVal(panelDiw3, RCP_DIW3_TIMES, &sys->rcp.rcpDIW3.LoopCount);
+		sys->rcp.rcpDIW3.next_tank=1;
 		
 		
 		int id1Diw3[6]={RCP_DIW3_TIME_1,RCP_DIW3_TIME_2,RCP_DIW3_TIME_3,RCP_DIW3_TIME_4,RCP_DIW3_TIME_5,RCP_DIW3_TIME_6};
@@ -243,10 +299,7 @@ void saveRecipeData(int panel, int rcpId)
 			sys->rcp.rcpDIW3.uiRemain[4] + sys->rcp.rcpDIW3.uiRemain[5];
 		
 		
-		//////////////////////////////////////////////////////////////////
-		sys->rcp.rcpSYS.id = rcpId;
-		
-		
+		/////////////////////////////////////////////////////////////////////////////////////////
 		WriteFile(fSAVE,(char*)&sys->rcp,sizeof(RECIPE));
 		CloseFile (	fSAVE );
 		
@@ -339,10 +392,10 @@ void initRecipePanel(int panel,int rcpId)
 {
 	GetPanelHandleFromTabPage (panel, PANEL_RCP_TAB, 0, &panelSys);
 	GetPanelHandleFromTabPage (panel, PANEL_RCP_TAB, 1, &panelDiw1); 
-	GetPanelHandleFromTabPage (panel, PANEL_RCP_TAB, 1, &panelAcid);
-	GetPanelHandleFromTabPage (panel, PANEL_RCP_TAB, 1, &panelDiw2);
-	GetPanelHandleFromTabPage (panel, PANEL_RCP_TAB, 1, &panelKoh);
-	GetPanelHandleFromTabPage (panel, PANEL_RCP_TAB, 1, &panelDiw3);
+	GetPanelHandleFromTabPage (panel, PANEL_RCP_TAB, 2, &panelAcid);
+	GetPanelHandleFromTabPage (panel, PANEL_RCP_TAB, 3, &panelDiw2);
+	GetPanelHandleFromTabPage (panel, PANEL_RCP_TAB, 4, &panelKoh);
+	GetPanelHandleFromTabPage (panel, PANEL_RCP_TAB, 5, &panelDiw3);
 	
 	SetCtrlVal(panelSys, RCP_SYS_RING, rcpId);
 	LoadRecipeData(panel,rcpId);	
