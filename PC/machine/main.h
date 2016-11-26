@@ -63,8 +63,8 @@
 #define  PANEL_TNK_03                     47      /* callback function: ShowManuDialog */
 #define  PANEL_TNK_04                     48      /* callback function: ShowManuDialog */
 #define  PANEL_TNK_05                     49      /* callback function: ShowManuDialog */
-#define  PANEL_TNK_ILD                    50
-#define  PANEL_TNK_ULD                    51
+#define  PANEL_TNK_ILD                    50      /* callback function: ShowManuDialog */
+#define  PANEL_TNK_ULD                    51      /* callback function: ShowManuDialog */
 #define  PANEL_DOR_ILD                    52
 #define  PANEL_DOR_ULD                    53
 #define  PANEL_PRCTM_01                   54

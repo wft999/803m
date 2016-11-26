@@ -273,6 +273,7 @@ int readAlarm(void)
 
 int readSysStatus(void)
 {
+	int rcpid = Q2h.sysStatus.rcpid;
 	int ret = sizeof(PLC_SYS_STATUS)/2;
     CmtGetLock(plcLock);
 	ret = Get_Q_1CF4 (_WR_D, 0x00, PLC_SYS_STATUS_ADD, sizeof(PLC_SYS_STATUS)/2, &mPLC);
@@ -292,17 +293,31 @@ int readSysStatus(void)
 	CmtReleaseLock(plcLock); 
 	plcErrorCount=0;
 	
-	 
+	if(Q2h.sysStatus.rcpid != rcpid)
+	{
+		char FileName[256];
+		char Path[MAX_PATHNAME_LEN ];
+	
+	
+		GetDir(Path);
+		Fmt(FileName,"%s<%s\\recipe\\%d.rcp",Path,Q2h.sysStatus.rcpid);
+		int fSAVE = OpenFile (FileName, VAL_READ_ONLY, VAL_OPEN_AS_IS, VAL_BINARY);
+		if(fSAVE > 0)
+		{
+			ReadFile(fSAVE,(char*)&sys->rcp,sizeof(RECIPE));
+			CloseFile (	fSAVE );
+		}
+	}
 	
 	
 	return 0;
 }
 
-int readTankStatus(int tid)
+int readTankStatus(void)
 {
 	int ret;
     CmtGetLock(plcLock);
-	ret = Get_Q_1CF4 (_WR_D, 0x00, PLC_TK_STATUS_ADD + tid * MAX_TK_STATUS_LEN, MAX_TK_STATUS_LEN, &mPLC);
+	ret = Get_Q_1CF4 (_WR_D, 0x00, PLC_TK_STATUS_ADD, MAX_TK_STATUS_LEN, &mPLC);
 	if(ret < 0)
 	{
 		plcErrorCount++;
@@ -322,12 +337,12 @@ int readTankStatus(int tid)
 	return 0;
 }
 
-int readRobotStatus(int rid)
+int readRobotStatus(void)
 {
 	int ret;
 	int len = sizeof(PLC_RB_STATUS)/2;
     CmtGetLock(plcLock);
-	ret = Get_Q_1CF4 (_WR_D, 0x00, PLC_RB_STATUS_ADD + rid * len, len, &mPLC);
+	ret = Get_Q_1CF4 (_WR_D, 0x00, PLC_RB_STATUS_ADD, len, &mPLC);
 	if(ret < 0)
 	{
 		plcErrorCount++;

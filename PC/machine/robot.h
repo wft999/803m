@@ -14,7 +14,7 @@
 
      /* Panels and Controls: */
 
-#define  PANEL_RB                         1       /* callback function: ExitRbDialog */
+#define  PANEL_RB                         1       /* callback function: ExitDialog */
 #define  PANEL_RB_LEDOFF                  2
 #define  PANEL_RB_LEDON                   3
 #define  PANEL_RB_Z_DOWN                  4
@@ -62,7 +62,7 @@
 
      /* Callback Prototypes: */
 
-int  CVICALLBACK ExitRbDialog(int panel, int event, void *callbackData, int eventData1, int eventData2);
+int  CVICALLBACK ExitDialog(int panel, int event, void *callbackData, int eventData1, int eventData2);
 int  CVICALLBACK ManualInput(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
 int  CVICALLBACK RobotCommand(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);
 int  CVICALLBACK RobotManuAdj(int panel, int control, int event, void *callbackData, int eventData1, int eventData2);

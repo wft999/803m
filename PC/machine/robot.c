@@ -20,9 +20,6 @@
 //==============================================================================
 // Constants
 
-#define  key_dialog_open			1
-#define  key_dialog_close			2
-
 #define  key_x_jog_forward 			10
 #define  key_x_jog_reverse			11
 #define  key_x_jog_high_speed		12
@@ -84,7 +81,7 @@ static int cur_type;
 
 //==============================================================================
 // Global functions
-int readRobotStatus(int rid);
+int readRobotStatus(void);
 
 void updateTankPos(int panel)
 {
@@ -190,7 +187,7 @@ int CVICALLBACK SavePosition (int panel, int control, int event,
 						Q2h.cmdWrite[2]=key_save_x_unlock2;
 				
 						if(writeCommand(4)){
-							sys->tkPos[curTid].xUnlock2 = Q2h.rbStatus.axis[0].cur_pos;
+							sys->tkPos[curTid].xUnlock2 = Q2h.rbStatus.axis.cur_pos[0];
 							saveTkPosPC();
 						}
 					}
@@ -202,7 +199,7 @@ int CVICALLBACK SavePosition (int panel, int control, int event,
 						Q2h.cmdWrite[2]=key_save_x_unlock;
 				
 						if(writeCommand(4)){
-							sys->tkPos[curTid].xUnlock = Q2h.rbStatus.axis[0].cur_pos;
+							sys->tkPos[curTid].xUnlock = Q2h.rbStatus.axis.cur_pos[0];
 							saveTkPosPC();
 						}
 					}
@@ -256,7 +253,7 @@ int CVICALLBACK SavePosition (int panel, int control, int event,
 						Q2h.cmdWrite[2]=key_save_x_lock2;
 				
 						if(writeCommand(6)){
-							sys->tkPos[curTid].xLock2 = Q2h.rbStatus.axis[0].cur_pos;
+							sys->tkPos[curTid].xLock2 = Q2h.rbStatus.axis.cur_pos[0];
 							saveTkPosPC();
 						}
 
@@ -269,7 +266,7 @@ int CVICALLBACK SavePosition (int panel, int control, int event,
 						Q2h.cmdWrite[2]=key_save_x_lock;
 				
 						if(writeCommand(4)){
-							sys->tkPos[curTid].xLock = Q2h.rbStatus.axis[0].cur_pos;
+							sys->tkPos[curTid].xLock = Q2h.rbStatus.axis.cur_pos[0];
 							saveTkPosPC();
 						}
 
@@ -325,7 +322,7 @@ int CVICALLBACK SavePosition (int panel, int control, int event,
 						Q2h.cmdWrite[2]=key_save_z_bottom2;
 				
 						if(writeCommand(4)){
-							sys->tkPos[curTid].zDown2 = Q2h.rbStatus.axis[1].cur_pos;
+							sys->tkPos[curTid].zDown2 = Q2h.rbStatus.axis.cur_pos[1];
 							saveTkPosPC();
 						}
 					}
@@ -337,7 +334,7 @@ int CVICALLBACK SavePosition (int panel, int control, int event,
 						Q2h.cmdWrite[2]=key_save_z_bottom;
 				
 						if(writeCommand(4)){
-							sys->tkPos[curTid].zDown = Q2h.rbStatus.axis[1].cur_pos;
+							sys->tkPos[curTid].zDown = Q2h.rbStatus.axis.cur_pos[1];
 							saveTkPosPC();
 						}
 					}
@@ -663,13 +660,13 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
 	switch (event)
 	{
 		case EVENT_TIMER_TICK:
-			if(readRobotStatus(curRobotId) <0 )
+			if(readRobotStatus() <0 )
 				break;
 			
 			////////////////////////////////////////////////////////////////////
 			SetCtrlVal (panel, PANEL_RB_TEACH_BOX, getBit(Q2h.rbStatus.rb_bit,9));
-			SetCtrlVal (panel, PANEL_RB_X_JOG_SPEED, getBit(Q2h.rbStatus.axis[0].bit,2)); 
-			SetCtrlVal (panel, PANEL_RB_Z_JOG_SPEED, getBit(Q2h.rbStatus.axis[1].bit,2));
+			SetCtrlVal (panel, PANEL_RB_X_JOG_SPEED, getBit(Q2h.rbStatus.axis.status_bit[0],2)); 
+			SetCtrlVal (panel, PANEL_RB_Z_JOG_SPEED, getBit(Q2h.rbStatus.axis.status_bit[1],2));
 			/////////////////////////////////////////////////////////////////////
 			
 			GetTableCellVal (panel, PANEL_RB_TABLE, MakePoint (2, 1), str);
@@ -688,7 +685,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
 			
 			if(type == 0 || type == 1){
 				cell.y = 2;
-				sprintf(str,"%d",Q2h.rbStatus.axis[type].cur_pos);
+				sprintf(str,"%d",Q2h.rbStatus.axis.cur_pos[type]);
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -697,8 +694,8 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, str);
 
 	
-				cell.y = 3;
-				sprintf(str,"%d",Q2h.rbStatus.axis[type].cur_speed);  
+				cell.y++;
+				sprintf(str,"%d",Q2h.rbStatus.axis.cur_speed[type]);  
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -706,8 +703,8 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, str);
 				
-				cell.y = 4;
-				sprintf(str,"%d",Q2h.rbStatus.axis[type].address); 
+				cell.y++;
+				sprintf(str,"%d",Q2h.rbStatus.axis.address[type]); 
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -716,8 +713,8 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, str);
 
 	
-				cell.y = 5;
-				sprintf(str,"%d",Q2h.rbStatus.axis[type].speed);
+				cell.y++;
+				sprintf(str,"%d",Q2h.rbStatus.axis.speed[type]);
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -725,8 +722,8 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, str);
 				
-				cell.y = 6;
-				sprintf(str,"%d",Q2h.rbStatus.axis[type].error_code);
+				cell.y++;
+				sprintf(str,"%d",Q2h.rbStatus.axis.error_code[type]);
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -734,8 +731,8 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, str);
 				
-				cell.y = 7;
-				sprintf(str,"%d",Q2h.rbStatus.axis[type].alarm_code);
+				cell.y++;
+				sprintf(str,"%d",Q2h.rbStatus.axis.alarm_code[type]);
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -743,8 +740,8 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, str);
 				
-				cell.y = 8;
-				sprintf(str,"%d",Q2h.rbStatus.axis[type].serve_alarm_code);
+				cell.y++;
+				sprintf(str,"%d",Q2h.rbStatus.axis.serve_alarm_code[type]);
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -752,8 +749,8 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, str);
 				
-				cell.y = 9;
-				sprintf(str,"%d",Q2h.rbStatus.axis[type].action_status);
+				cell.y++;
+				sprintf(str,"%d",Q2h.rbStatus.axis.action_status[type]);
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -761,8 +758,8 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, str);
 				
-				cell.y = 10;
-				sprintf(str,"%d",Q2h.rbStatus.axis[type].status);
+				cell.y++;
+				sprintf(str,"%d",Q2h.rbStatus.axis.status[type]);
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -770,7 +767,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, str);
 	
-				cell.y = 11;
+				cell.y++;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -779,7 +776,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
 				//SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, "------------------------------");
 				
 				
-				cell.y = 12;
+				cell.y++;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -787,10 +784,10 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis[type].xy,0)?on_bitmap_id:off_bitmap_id);
+				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis.xy_bit[type],0)?on_bitmap_id:off_bitmap_id);
 					
 				
-				cell.y = 13;
+				cell.y++;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -798,9 +795,9 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis[type].xy,1)?on_bitmap_id:off_bitmap_id); 
+				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis.xy_bit[type],1)?on_bitmap_id:off_bitmap_id); 
 				
-				cell.y = 14;
+				cell.y++;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -808,9 +805,9 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis[type].xy,2)?on_bitmap_id:off_bitmap_id); 
+				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis.xy_bit[type],2)?on_bitmap_id:off_bitmap_id); 
 				
-				cell.y = 15;
+				cell.y++;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -818,9 +815,9 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis[type].xy,3)?on_bitmap_id:off_bitmap_id); 
+				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis.xy_bit[type],3)?on_bitmap_id:off_bitmap_id); 
 				
-				cell.y = 16;
+				cell.y++;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -828,9 +825,9 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis[type].xy,4)?on_bitmap_id:off_bitmap_id); 
+				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis.xy_bit[type],4)?on_bitmap_id:off_bitmap_id); 
 				
-				cell.y = 17;
+				cell.y++;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -838,9 +835,9 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis[type].xy,5)?on_bitmap_id:off_bitmap_id); 
+				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis.xy_bit[type],5)?on_bitmap_id:off_bitmap_id); 
 				
-				cell.y = 18;
+				cell.y++;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -848,10 +845,10 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis[type].xy,6)?on_bitmap_id:off_bitmap_id); 
+				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis.xy_bit[type],6)?on_bitmap_id:off_bitmap_id); 
 				
 				
-				cell.y = 19;
+				cell.y++;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -859,7 +856,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				//SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, "------------------------------");
 				
-				cell.y = 20;
+				cell.y++;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -867,9 +864,9 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis[type].xy,7)?on_bitmap_id:off_bitmap_id); 
+				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis.xy_bit[type],7)?on_bitmap_id:off_bitmap_id); 
 				
-				cell.y = 21;
+				cell.y++;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -877,9 +874,9 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis[type].xy,8)?on_bitmap_id:off_bitmap_id); 
+				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis.xy_bit[type],8)?on_bitmap_id:off_bitmap_id); 
 				
-				cell.y = 22;
+				cell.y++;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -887,9 +884,9 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis[type].xy,9)?on_bitmap_id:off_bitmap_id); 
+				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis.xy_bit[type],9)?on_bitmap_id:off_bitmap_id); 
 				
-				cell.y = 23;
+				cell.y++;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -897,9 +894,9 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis[type].xy,10)?on_bitmap_id:off_bitmap_id); 
+				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis.xy_bit[type],10)?on_bitmap_id:off_bitmap_id); 
 				
-				cell.y = 24;
+				cell.y++;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -907,9 +904,9 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis[type].xy,11)?on_bitmap_id:off_bitmap_id); 
+				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis.xy_bit[type],11)?on_bitmap_id:off_bitmap_id); 
 				
-				cell.y = 25;
+				cell.y++;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -917,9 +914,9 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis[type].xy,12)?on_bitmap_id:off_bitmap_id); 
+				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis.xy_bit[type],12)?on_bitmap_id:off_bitmap_id); 
 				
-				cell.y = 26;
+				cell.y++;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -927,9 +924,9 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis[type].xy,13)?on_bitmap_id:off_bitmap_id); 
+				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis.xy_bit[type],13)?on_bitmap_id:off_bitmap_id); 
 						
-				cell.y = 27;
+				cell.y++;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -945,9 +942,9 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis[type].bit,0)?on_bitmap_id:off_bitmap_id);
+				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis.status_bit[type],0)?on_bitmap_id:off_bitmap_id);
 				
-				cell.y = 29;
+				cell.y++;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -955,9 +952,9 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis[type].bit,1)?on_bitmap_id:off_bitmap_id);
+				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis.status_bit[type],1)?on_bitmap_id:off_bitmap_id);
 				
-				cell.y = 30;
+				cell.y++;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -965,9 +962,9 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis[type].bit,2)?on_bitmap_id:off_bitmap_id);
+				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis.status_bit[type],2)?on_bitmap_id:off_bitmap_id);
 				
-				cell.y = 31;
+				cell.y++;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -975,9 +972,9 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis[type].bit,3)?on_bitmap_id:off_bitmap_id);
+				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis.status_bit[type],3)?on_bitmap_id:off_bitmap_id);
 				
-				cell.y = 32;
+				cell.y++;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -985,9 +982,9 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis[type].bit,4)?on_bitmap_id:off_bitmap_id);
+				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis.status_bit[type],4)?on_bitmap_id:off_bitmap_id);
 				
-				cell.y = 33;
+				cell.y++;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -995,7 +992,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis[type].bit,5)?on_bitmap_id:off_bitmap_id);
+				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis.status_bit[type],5)?on_bitmap_id:off_bitmap_id);
 				
 				cell.y = 34;
 				if(cur_type != type) 
@@ -1005,9 +1002,9 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis[type].bit,6)?on_bitmap_id:off_bitmap_id);
+				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis.status_bit[type],6)?on_bitmap_id:off_bitmap_id);
 				
-				cell.y = 35;
+				cell.y++;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -1015,9 +1012,9 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis[type].bit,7)?on_bitmap_id:off_bitmap_id);
+				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis.status_bit[type],7)?on_bitmap_id:off_bitmap_id);
 				
-				cell.y = 36;
+				cell.y++;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -1025,9 +1022,9 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis[type].bit,8)?on_bitmap_id:off_bitmap_id);
+				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis.status_bit[type],8)?on_bitmap_id:off_bitmap_id);
 				
-				cell.y = 37;
+				cell.y++;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -1035,9 +1032,9 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis[type].bit,9)?on_bitmap_id:off_bitmap_id);
+				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis.status_bit[type],9)?on_bitmap_id:off_bitmap_id);
 				
-				cell.y = 38;
+				cell.y++;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -1045,9 +1042,9 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis[type].bit,10)?on_bitmap_id:off_bitmap_id);
+				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis.status_bit[type],10)?on_bitmap_id:off_bitmap_id);
 				
-				cell.y = 39;
+				cell.y++;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -1055,9 +1052,9 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis[type].bit,11)?on_bitmap_id:off_bitmap_id);
+				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis.status_bit[type],11)?on_bitmap_id:off_bitmap_id);
 				
-				cell.y = 40;
+				cell.y++;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -1065,9 +1062,9 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis[type].bit,12)?on_bitmap_id:off_bitmap_id);
+				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis.status_bit[type],12)?on_bitmap_id:off_bitmap_id);
 				
-				cell.y = 41;
+				cell.y++;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -1075,9 +1072,9 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis[type].bit,13)?on_bitmap_id:off_bitmap_id);
+				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis.status_bit[type],13)?on_bitmap_id:off_bitmap_id);
 				
-				cell.y = 42;
+				cell.y++;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -1085,7 +1082,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CELL_TYPE, VAL_CELL_PICTURE);
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
-				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis[type].bit,14)?on_bitmap_id:off_bitmap_id);
+				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.axis.status_bit[type],14)?on_bitmap_id:off_bitmap_id);
 				
 				
 				
@@ -1100,7 +1097,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, str);
 				
-				cell.y = 3;
+				cell.y++;
 				sprintf(str,"%d",Q2h.rbStatus.target_tid);
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
@@ -1109,7 +1106,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, str);
 				
-				cell.y = 4;
+				cell.y++;
 				sprintf(str,"%d",Q2h.rbStatus.cur_tid);
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
@@ -1118,7 +1115,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, str);
 				
-				cell.y = 5;
+				cell.y++;
 				sprintf(str,"%d",Q2h.rbStatus.from_tid);
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
@@ -1127,7 +1124,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, str);
 				
-				cell.y = 6;
+				cell.y++;
 				sprintf(str,"%d",Q2h.rbStatus.to_tid);
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
@@ -1136,25 +1133,8 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			cell.x = 2;
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, str);
 				
-				cell.y = 7;
-				sprintf(str,"%d",Q2h.rbStatus.pc_key);
-				if(cur_type != type) 
-					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
-				cell.x = 1;
-    			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, "pc_key");
-    			cell.x = 2;
-				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, str);
 				
-				cell.y = 8;
-				sprintf(str,"%d",Q2h.rbStatus.pc_tid);
-				if(cur_type != type) 
-					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
-				cell.x = 1;
-    			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, "pc_tid");
-    			cell.x = 2;
-				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, str);
-				
-				cell.y = 9;
+				cell.y++;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -1164,7 +1144,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.rb_bit,0)?on_bitmap_id:off_bitmap_id); 
 				
-				cell.y = 10;
+				cell.y++;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -1174,7 +1154,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.rb_bit,1)?on_bitmap_id:off_bitmap_id);
 				
-				cell.y = 11;
+				cell.y++;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -1184,7 +1164,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.rb_bit,2)?on_bitmap_id:off_bitmap_id);
 				
-				cell.y = 12;
+				cell.y++;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -1194,7 +1174,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.rb_bit,3)?on_bitmap_id:off_bitmap_id);
 				
-				cell.y = 13;
+				cell.y++;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -1204,7 +1184,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.rb_bit,4)?on_bitmap_id:off_bitmap_id);
 				
-				cell.y = 14;
+				cell.y++;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -1214,7 +1194,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.rb_bit,5)?on_bitmap_id:off_bitmap_id);
 				
-				cell.y = 15;
+				cell.y++;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -1224,7 +1204,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.rb_bit,6)?on_bitmap_id:off_bitmap_id);
 				
-				cell.y = 16;
+				cell.y++;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -1234,7 +1214,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.rb_bit,7)?on_bitmap_id:off_bitmap_id);
 				
-				cell.y = 17;
+				cell.y++;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -1244,7 +1224,7 @@ int CVICALLBACK RobotTimer (int panel, int control, int event,
     			SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_FIT_MODE, VAL_PICT_CORNER);
 				SetTableCellAttribute(panel, PANEL_RB_TABLE, cell, ATTR_CTRL_VAL, getBit(Q2h.rbStatus.rb_bit,8)?on_bitmap_id:off_bitmap_id);
 				
-				cell.y = 18;
+				cell.y++;
 				if(cur_type != type) 
 					InsertTableRows (panel, PANEL_RB_TABLE, cell.y, 1, VAL_CELL_STRING); 
 				cell.x = 1;
@@ -1286,26 +1266,9 @@ void initRobotPanel(int panel, int rid, int tid)
     GetCtrlDisplayBitmap (panel, PANEL_RB_LEDOFF, 0, &off_bitmap_id);
     GetCtrlDisplayBitmap (panel, PANEL_RB_LEDON, 0, &on_bitmap_id);
 	
-	Q2h.cmdWrite[0]=CMD_ROBOT;
-	Q2h.cmdWrite[1]=curRobotId;
-	Q2h.cmdWrite[2]=key_dialog_open;
-	writeCommand(3);
+	
 	
 	updateTankPos(panel);	
 
 }
 
-int CVICALLBACK ExitRbDialog (int panel, int event, void *callbackData, int eventData1, int eventData2)
-{
-    if (event == EVENT_CLOSE)
-	{
-		Q2h.cmdWrite[0]=CMD_ROBOT;
-		Q2h.cmdWrite[1]=curRobotId;
-		Q2h.cmdWrite[2]=key_dialog_close;
-		writeCommand(3);
-		
-        RemovePopup(0);
-		DiscardPanel (panel);
-	}
-    return 0;
-}

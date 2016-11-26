@@ -27,11 +27,11 @@
 //==============================================================================
 // Constants
 #define PLC_ALARM_ADD			100		
-
-#define PLC_TK_STATUS_ADD		300
-#define PLC_RB_STATUS_ADD		500
 #define PLC_CMD_ADD				900
-#define PLC_SYS_STATUS_ADD		1000 		
+#define PLC_SYS_STATUS_ADD		1000 
+#define PLC_RB_STATUS_ADD		1100
+#define PLC_TK_STATUS_ADD		1200
+		
 		
 #define PLC_RCP_ADD				1000
 #define PLC_TK_POS_ADD			2000
@@ -71,30 +71,28 @@ typedef struct _PLC_SYS_STATUS{
 }PLC_SYS_STATUS;
 
 typedef struct _PLC_AXIS_STATUS{
-	int cur_pos;
-	int cur_speed;
-	int address;
- 	int speed;
-	short error_code;
-	short alarm_code;
-	short serve_alarm_code;
-	short action_status;
-	short status;
-	short xy;
-	short bit;
+	int cur_pos[2];
+	int cur_speed[2];
+	int address[2];
+ 	int speed[2];
+	short error_code[2];
+	short alarm_code[2];
+	short serve_alarm_code[2];
+	short action_status[2];
+	short status[2];
+	short xy_bit[2];
+	short status_bit[2];
 	
 }PLC_AXIS_STATUS;
 
 typedef struct _PLC_RB_STATUS{
-	PLC_AXIS_STATUS axis[2];
+	PLC_AXIS_STATUS axis;
 	
 	short rb_state;
 	short target_tid;
 	short cur_tid;
 	short from_tid;
 	short to_tid;
-	short pc_key;
-	short pc_tid;
 	short rb_bit;
 	
 }PLC_RB_STATUS;
@@ -296,7 +294,6 @@ extern struct Q02hReg Q2h;
 int getBit(short data,int id) ;
 void setBit(unsigned short* data,int id) ;
 int writeCommand(int len);
-
 void SendPcAlarm(int id,int onOff);
 
 

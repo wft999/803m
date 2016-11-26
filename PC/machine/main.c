@@ -27,6 +27,7 @@
 #include "tank_diw.h" 
 #include "set.h" 
 #include "user.h"   
+#include "ild.h"
 //==============================================================================
 // Constants
 #define  key_sys_light_on		10
@@ -36,7 +37,7 @@
 #define  key_sys_reset_count	50
 #define  key_sys_run			60
 #define  key_sys_stop			70
-
+#define  key_sys_dialog			80
 
 
 int uiCAR[TANK_NUM] = {PANEL_INPROC_ILD,PANEL_INPROC_01,PANEL_INPROC_02,PANEL_INPROC_03,PANEL_INPROC_04,PANEL_INPROC_05,PANEL_INPROC_ULD};
@@ -72,7 +73,7 @@ SYSTEM* 	sys;
 //==============================================================================
 // Global functions
 
-//void initPlcPanel(int panel);
+void initIldTankPanel(int panel,TANK_ID id);
 void initRobotPanel(int panel, int rid, int tid);
 void initDiwTankPanel(int panel,TANK_ID tid);
 void initSetPanel(int panel);
@@ -130,15 +131,7 @@ int CVICALLBACK panelCB (int panel, int event, void *callbackData, int eventData
     return 0;
 }
 
-int CVICALLBACK ExitDialog (int panel, int event, void *callbackData, int eventData1, int eventData2)
-{
-    if (event == EVENT_CLOSE)
-	{
-        RemovePopup(0);
-		DiscardPanel (panel);
-	}
-    return 0;
-}
+
 
 int CVICALLBACK showPanel (int panel, int control, int event,
 		void *callbackData, int eventData1, int eventData2)
@@ -194,53 +187,94 @@ int CVICALLBACK showPanel (int panel, int control, int event,
 	return 0;
 }
 
+int CVICALLBACK ExitDialog (int panel, int event, void *callbackData, int eventData1, int eventData2)
+{
+    if (event == EVENT_CLOSE)
+	{
+		Q2h.cmdWrite[0]=CMD_SYS;
+		Q2h.cmdWrite[1]=key_sys_dialog;
+		Q2h.cmdWrite[2]=0;
+		writeCommand(3);
+		
+        RemovePopup(0);
+		DiscardPanel (panel);
+	}
+    return 0;
+}
+
 int CVICALLBACK ShowManuDialog (int panel, int control, int event,
 		void *callbackData, int eventData1, int eventData2)
 {
-	
+	Q2h.cmdWrite[0]=CMD_SYS;
+	Q2h.cmdWrite[1]=key_sys_dialog;
 	switch (event)
 	{
 		case EVENT_LEFT_CLICK:
 			if(control == PANEL_ROBOT1 || control == PANEL_ROBOT11){
+				Q2h.cmdWrite[2]=TANK_NUM;
+				writeCommand(3);
+	
 				dialogHandle = LoadPanel (0, "robot.uir", PANEL_RB);
 				InstallPopup(dialogHandle);
 				initRobotPanel(dialogHandle,0,0);
 			}
 			else if(control == PANEL_TNK_01){
+				Q2h.cmdWrite[2]=TANK_DIW1;
+				writeCommand(3);
+					
 				dialogHandle = LoadPanel (0, "tank_diw.uir", PANEL_DIW);
 				InstallPopup(dialogHandle);
 				initDiwTankPanel(dialogHandle,TANK_DIW1);
 			}/*
 			else if(control == PANEL_TNK_02){
+				Q2h.cmdWrite[2]=TANK_ACID+1;
+				writeCommand(3);
+				
 				dialogHandle = LoadPanel (0, "robot_panel.uir", PANEL_TANK);
 				InstallPopup(dialogHandle);
 				initTankPanel(dialogHandle,TANK_02,RTK_02_01,RTK_02_02);
 			}*/
 			else if(control == PANEL_TNK_03){
+				Q2h.cmdWrite[2]=TANK_DIW2;
+				writeCommand(3);
+					
 				dialogHandle = LoadPanel (0, "tank_diw.uir", PANEL_DIW);
 				InstallPopup(dialogHandle);
 				initDiwTankPanel(dialogHandle,TANK_DIW2);
 			}/*
 			else if(control == PANEL_TNK_04){
+				Q2h.cmdWrite[2]=TANK_KOH;
+				writeCommand(3);
+				
 				dialogHandle = LoadPanel (0, "robot_panel.uir", PANEL_TANK);
 				InstallPopup(dialogHandle);
 				initTankPanel(dialogHandle,TANK_04,RTK_04_01,RTK_04_02);
 			} */
 			else if(control == PANEL_TNK_05){
+				Q2h.cmdWrite[2]=TANK_DIW3;
+				writeCommand(3);
+					
 				dialogHandle = LoadPanel (0, "tank_diw.uir", PANEL_DIW);
 				InstallPopup(dialogHandle);
 				initDiwTankPanel(dialogHandle,TANK_DIW3);
-			}/*
+			}
 			else if(control == PANEL_TNK_ILD){
-				dialogHandle = LoadPanel (0, "robot_panel.uir", PANEL_TANK);
+				Q2h.cmdWrite[2]=TANK_ILD;
+				writeCommand(3);
+				
+				dialogHandle = LoadPanel (0, "ild.uir", PANEL_ILD);
 				InstallPopup(dialogHandle);
-				initTankPanel(dialogHandle,TANK_02,RTK_02_01,RTK_02_02);
+				initIldTankPanel(dialogHandle,TANK_ILD);
 			}
-			else if(control == PANEL_ULD){
-				dialogHandle = LoadPanel (0, "robot_panel.uir", PANEL_LOAD);
+			else if(control == PANEL_TNK_ULD){
+				Q2h.cmdWrite[2]=TANK_ULD;
+				writeCommand(3);
+				
+				dialogHandle = LoadPanel (0, "ild.uir", PANEL_ILD);
 				InstallPopup(dialogHandle);
+				initIldTankPanel(dialogHandle,TANK_ULD);
 			}
-			   */
+			   
 
 			break;
 	}
@@ -266,7 +300,7 @@ int CVICALLBACK PriTimer (int panel, int control, int event,
 	double cTM;
 	char buf[128];
 	
-
+	short tk_recipe_time[] = {0,sys->rcp.rcpDIW1.proc_time,sys->rcp.rcpACID.proc_time,sys->rcp.rcpDIW2.proc_time,sys->rcp.rcpKOH.proc_time,sys->rcp.rcpDIW3.proc_time,0};
 	switch (event)
 	{
 		case EVENT_TIMER_TICK:
@@ -342,7 +376,7 @@ int CVICALLBACK PriTimer (int panel, int control, int event,
 			SetCtrlAttribute(panel, PANEL_INPROC_ILDB, ATTR_VISIBLE,(getBit(Q2h.sysStatus.tk_bit[TANK_ILD],12)>0&&getBit(Q2h.sysStatus.tk_bit[TANK_ILD],13)>0) ? 1:0); 
 			
 			
-			short tk_recipe_time[] = {0,sys->rcp.rcpDIW1.proc_time,sys->rcp.rcpACID.proc_time,sys->rcp.rcpDIW2.proc_time,sys->rcp.rcpKOH.proc_time,sys->rcp.rcpDIW3.proc_time,0};
+			
 			
 			for(int i = 0; i < TANK_NUM; i++)
 			{
